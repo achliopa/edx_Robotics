@@ -179,3 +179,113 @@ if __name__ == "__main__":
     except rospy.ROSInterruptException:
         pass
 ```
+
+### Matrix Operation
+
+* This is an entry-level self-assessment of matrix operation. In this section, you are required to complete three functions:
+    * Vector dot product
+    * Matrix dot product
+    * Matrix transpose operation
+* These sections only involve some basic linear algebra knowledge, so we strongly suggest you write those functions by hand instead of using library.
+* Vector dot product: a is a 1X3 vector and b is a 3X1 vector. Please fill in your solution below.
+```
+# Complete the function below
+def VectorDotProduct(a, b):
+    a1 = a[0]
+    a2 = a[1]
+    a3 = a[2]
+    b1 = b[0][0]
+    b2 = b[1][0]
+    b3 = b[2][0]
+    ###
+    vector_result = a1*b1+a2*b2+a3*b3
+    ###
+    return vector_result
+a = [1,2,3]
+b = [[1],
+     [2],
+     [3]]
+vector_result = VectorDotProduct(a, b)
+print(vector_result)
+```
+* Matrix dot product:
+    * a and b are both 3X3 matrix. Please fill in your solution below.
+    * Hint: You can use the function: VectorDotProduct(a,b) at here
+```
+# Complete the function below
+def MatrixDotProduct(a, b):
+    a_row_0 = a[0]
+    a_row_1 = a[1]
+    a_row_2 = a[2]
+    b_col_0 = [[b[i][0]] for i in range(3)]
+    b_col_1 = [[b[i][1]] for i in range(3)]
+    b_col_2 = [[b[i][2]] for i in range(3)]
+    ###
+    matrix_result = [[0,0,0],[0,0,0],[0,0,0]]
+    for i in range (3):
+        for j in range (3):
+            matrix_result[i][j] = VectorDotProduct(a[i], [[b[k][j]] for k in range(3)])
+    ###
+    return matrix_result
+a = [[1,2,3],
+     [4,5,6],
+     [7,8,9]]
+b = [[1,2,3],
+     [4,5,6],
+     [7,8,9]]
+matrix_result = MatrixDotProduct(a, b)
+print(matrix_result
+```
+* Matrix transpose: In this time, a is a 3X3 matrix. Please fill in your solution below
+```
+# Complete the function below
+def MatrixTranspose(a):
+    ###
+    matrix_result = [[0,0,0],[0,0,0],[0,0,0]]
+    for i in range(3):
+        for j in range(3):
+            matrix_result[i][j] = a[j][i]
+    ###
+    return matrix_result
+a = [[1,2,3],
+     [4,5,6],
+     [7,8,9]]
+
+matrix_result = MatrixTranspose(a)
+print(matrix_result)
+```
+
+## Week 1: Introduction to Robotics
+
+### 1.1 What Is a Robot?
+
+* Robot Companies
+    * KUKA
+    * Kiva Systems (Amazon Robot)
+    * AETHEON
+    * Saviok
+    * Mayfield Robotics
+* Manipulation
+    * Robot Arm: manipulation
+        * industrial maipulation: manufacturing, assembly lines..
+        * pre programmed by a human operator on the movement to perform
+        * repeatable trajectory
+        * precision
+        * strength
+    * Robotic Surgery
+        * teleoperation
+    * Explosive Opbject Disposal (EOD) Robot: teleoperaton
+    * General Purpose manipulator (Autonomous) 
+        * Learing (DNN)
+        * Sensing
+        * Motion Planning
+* Mobility
+    * wheeled robots
+        * more domains each day: warehouses, hospitals, hotels, home
+        * human environment is not built for robots
+        * unstructured env
+    * autonomous cars
+        * semantic perception (what is what)
+        * lidars, camera, sensors are critical
+        * it must respond fast to conditions
+        * collision avoidance
