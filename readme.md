@@ -263,7 +263,7 @@ print(matrix_result)
     * KUKA
     * Kiva Systems (Amazon Robot)
     * AETHEON
-    * Saviok
+    * Savioke
     * Mayfield Robotics
     * Boston Dynamics(BigDog)
     * GoogleX (project Wing)
@@ -337,4 +337,66 @@ print(matrix_result)
 
 ### 1.4 Introduction to ROS
 
-* 
+* A colection of libraries, tools and conventions
+    * Plumbing
+        * code organization and management
+        * communication between components
+    * Tools
+        * introspection
+        * visualization
+    * Capabilities
+        * navigation (localization, path planning, etc)
+        * perception (object recognition, etc)
+        * manipulation (arm motion planning etc)
+        * ....
+    * Ecosystem
+        * users
+        * support forum
+        * conferences
+* Runs on top of OS (Ubuntu Linux)
+* it organizes code in packages and nodes
+    * laser driver node (outputs laser data to localization)
+    * camera driver node (outputs image to machine vision node)
+    * machine vision node (receicee image)(outputs image metadata to localization)
+    * localization node (outputs robot location to path planner)
+    * path planner node (receives the goal)(outputs motor commands)
+    * motor friver nodes
+* it has a workspace for our project
+* it has a visualizer (rviz)
+* ROS uses the publish subscribe mechanism for nodes to talk to each other through cannels called topics
+* nodes can run on different machines and can be written in diferrent languages
+* ROS is widely used in robotics research (especialy in academia) and increasingly by companies prototyping new cutting-edge ideas
+
+### 1.5 ROS Use in this Course
+
+* 2 ways to use ROS
+* 1) Install it on our machine
+    * We need an Ubuntu Linux machine
+    * Full access to complete ROS ecosystem
+* 2) Use the browser based interface
+    * at least to do the assignements
+* Wont teach ROS (learn on our own)
+* Go to [ROS Tutorials](http://wiki.ros.org/ROS/Tutorials)
+    * Begginner Tutorials 1-6 and 11-13
+* ROS natively supports 2 langs: Python and C++
+* To follow up the course we must be able to
+    * setup a catkin workspace
+    * create apackage inside the workspace
+    * (if using C++) compile the code in the package
+    * publish to a topic subscribe to a topic
+
+### Project 1
+
+* This assignment is meant to make sure that you are familiar with the most basic functions of ROS. Please make sure that you have completed (or at least read through) the tutorials 1-6 & 11-13.
+* In this assignment you are tasked with writing a node that subscribes to a topic and publishes to another. Your code will subscribe to a topic called 'two_ints', on which a custom message containing two integers can be broadcast. Make sure to familiarize yourself with the message format of this topic (have a look at the TwoInts.msg in the msg directory). Those two integers are to be added and the result published to topic 'sum' as an Int16 from std_msgs.
+* Setup
+    * Access your Vocareum workspace for Project 1
+    * Start by running source setup_project1.sh  in the command line terminal. You should do this first every time you load or reload your workspace. You must run this command before trying to invoke any ROS commands (catkin_make, roscd, etc.). This will also start a roscore for your session. Please do not start your own roscore.
+    * Once you have sourced this script, there will be a ROS package publishing random integers to the 'two_ints' topic every two seconds. 
+* Implementation
+    * You must implement your code in the file ~/catkin_ws/src/project1_solution/scripts/solution.py . This file has already been created for you and any starter code has been placed inside. 
+* Testing
+    * Add some debug output to your publisher (i.e. print the two numbers you have just received as well as their sum to the console every time you are about to publish). Then simply run your node (rosrun project1_solution solution.py). This is useful to see that you are getting to the right place in your code, but will not tell if you are actually publishing, and publishing to the right topic.
+    * Simply submit your code. Your code will be automatically graded and after a short while you should find a 'Submission Report' under the 'Details' tab which will contain output from the grading script.
+    * (Requires more advanced Linux skills) Run your node in the background (rosrun project1_solution solution.py &). This frees up the console so you can manually subscribe to the sum topic (rostopic echo sum) and see that something is indeed being published. Of course, you'll then need to manually kill your node, by retrieving the right process number and sending it a SIGINT signal using the kill command.
+    
