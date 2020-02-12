@@ -265,6 +265,8 @@ print(matrix_result)
     * AETHEON
     * Saviok
     * Mayfield Robotics
+    * Boston Dynamics(BigDog)
+    * GoogleX (project Wing)
 * Manipulation
     * Robot Arm: manipulation
         * industrial maipulation: manufacturing, assembly lines..
@@ -276,7 +278,7 @@ print(matrix_result)
         * teleoperation
     * Explosive Opbject Disposal (EOD) Robot: teleoperaton
     * General Purpose manipulator (Autonomous) 
-        * Learing (DNN)
+        * Learning (DNN)
         * Sensing
         * Motion Planning
 * Mobility
@@ -289,3 +291,50 @@ print(matrix_result)
         * lidars, camera, sensors are critical
         * it must respond fast to conditions
         * collision avoidance
+    * legged automotion
+        * dynamics
+        * legged + wheeled
+    * mobility + manipulation: disaster reponse
+    * aerial robots
+        * fixed wing 
+    * underwater
+* Smart sensors
+    * Leaning Thermostat from Nest (learns from habits)
+* Possible Definition for a Robot:
+    * A device that can sense, plan and act
+    * A self-powered device that effects physical change to the world
+* Robotics: SW and HW (mind and body)
+
+### 1.2 Robotics and AI - at the Beginning
+
+* Robotics and AI:
+* pre-programmed robotic amnipulators have had a profound effect in society
+* New frontier: unstructured environments. programmer cannot provide exact instructions in advance for every possible scenario the robot will see.
+* Critical Abilities
+    * Sensing
+    * Reacting
+    * Planning
+* Applies to manipulation and mobility
+    * Classic manipulators enhanced with sensing
+    * Manipulators safe to work with
+* Do we trust the robot to be intelligent enough to do tasks on ts own?
+* (Artificial) Intelligence: also no universally accepted definition
+    * the ability to react appropriately when faced with unforeseen situations (applies to humans and robots)
+    * sensing and planning is the key
+
+### 1.3 What we will cover in this course
+
+* The foundation for intelligent robots (manipulation focus)
+    * 3D Space and transforms
+    * Manipulation: how to model and manipulate robot arms
+    * mobility: how to model and analyze mobile robots
+    * motion planning
+    * assignments using the open-source Robot Operating System (ROS)
+* Not covered in class:
+    * Building Robot Hardware (design, mechatronics)
+    * Embedded programming
+    * Sensing and perception
+
+### 1.4 Introduction to ROS
+
+* 
