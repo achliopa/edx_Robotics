@@ -455,4 +455,4 @@ print(matrix_result)
 > <sub>A</sub>p = <sup>A</sup>R<sub>B</sub> * <sub>B</sub>p = [[0.7,-0.7],[0.7,0.7]] * [[2],[0]] = [[1.4],[1.4]]
 * We defined the Rotation matrix. in 2D we rotate accross the z axis which is invisible and points towards the viewer
 * when we see a Rotation matrix the following hold true:
-    * [det](https://latex.codecogs.com/gif.latex?%5Cleft%20%7C%20x%20%5Cright%20%7C)
+    * ![det](https://latex.codecogs.com/gif.latex?%5Cleft%20%7C%20x%20%5Cright%20%7C)
