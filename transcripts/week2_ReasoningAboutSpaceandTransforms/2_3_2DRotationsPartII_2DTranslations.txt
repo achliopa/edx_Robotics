@@ -1,0 +1,159 @@
+So there is one more way to think about rotation matrices.
+One thing that is very practical.
+It'll help you a lot when you are using them in real life.
+So let's write one more time the general formula
+for the rotation from A to B. Let's look again at point p
+expressed in coordinate frame A. So we have p equals px py.
+Which really is shorthand for saying
+that p is the scalar px times the unit axis x plus the scalar
+py times the unit axis y.
+Where x and y are the unit vectors that point
+in the direction of your axis.
+In this case, obviously it's very simple,
+because you have x the x-axis is simply 1, 0, the unit
+vector 1, 0.
+The y-axis is just the vector 0, 1.
+So then we can write this relationship further
+in matrix form as xy as the columns of a matrix times
+px py.
+And then if we spell out the x and y column vectors
+we just get 1, 0, 0, 1 px py.
+Why did we go through all that trouble just
+to spell out the identity?
+Obviously px py is equal to the identity times px py.
+Well, we can do the exact same thing,
+but we can choose two different orthogonal unit vectors
+as our axes.
+Why don't we express p relative to these two
+other coordinate vectors x and y?
+And in this case, these unit vectors change, so the vector
+x, you can see points in the direction of cosine theta sine
+theta.
+The vector y points along the negative x-axis.
+So we're going to have minus sine theta cosine theta.
+So now that we've replaced the unit vectors x and y,
+this relationship still holds.
+Obviously, this relationship still holds.
+We just need to replace x and y inside of this matrix.
+So if we replace this by the new matrix,
+having as columns the new vectors x and y,
+this is still true.
+Why do we care about this?
+Well, this picture looks a little bit familiar.
+It's as if the new vectors x hat and y hat actually
+define the coordinate frame B, and the original vectors define
+the coordinate frame A. So if x and y are the unit vectors that
+define coordinate frame B, then what we have is
+that the point expressed in coordinate frame
+A is going to be px and py in coordinate frame B times
+the axis vectors from coordinate frame B.
+So this is really the same as saying this further
+equals the rotation from A to B times
+pB, which is something that we've seen in the past.
+And the point here is that this is actually our rotation matrix
+from A to B. So the rotation matrix from A to B
+is comprised of the unit vectors indicating the new orientation
+of the axes in column format.
+So if somebody gives you a matrix and says,
+this is a rotation matrix.
+What coordinate frame does it transform into?
+It's very easy.
+All you need to do is to look at the columns,
+and the column vectors will tell you the new orientation
+of the axes.
+Let's take a concrete example of that.
+I have my coordinate frame A. And somebody gives you
+the rotation matrix R from A to B equals 0, 1 minus 1, 0.
+What does coordinate frame B look like?
+Well, one thing you can do is say, OK, I
+know the general formula for a rotation matrix.
+If I match these two, I can probably figure out
+what theta is, and then if I figured out
+what theta is, then I can apply that rotation,
+and I can see who B is.
+A simpler way to do it is to just say, well, the axes of B
+are just the columns of the rotation matrix.
+So the x-axis of B is going to be 0, 1 relative to A.
+So the x-axis of B is going to point in the direction of yA.
+So this is going to be xB.
+The y-axis of B is going to be minus 1, 0 in coordinate frame
+A. So that means the y-axis of B is going to point like this.
+And there you go.
+Now I've very easily drawn my coordinate frame B.
+OK, let's look at another example.
+Let's get a different rotation matrix.
+So we have our coordinate frame A to start with,
+and then we go to a different rotation matrix.
+The rotation from A to B is going
+to be negative 0.7, negative 0.7,
+and then we're going to have 0.7, negative 0.7.
+Who is coordinate frame B?
+Very easy to check just by looking at the column vectors.
+So xB is going to be this column.
+So xB is going to be pointing like this.
+yB is this column, so yB is going to be pointing like this.
+Let's quickly check that this works.
+So let's have a point in coordinate frame B. Let's
+say point 2, 0 for example.
+So 2, 0 in coordinate frame B, this point is right here.
+So this is p.
+Then that same point, expressed in coordinate frame A,
+is going to be the rotation matrix from A
+to B times the point in coordinate frame B.
+So if we just multiply this matrix by this vector,
+we're going to get negative 1.4 and negative 1.4.
+And you can easily check that that is indeed
+the location of p with respect to coordinate frame A.
+So the thing to remember from here, rotation matrix,
+the new orientation of the axes, you
+can easily see it as the column vectors of the rotation matrix.
+And that also gives new meaning to the characteristic
+that I was mentioning before, that rotation matrices are
+always orthonormal.
+So the norm of any column vector is one.
+That makes sense, because the column vectors
+show us the new orientation of the axes.
+And the orientation of the axes, those have to be unit vectors.
+Also, the axes are always mutually orthogonal.
+Any two axes are perpendicular to each other.
+The dot product of any two columns of a rotation matrix
+has to be 0.
+OK, we are finally done with rotations, at least in 2D.
+We spent quite a while on them.
+But rotation matrices are some of the most fundamental tools
+that you use in robotics.
+You will use those every single day.
+So it's worth spending a little bit of time
+and just understanding all the subtleties.
+Now let's talk translations, and thankfully translations
+are quite a bit simpler than rotations.
+Now let's say that the difference
+between coordinate frame A and coordinate frame B
+isn't a rotation, but just a translation.
+So B, the axes have the same orientation
+as in A. There isn't any rotation,
+but B is translated with respect to A by Tx and Ty.
+So in this case, my point p expressed in coordinate frame
+B. If I want to compute that same point in coordinate frame
+A, obviously all I have to do is add the two translation terms.
+So this is obviously very, very simple.
+But it doesn't quite get us where we'd like to go.
+Because now what we want to do is
+combine rotations and translations.
+What if, and this is the most general case possible in 2D,
+where the difference between coordinate frame A
+and coordinate frame B is a translation and a rotation.
+And now we are talking about full transforms.
+So based on what we've learned so far,
+we can say that we can compute pA as being the rotation from A
+to B times pB plus the translation.
+This is correct.
+This works, but it's not compact.
+Furthermore, it's two operations.
+It's a multiplication and an addition,
+and it makes things extremely complicated,
+especially if you want to chain multiple such transforms.
+What if you have coordinate frame A, coordinate frame B,
+coordinate frame C?
+Going from A to B to C and so on becomes very complicated
+if one transform is a multiplication and an addition.
