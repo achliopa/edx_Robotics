@@ -1,0 +1,198 @@
+We're starting our course on robotics
+with a lecture about space, about how
+to reason about space.
+And this is not specific to robot arms or mobile robots,
+it's critical for robotics in general,
+because ultimately, robotics is the science
+of physical machines operating in space.
+It's not about bits on a hard drive, on a wire.
+Ultimately, robotics, you get to the metal,
+you get to something that moves in physical space.
+So how to reason about where things are in space
+is very important in robotics.
+So what we cover here today is the beginning of the course,
+it applies to everything else that we do.
+One note is that the material we cover here also
+applies to other fields where you
+have to reason about space, 3D space, 2D space, computer
+graphics, for example.
+Everything we cover here today you'll
+also find if you're taking a computer graphics class.
+Some conventions might be different in other fields,
+but it's the same conceptual items.
+So let's think about 3D space, and as an example,
+consider a robot arm that's about to execute
+a grasping task.
+Maybe you know where the target is in the world.
+And in general, you always have what we call a reference
+frame for the world.
+So somewhere, you have decided by convention
+that, hey, this is where my reference frame for the world
+is.
+Maybe it's somewhere down here, this
+is a coordinate frame that is my reference for the world.
+And you have your x-, y-, and z-axes.
+You know somehow-- maybe a sensor,
+you have a camera that does object detection-- you know
+where the target, where the glass is with respect to this
+coordinate frame.
+You also know where the end effector of the robot
+is with respect to the same coordinate frame.
+But in order to execute this task,
+the robot needs to know where the target is
+relative to itself.
+It's not enough to know what everything
+is relative to your base coordinate frame,
+you need to be able to compute where things
+are relative to each other.
+And this is the basics of what we are
+going to cover in this lecture.
+Similarly, if you have a mobile robot
+and you have knowledge of a map that tells you
+where the obstacles are in the world,
+it's not enough for the mobile robot
+to know where the obstacles are relative to some base
+coordinate frame.
+A mobile robot needs to know where the obstacles are
+relative to itself.
+So you need to have this ability to think about space,
+but to also reason about multiple coordinate frames
+and move between different coordinate frames.
+And this is exactly what we are going to cover here.
+So let's formalize the notion of position in space
+from a mathematical perspective.
+Let's start with two dimensional spaces, which are easier.
+In Cartesian spaces then, the location of a point p
+is determined by the vector p, which has two components, which
+you can think of as projections along the x- and the y-axis.
+So the vector p and its projection
+along x, its projection along y.
+We always write these as column vectors.
+Always, always positions are column vectors.
+Just to save space, we will often, however,
+also write them as transpose rows, exactly the same thing.
+But you always have to remember that formally correct
+the vector's locations, vectors that
+denote positions and locations, are written as column vectors.
+So in 2D space, this vector is a two dimensional vector,
+it has two components.
+If we were in three dimensional space, then obviously
+we would have three components, px, py, and pz.
+So now p is a vector living in a three dimensional space,
+same as writing it like this.
+But the one thing that is important to remember
+is that we don't have a single coordinate frame.
+So here we're showing one coordinate
+frame and the position of the vector
+p in that coordinate frame.
+In robotics, there are numerous coordinate frames.
+There is a coordinate frame for the robot, a coordinate frame
+for the room, a coordinate frame for the end effector.
+Many, many coordinate frames.
+So we have to keep track which coordinate frame
+we're talking about at any given point.
+So to do that, we will generally use in this course capital
+letters to name the coordinate frames.
+And to make it clear that now we're
+talking about the point p expressed in coordinate frame
+A.
+So we have the vector pA, and the components px, py,
+and so forth, are still relative to coordinate
+frame A. We can have many, many coordinate frames.
+But still, these are nothing more
+than two dimensional vectors, these
+are three dimensional vectors, and as such,
+we can perform on them any operations that we've
+learned in linear algebra, multiplications,
+dot products, cross products, multiplications with matrices.
+And we will make heavy use of all that in this lecture.
+Here's an example of when we would have
+multiple coordinate frames.
+So think here that you have a camera that's
+attached to a robot arm.
+And the camera is observing the location
+of something in the world.
+The camera tells you this is where a point of interest, p,
+lies.
+But of course, the camera will tell you
+where the point p is with respect to itself.
+So the camera knows with respect to its own coordinate frame,
+which we named here B, where the location of the interest point
+is.
+So we know the location of p in the coordinate frame B.
+But maybe we'd like to know not where p is with respect to B,
+but where p is with respect to our base coordinate frame,
+which we've named here A. So the way
+that works is, if we know the transform that gets us
+from coordinate frame A to coordinate frame B,
+and we know where point p is in coordinate frame B,
+then we are able to compute the location of p
+in coordinate frame A. So let's formalize this.
+We have the location of point p in coordinate frame
+B that's given to us, the camera tells us that.
+So then, if we multiply that by the transform that
+goes from coordinate frame into coordinate frame B,
+the result of that will be p expressed in coordinate frame
+A. And in a second we will make it very concrete
+what this multiplication means and what
+this transform actually looks like from
+a mathematical perspective.
+But here is an item that is something specific
+to our notation, but it makes things a lot easier
+to remember.
+You have the transform that goes from A to B, TAB,
+and you're multiplying that by a point expressed in coordinate
+frame B. And the result is that same point expressed
+in coordinate frame A.
+It's easy to get these things confused, wait a second,
+shouldn't this be the other way around?
+Shouldn't this be the transform that goes from B to A?
+Right?
+Because ultimately we're taking pB
+and we are converting it into pA,
+so shouldn't T be the transform that goes from B to A?
+No, T is the transform that goes from A to B,
+and this is a convention that if you remember,
+it will make your life a lot easier as you
+deal with these transforms.
+One way to remember this convention
+is to use these superscripts and subscripts the way
+I use them here.
+So transform from A to B multiplied
+by p expressed in coordinate frame B gives you
+the point in coordinate frame A. So if you
+wish, abusing notation a little bit, these two cancel out.
+And in general, if you always write your points,
+your transforms, using a left superscript
+and a right subscript that tells you what coordinate frame
+you're dealing with-- so for transform you always
+have from a coordinate frame into another coordinate frame,
+for points you have the coordinate frame that it's
+being expressed in.
+So if you follow this convention,
+then it'll immediately be very obvious
+when the chain isn't right.
+When, for example, if two of these subscripts superscripts
+are not the same, it means you don't have the right chain
+of transforms and points.
+So, bottom line here, transform from A to B times the point p
+in coordinate frame B gives you the same point
+p in coordinate frame A.
+Let's make this concrete.
+Note that we can chain these.
+So let's say that we have a point p that's
+observed by a camera in coordinate frame
+C. The camera is at the end of a robot that has at the base
+coordinate frame B, but then we have a different coordinate
+from the world, A. And we'd like to know the location of point p
+with respect to coordinate frame A.
+Again, the same rule applies.
+If we take the point expressed in coordinate frame C.
+We left multiply by the transform that gets us
+from B to C, and then we left multiply that again
+by the transform that gets us from A to B. The result of that
+is the same point p expressed in coordinate frame A.
+So again, transform from A to B times
+transform from B to C times the point
+in coordinate frame C gives us the point in coordinate frame
+A. Let's make this concrete.

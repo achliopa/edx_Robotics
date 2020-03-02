@@ -1,0 +1,145 @@
+
+0:00 / 0:00Press UP to enter the speed menu then use the UP and DOWN arrow keys to navigate the different speeds, then press ENTER to change to the selected speed.Speed 1.25xClick on this button to mute or unmute this video or press UP or DOWN buttons to increase or decrease volume level.Maximum Volume.Video transcript
+Start of transcript. Skip to the end.
+What are these transferred objects?
+So here we have coordinate frame A, shown
+in white, coordinate frame B, shown in yellow.
+And let's say we know the location of point
+p in coordinate frame B. So pB, which in our case
+is px in coordinate frame B and py in coordinate frame B,
+is given to us.
+What we'd like to do is compute pA.
+So it's a fairly simple matter of trigonometry
+to compute pAx and pAy based on what we know.
+So for example, pAx, the projection
+of p along the x-axis of coordinate frame A
+is going to be pBx times cosine of theta minus pBy times sine
+theta.
+So we take this bit up to here and we project it down onto x.
+So that's pBx cosine theta.
+But then we have to subtract this part, which
+is pBy sine theta.
+So that gives us pAx.
+Similarly, pAy is going to be pBx sine theta plus pBy cosine
+theta.
+OK, so now that we have derived pAx pAy,
+let's rewrite this exact same relationship in matrix form.
+So what we have is that pA, which is just a column vector
+pAx pAy is going to be a matrix.
+So cosine theta minus sine theta, sine theta cosine theta.
+Times pBx pBy.
+Which, as you can see, is nothing other
+than pA equals R AB times pB.
+And the reason why I've used the letter R for this matrix
+is that this is what is called a rotation matrix.
+So in our case, the coordinate frames A and B
+differ only by a rotation.
+So B is the same as A, but rotated around theta.
+So in this case the transform T from A to B is a rotation.
+And this is what we refer to as a rotation matrix.
+So multiplying point pB by the rotation matrix
+gives us that same point but expressed in coordinate frame
+A.
+OK, let's make this concrete with a numerical example.
+So let's say we have our coordinate frame A
+and B is the same as A but rotated by 45 degrees.
+So these are xB and yB.
+This is xA and yA.
+And let's say that point p, expressed in coordinate frame
+B, is 2, 0.
+So we move by two units along the x-axis of B. Let's
+say this gets us to here.
+And zero along the y-axis of B. So this
+is our point p in coordinate frame B.
+What is that same point, but expressed
+in coordinate frame A?
+So we can write the rotation matrix.
+So the rotation from A to B is, as we just said,
+cosine theta minus sine theta, sine theta cosine theta.
+In our case theta is 45 degrees.
+So we're going to get, with a little bit
+of rounding, 0.7 minus 0.7.
+0.7, 0.7.
+So then the point p in coordinate frame A
+is going to be our rotation matrix from A to B times
+that same point expressed in coordinate frame B.
+So we have the rotation matrix times point p.
+So 2, 0.
+And if we carry out the multiplication,
+we're going to get 1.4, 1.4.
+And you see that this same point p expressed in coordinate frame
+A is indeed at 1.4 and 1.4.
+So let's talk a little bit more about rotation matrices.
+First of all, what are we rotating around?
+Well, so far we've been operating in 2D world.
+In 2D, there's only a single possibility for rotation.
+The only axis you can rotate around
+is the axis that's not shown on this graph,
+is essentially the z-axis.
+So if I plot a z-axis, for example, like this,
+the hidden assumption whenever I do a rotation matrix in 2D
+is that I am rotating around z.
+Obviously if I were to rotate around x or y,
+then I would no longer be in 2D.
+I would come out of the plane that I'm operating in.
+So in 2D, all rotations are around the z-axis.
+We'll get to 3D in a few minutes,
+and then the rotation matrices become a little bit more
+involved.
+But all the properties that I'm just
+about to mention always, always hold.
+So whenever you see a rotation matrix,
+there are a couple of things that you know are always true.
+So first of all, the determinant of a rotation matrix
+is always one.
+And even more than that, rotation matrices
+are always orthonormal.
+What does that mean?
+The norm of every column is one.
+The norm of every row is one.
+The dot product of any two columns is zero.
+The dot product of any two rows is also zero.
+And we can very easily check that.
+The norm of this column, cosine squared plus sine squared, one.
+The norm of this column, sine squared
+plus cosine squared, one.
+If we take the dot product of these two columns,
+we're going to get cosine times negative sine plus sine times
+cosine cancels out.
+So we get zero.
+So these are things that you always want to remember.
+Whenever a matrix does not obey these rules,
+it cannot be a rotation matrix.
+Then there is one more property of rotation matrices, which
+actually follows from the two above,
+which is that its inverse is the same as its transpose.
+And this is also pretty easy to check, if we take this matrix
+and we multiply by its transpose.
+If you carry out the multiplication,
+you get the identity.
+So these are the ways in which you can tell a true rotation
+matrix.
+And this is also a very handy rule,
+because now we've seen that if you
+have R, the transform from going from A to B, if you have this,
+then you can always very easily calculate the transform
+from going from B to A, which is going
+to be the transform from A to B simply transposed.
+So in our previous example, we had coordinate frame A and B.
+And we had just determined that point p, expressed
+in coordinate frame A, was 1.4, 1.4.
+And the rotation from A to B was 0.7 minus 0.7.
+0.7, 0.7.
+So using this handy rule, the rotation from B to A
+is going to be 0.7, 0.7 minus 0.7, 0.7.
+So now we can compute point p expressed in coordinate frame
+B as the rotation from B to A times point p expressed
+in coordinate frame A. So we're going
+to have the rotation matrix times pA.
+So what we end up with, of course,
+with a little bit of rounding, is 2, 0,
+which is the point p in coordinate frame B
+that we started with at the beginning.
+And you can see that p in coordinate frame B
+has coordinate two along the x-axis
+and zero along the y-axis.
