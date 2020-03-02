@@ -403,3 +403,41 @@ print(matrix_result)
 ## Week 2: Reasoning About Space and Transforms
 
 ### 2.1 Transforms Introduction
+
+* robots are machines operating in physical space
+* concepts on space apply on graphics
+* we typically have a reference frame for the world (0,0,0)
+* we assume we know where the target is in respcet to the refernce (coordinate) frame
+* we also know where the robot arm is with respect to the coordinate frame
+* the robot arm needs to know where the target is with respect to itself
+* so we typically need to define where objects are with respect to each other
+* so a mobile robot is not enough to know where the obstacles are in reference to a coordinate frame but relative to itself
+* so in robotics we need to move between coordinate frames. this is called Transforms
+* In 2D positional space: position of p is an 1x2 column vector with the projections on the 2 reference axes: 
+
+> p = [[px],[py]] = [px,py]T (transpose)
+
+* In 3D space respectively the position of p is an 1x3 column vector with projections on the 3 reference axes:
+
+> p = [[px],[py],[pz]] = [px,py,pz]T
+
+* There is no universal coordinate frame in robotics. there are numerous (for the robot, for the room
+* In this course we will use capital letters to name the various coordinate frames.
+* if we have p expressed in coordinate frame A our representation becomes
+
+> <sup>A</sup>p = [[<sup>A</sup>px],[<sup>A</sup>py]] = [<sup>A</sup>px,<sup>A</sup>py]T (2D)
+> <sup>A</sup>p = [[<sup>A</sup>px],[<sup>A</sup>py],[<sup>A</sup>pz]] = [<sup>A</sup>px,<sup>A</sup>py,<sup>A</sup>pz]T (3D)
+
+* Linear algebra is our go to tool.
+* if we have a camera at point B it will tell us where p is with respect to its own coordinate frame
+* but we might need both p point vectors with respect to A and B. IF we know the *Transform* that gets us from coordinate frame A to coordinate frame B, and where point p is in coordinate frame B we will be able to compute the location of p in coordinate frame A.
+
+> <sup>A</sup>T<sub>B</sub>.<sup>B</sup>p = <sup>A</sup>p
+
+* we can chain transformations. if our point is observed by a camera in coordinate frame C. the camera is at the end of a robot that has at the basecoordinateframe B and the coordinate frame for the world is A. if we want to know the location of p with respect to A and we know the trasforms between coordinate frames and the position in reference to the camera C
+
+> <sup>A</sup>T<sub>B</sub>.<sup>B</sup>T<sub>C</sub>.<sup>C</sup>p = <sup>A</sup>p
+
+## 2.2 2D Rotations Part I 
+
+* we will now try to define the transforms mathematically
