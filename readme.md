@@ -441,3 +441,11 @@ print(matrix_result)
 ## 2.2 2D Rotations Part I 
 
 * we will now try to define the transforms mathematically
+* we assume 2 2D coordinate frames with same point of origin but rotated by an angle Θ
+* we assume we know the point vector in referenc eto coordinate frame B: 
+> <sup>B</sup>p = [<sup>B</sup>p<sub>x</sub>,<sup>B</sup>p<sub>y</sub>]
+* we calculate the <sup>A</sup>p  considering transform
+> <sup>A</sup>p<sub>x</sub> = <sup>B</sup>p<sub>x</sub>*cos(θ) - <sup>Β</sup>p<sub>y</sub>*sin(θ)
+> <sup>A</sup>p<sub>y</sub> = <sup>B</sup>p<sub>x</sub>*sin(θ) + <sup>Β</sup>p<sub>y</sub>*cos(θ)
+* we rewrite it in vector form
+> <sup>A</sup>p = $$\left[\begin{array}{r} <sup>A</sup>p<sub>x</sub>\\<sup>A</sup>p<sub>y</sub>\end{array}\right]$$ = $$\left[\begin{array}{rr} cos(θ) & -sin(θ)\\ sin(θ) & cos(θ) \end{array}\right]$$ *  $$\left[\begin{array}{r} <sup>Β</sup>p<sub>x</sub>\\<sup>Β</sup>p<sub>y</sub>\end{array}\right]$$
