@@ -448,16 +448,4 @@ print(matrix_result)
 > <sup>A</sup>p<sub>x</sub> = <sup>B</sup>p<sub>x</sub>*cos(θ) - <sup>Β</sup>p<sub>y</sub>*sin(θ)
 > <sup>A</sup>p<sub>y</sub> = <sup>B</sup>p<sub>x</sub>*sin(θ) + <sup>Β</sup>p<sub>y</sub>*cos(θ)
 * we rewrite it in vector form
-
-$$
-\left(\begin{array}{cc} 
-0.8944272 & 0.4472136\\
--0.4472136 & -0.8944272
-\end{array}\right)
-\left(\begin{array}{cc} 
-10 & 0\\ 
-0 & 5
-\end{array}\right)
-$$ 
-
-> <sup>A</sup>p = $$\left[\begin{array}{r} <sup>A</sup>p<sub>x</sub>\\<sup>A</sup>p<sub>y</sub>\end{array}\right]$$ = $$\left[\begin{array}{rr} cos(θ) & -sin(θ)\\ sin(θ) & cos(θ) \end{array}\right]$$ *  $$\left[\begin{array}{r} <sup>Β</sup>p<sub>x</sub>\\<sup>Β</sup>p<sub>y</sub>\end{array}\right]$$
+> <sup>A</sup>p = [[<sup>A</sup>p<sub>x</sub>],[<sup>A</sup>p<sub>y</sub>]] = [[cos(θ) , -sin(θ)],[sin(θ) , cos(θ)]] dot [[<sup>Β</sup>p<sub>x</sub>],[<sup>Β</sup>p<sub>y</sub>]]
