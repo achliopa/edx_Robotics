@@ -464,4 +464,4 @@ print(matrix_result)
 * we write agein the rotation matrix
 > <sup>A</sup>R<sub>B</sub> = [[cos(θ) , -sin(θ)],[sin(θ) , cos(θ)]]
 * the point p expressed in coordinate frame A can be represented as a vector matrix or a scalar multiplied by a unit axis
-> p = [[p<sub>x</sub>],[p<sub>y</sub>]] = p<sub>x</sub> * ![x](https://latex.codecogs.com/gif.download?%5Cvec%7Bx%7D) + p<sub>y</sub> * ![y](https://latex.codecogs.com/gif.download?%5Cvec%7By%7D)
+> p = [[p<sub>x</sub>],[p<sub>y</sub>]] = p<sub>x</sub> * ![x](https://latex.codecogs.com/gif.latex?%5Cvec%7Bx%7D) + p<sub>y</sub> * ![y](https://latex.codecogs.com/gif.latex?%5Cvec%7By%7D)
