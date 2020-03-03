@@ -438,7 +438,7 @@ print(matrix_result)
 
 > <sup>A</sup>T<sub>B</sub>.<sup>B</sup>T<sub>C</sub>.<sup>C</sup>p = <sup>A</sup>p
 
-## 2.2 2D Rotations Part I 
+### 2.2 2D Rotations Part I 
 
 * we will now try to define the transforms mathematically
 * we assume 2 2D coordinate frames with same point of origin but rotated by an angle Θ
@@ -455,4 +455,13 @@ print(matrix_result)
 > <sub>A</sub>p = <sup>A</sup>R<sub>B</sub> * <sub>B</sub>p = [[0.7,-0.7],[0.7,0.7]] * [[2],[0]] = [[1.4],[1.4]]
 * We defined the Rotation matrix. in 2D we rotate accross the z axis which is invisible and points towards the viewer
 * when we see a Rotation matrix the following hold true:
-    * ![det](https://latex.codecogs.com/gif.latex?%5Cleft%20%7C%20x%20%5Cright%20%7C)
+    * derrminant of R is always 1 |R| = 1
+    * Rotation matrices are always orthonormal (norm of every column and row is 1 , dot product of every 2 columns is 0, the dot product of every 2 row is 0)
+    * R<sup>-1</sup> = R<sup>T</sup> is a useful rule as we can use the transpose of transform (rotate) matrix to go instead of A->B from B->A <sup>B</sup>R<sub>A</sub> = (<sup>A</sup>R<sub>B</sub>)<sup>T</sup>
+
+### 2.3 2D Rotations Part II, 2D Translations
+
+* we write agein the rotation matrix
+> <sup>A</sup>R<sub>B</sub> = [[cos(θ) , -sin(θ)],[sin(θ) , cos(θ)]]
+* the point p expressed in coordinate frame A can be represented as a vector matrix or a scalar multiplied by a unit axis
+> p = [[p<sub>x</sub>],[p<sub>y</sub>]] = p<sub>x</sub> * ![](https://latex.codecogs.com/gif.download?%5Cvec%7Bx%7D) + p<sub>y</sub> * ![](https://latex.codecogs.com/gif.download?%5Cvec%7By%7D)
