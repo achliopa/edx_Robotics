@@ -464,6 +464,6 @@ print(matrix_result)
 * we write agein the rotation matrix
 > <sup>A</sup>R<sub>B</sub> = [[cos(θ) , -sin(θ)],[sin(θ) , cos(θ)]]
 * the point p expressed in coordinate frame A can be represented as a vector matrix or a scalar multiplied by a unit axis (unit axis vectors)
-> [p](https://latex.codecogs.com/gif.latex?%5Cfn_phv%20p%20%3D%20%5Cbegin%7Bbmatrix%7D%20p_%7Bx%7D%20%5C%5C%20p_%7By%7D%20%5Cend%7Bbmatrix%7D%5C%20%3D%20p_%7Bx%7D%20%5Ccdot%20%5Cvec%7Bx%7D%20&plus;%20p_%7By%7D%20%5Ccdot%20%5Cvec%7By%7D)
-> [x](https://latex.codecogs.com/gif.latex?%5Cfn_phv%20%5Cvec%7Bx%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%5C%5C%200%20%5Cend%7Bbmatrix%7D)
-> [y](https://latex.codecogs.com/gif.latex?%5Cfn_phv%20%5Cvec%7By%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%200%20%5C%5C%201%20%5Cend%7Bbmatrix%7D)
+> ![p](https://latex.codecogs.com/gif.latex?%5Cfn_phv%20p%20%3D%20%5Cbegin%7Bbmatrix%7D%20p_%7Bx%7D%20%5C%5C%20p_%7By%7D%20%5Cend%7Bbmatrix%7D%5C%20%3D%20p_%7Bx%7D%20%5Ccdot%20%5Cvec%7Bx%7D%20&plus;%20p_%7By%7D%20%5Ccdot%20%5Cvec%7By%7D)
+> ![x](https://latex.codecogs.com/gif.latex?%5Cfn_phv%20%5Cvec%7Bx%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%201%20%5C%5C%200%20%5Cend%7Bbmatrix%7D)
+> ![y](https://latex.codecogs.com/gif.latex?%5Cfn_phv%20%5Cvec%7By%7D%20%3D%20%5Cbegin%7Bbmatrix%7D%200%20%5C%5C%201%20%5Cend%7Bbmatrix%7D)
