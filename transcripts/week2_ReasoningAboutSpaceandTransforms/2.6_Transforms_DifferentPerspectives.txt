@@ -1,0 +1,295 @@
+OK, now that we know the mathematical foundations
+of transforms, let's get a little bit more philosophical.
+Let's say that you're at the train station
+and there is a platform, and there are two trains--
+one train on each side of the platform.
+And you are sitting right here looking out the window.
+And then all of a sudden, you see that this train
+is moving backwards.
+What's happening?
+Is it really that this train is moving backwards?
+Or is it really that you are the one moving forward?
+Obviously, when you have two points, A and B,
+you can have the same relative motion
+if B moves in some direction, or if B
+stays the same and A moves in the opposite direction.
+OK?
+The same is true for transforms.
+Let's take a look at what that means.
+Let's say we have a coordinate frame A
+and a point P undergoing a transform T.
+So P new is T time P.
+So far, what we've said is that this means the following.
+There's some other coordinate frame
+B. The transform from A to B is T. I'm observing the point
+P in coordinate frame B. I multiply those two,
+and I get the location of P in coordinate frame A, which
+is perfectly valid, of course.
+One way to think of this is, look,
+I start off with my vantage point and coordinate frame A.
+I move to coordinate frame B, and from there, I
+observe point P. So I've moved from A to B.
+The difference was transform T. And from there, I've
+observed point P.
+But there is another way of looking
+at the exact same relationship.
+I start off with a point P in my coordinate frame A.
+And then it's actually point P that moves and gets
+to a new location.
+So in this case, P new is the new location of P.
+And you can tell that P new is the same in both cases.
+So again, in this case, I am moving from A to B, and from B,
+I'm observing point P. Here, point P
+is in my initial coordinate frame,
+and it's point P that's moving.
+Here, it's my reference frame that's moving.
+Here, it's the point itself that's moving.
+Which of those two is the correct way
+of looking at this relationship?
+They are both correct.
+You don't know which one is moving.
+Maybe your reference frame is moving,
+or maybe what you are observing is moving.
+Both of those are correct.
+And there are situations in which
+you'd use both of these ways of thinking about the problem.
+So let's say that we have the following two questions.
+In the first situation, we have a camera that's
+mounted on the robot arm.
+The camera observes point P in its own coordinate frame.
+But then the transform from the world to the camera
+is T. What's the position of the point in the world coordinate
+frame?
+Well, the answer here is, as we've seen so far,
+T times P. OK.
+But here's a different way of looking at the problem.
+We have a robot that is at location P in our world frame.
+The robot moves by translation T expressed in the world frame.
+What's the new position of the robot?
+Also TP.
+OK?
+So we have the same relationship as the answer
+to two different problems.
+So fundamentally, the thing to remember here
+is that transforms can mean two things.
+A transform can mean that your vantage
+point is changing, that your reference point is changing.
+You're looking at the same thing,
+but from a different reference point.
+And you encode that using transforms.
+Right here, we are looking at the exact same point P,
+but instead of looking at it from point A,
+we move to point B, and we observe it
+from point B. The point stays the same.
+Our reference frame has changed.
+In this case, our reference frame stays the same,
+but it's what we're looking at that has actually moved.
+Both of these are very important in robotics.
+We run into both of these problems.
+These are just two very simple examples of it.
+And transforms are used to encode both of these things.
+And, again, it makes sense that the expression used in both
+of these cases is the same.
+Whether it's what I'm observing that has moved
+or it's just my vantage point that has changed--
+you cannot tell that.
+That's the same thing.
+The relative motion is the same, so it makes sense
+that we have the same relationship in both cases.
+Let's look at another example of this.
+Let's say we have three transforms.
+And I'm going to use 2D for this example.
+This is my first transform.
+This is my second transform and third transform,
+and then finally a point P.
+What's the meaning of the expression T3 T2 T1 P. Well,
+there are two ways of looking at this.
+Is it the point that's moving, or is it our vantage point?
+OK, let's think first about the case
+where it's our vantage point that's moving.
+And when we do that, we are going
+to go through this relationship from the left to right.
+We start with the identity--
+our undisturbed original base coordinate frame--
+then we get to T3.
+T3 is the identity rotation.
+So we're not rotating our axes, but we are translating
+by two units along y.
+So after doing that, our vantage point has moved up here.
+OK, then we get to T2.
+T2 has no translation, but it has
+a rotation, which, if we look at it,
+we realize x is pointing along negative y.
+y is pointing along negative x.
+We are rotating our axes 180 degrees around z.
+So after we've done T2, our vantage point
+now looks like this.
+Then we get to T1.
+T1 has, again, no rotation.
+We're leaving the axes unchanged.
+We are moving by two units along x.
+But, careful-- we are moving along the new x.
+Our vantage point has changed.
+So now, our x is pointing in this direction,
+so we are moving by two units in that direction.
+So now, having done T3, T2, T1, this is our new vantage point.
+So now, let's look at point P, but it's point P
+expressed in this new vantage point that
+is the point P. So this is T3 T2 T1
+P. This is where we've arrived.
+Now, let's think about this same thing,
+but the other way around.
+There is a point P, and it's not our vantage point
+that's changing.
+It's actually P that's moving around.
+And in this case, we are applying
+the same chain of transforms.
+But this time, we're going right to left.
+So this is point P--
+2,2-- expressed in our original coordinate frame.
+And now, our vantage point stays put.
+We don't move.
+It's point P that moves around.
+How does it move?
+Well, first, we apply T1.
+There's no rotation.
+We just move P by two units along x.
+OK, we've moved it.
+What's next?
+Then, we apply T2.
+There is a rotation by 100 degrees around z.
+But again, careful-- our vantage point hasn't changed.
+We are still right here.
+So it's this z-axis right here that P is rotating around.
+So then, if we rotate around this axis right here,
+P is going to do all this big circle
+and land at the opposite side.
+So we have now done T2.
+We've rotated P by 180 degrees around z.
+That's what it's ended up.
+Now, we're going to apply T3.
+T3 means a translation by two along y.
+Again, our vantage point hasn't changed.
+The y-axis still points up.
+So this translation is going to be up along the y-axis.
+This is where P ends up.
+So P has started off right here.
+It moved here.
+Then it moved here.
+And then it finally moved up and ended up right there.
+And now, if I put all of this on a single slide,
+it's a little busy and hard to see.
+But you can obviously see that we've
+ended up in the exact same spot in both cases.
+So we can reason about this as, hey, we go left to right.
+We start with nothing.
+We start with the identity.
+But then our vantage point keeps changing.
+We do T3.
+Our vantage point has jumped somewhere else.
+We do T2.
+Our vantage point has jumped again.
+We do T1.
+Again our vantage point has changed,
+and now we observe point P. This is where it is.
+The other way to think about this
+is, we start with point P in our one and only coordinate frame.
+Our coordinate frame never changes.
+This is point B. So now we go right to left.
+We apply T1 to P. It's moved over here.
+Then we apply T2.
+Our vantage point never changes.
+So it rotates around our z.
+It moves all the way here.
+And then we apply T3, which brings P up here.
+Both of these ways of looking at a transform chain are valid,
+and they are used for different things in robotics.
+Mathematically, they are indistinguishable.
+Whether it's your vantage point that changes
+or whether it's the actual content
+of the world that moves--
+mathematically, it makes no difference.
+Conceptually, though, you should think of it
+as, hey, either my reference frame is changing,
+or something in the world is actually changing.
+And in general, when it's in the reference
+frame that's changing, you go from left to right.
+So if I start off with the definition of my frame--
+so I start off with an identity as my frame,
+then I start applying transforms.
+And I keep moving into new locations.
+If I start off with something with a point P,
+I left multiply.
+You cannot even right multiply, right?
+If you have a column vector, and you'd like to right multiply
+with the transform matrix, this cannot even work.
+The dimensions of the matrices don't work out.
+So then you left multiply.
+You move the point to a new location.
+You move the result somewhere else.
+You move it again.
+OK?
+Let's do another example to see that the order of operations
+also matters.
+Let's say we have two transform matrices.
+This is T0.
+And this T1.
+Does the order in which I apply these matter?
+So, in other words, if I do T0 followed by T1,
+and if I do T1 followed by T0, what happens?
+Well, let's try it out.
+T0-- we have a translation by three and three
+along each of the x- and y-axes, followed by a rotation.
+We can tell that this is 45 degrees around z.
+So if I do T0, this is my new coordinate frame.
+I've translated and then I've rotated by 45 degrees.
+Then I do T1, which has no rotation.
+It has a translation by three around x.
+Careful, though-- my x has changed.
+I've gone through T0.
+My vantage point is now different.
+So now my x is pointing in this direction.
+So if I move by three along x, this is where I end up.
+So T0 times T1 is that.
+Now, let's do them in the other order.
+Let's say I have a T1 first, which is a translation along x
+with no rotation.
+So that brings me to here.
+And then I do T0.
+I move by three and three each along x and y,
+and then I rotate.
+So this is my translation and then my rotation.
+So this is where I end up.
+Obviously, I've ended up in a completely different vantage
+point.
+So if I do T1 first and then T0, I end up here.
+If I do T0 first, followed by T1, I end up there.
+And that obviously makes sense.
+Matrix multiplication is not commutative.
+So these are not the same.
+OK?
+So now let's say I observe a point P at coordinate frames
+1,1.
+And with one being the third frame,
+then T0 T1 P is going to be starting from here, going
+to coordinate frame 1,1--
+so somewhere here, maybe.
+OK.
+Whereas if I do T1 T0 P, then I start from here,
+and I go up a little bit.
+So maybe somewhat like here--
+completely different point, right?
+So when chaining transforms, the order of operations matter.
+And any transform and any point gets
+applied in the new vantage point that's
+defined by whatever is to the left of it.
+So in this case, T1 gets applied in the vantage point of T0,
+which is to the left of it.
+P gets applied in the vantage point of T1 and T0,
+which are both to the left of it.
+And here, T0 is applied relative to T1.
+And then P is seen in the vantage point defined by T0,
+in turn defined by T1.
+So order matters.
+And always think what coordinate frame you are in right now
+when you are applying a new transform.

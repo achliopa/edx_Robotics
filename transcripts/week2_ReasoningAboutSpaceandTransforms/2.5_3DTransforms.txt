@@ -1,0 +1,106 @@
+OK, let's get to three dimensions.
+So far into the course, and we're
+barely making it to three dimensions now.
+Well, the reason is that it's not really any more complicated
+in 3D than it is in 2D.
+Everything that we've seen still holds.
+Of course, any vector, now p, is going
+to have px, py, pz, a homogeneous coordinate.
+But other than that, everything that we've talked about
+is still true.
+A transform matrix from a to b still
+has the exact same structure.
+It's going to be a rotation from a to b.
+It's going to be a translation, which
+is going to have three terms.
+Then you'll have the 0 and the 1.
+The rotation matrix is 3 by 3.
+The translation part is 1 by 3.
+And then you have this bit and this bit
+in terms of dimensions.
+The only additional thing to think about right
+now is that now rotations can be around any arbitrary axis.
+In 2D, the rotations could only be around the z-axis.
+Now in 3-D, we can combine rotations around any axis.
+So the rotation matrices have different forms
+depending on which axis we are rotating around.
+So if we are rotating around the x-axis by theta,
+then the rotation matrix is going to look like this.
+If we are rotating around the y-axis.
+And then similarly, if we are rotating around the z-axis.
+What's an easy way to remember the structure for rotations?
+Well, you can think that, again, the new orientation of the axes
+after the rotation, you can find it
+as the columns of your rotation matrix, that's still true.
+So if I draw my coordinate frame, xy and z.
+Let's say that I rotate this around the x-axis.
+I grabbed the x-axis, and I rotate my coordinate frame
+by theta.
+So now my new y is going to look like this,
+my new z is going to look like this,
+and I have the angle theta here.
+Well, what is one thing that we notice?
+The x-axis hasn't changed.
+And of course, it hasn't.
+We are rotating around x, so x won't change.
+And you see that the new orientation of x
+is the same as the orientation of x, 1, 0, 0.
+Similarly, if I grab my coordinate frame by y,
+and I rotate by y, y stays the same.
+If I rotate by z, then z stays the same, and x and y change.
+So that's one way to remember the structure
+of these matrices.
+Also, one thing you can look at is if you rotate by z,
+you get in the top left the well-known, the 2D rotation
+matrix that we've been happily using so far.
+So still the same structure for transform
+matrices in 3D as we had in 2D.
+And the same properties for rotation matrices.
+In 3D as in 2D, the determinant is 1,
+and the inverse is the same as the transpose.
+These still hold, and these are very important to remember.
+Let's do an example.
+This is our coordinate frame a, so we're
+going to have x, y, and z.
+And a transform matrix.
+So the transform from a to b is going to be--
+Is this a valid transform matrix?
+0 is here, 1 here.
+Rotation part has to be orthonormal.
+Translation part?
+This is a valid rotation matrix.
+Which one is coordinate frame b?
+Well, let's look at a translation.
+So we have to go by three units along x, three units along y.
+So then this is where the origin of frame b is.
+What do the axis of b look like?
+We can inspect the columns of the rotation matrix.
+So the x-axis of b is going to point
+in the old direction of y.
+So this is going to be xb.
+The y-axis of b will point along our old negative x.
+So this is going to be yb.
+And then finally, z is unchanged.
+It's pointing up, which really tells us
+that the rotation to get from a to b
+is a rotation around the z-axis.
+So to get from a to b, we've translated to here,
+and then rotated by 90 degrees around the z-axis.
+Now let's look at a point in coordinate frame b.
+Let's say that pb is minus 2, 2, 1.
+Always remember the fourth coordinate, which has to be 1.
+So minus 2 along x, which gets us to here.
+2 along y gets us to about here.
+And then we go up along z.
+So this is our point, p.
+That point p expressed in coordinate frame a
+is going to be the transform from a to b
+times the point in coordinate frame b, which is going to be--
+let's do this.
+Minus 2 plus 3, minus 2 plus 3, 1, and 1.
+So 1, 1, 1, 1.
+Thankfully, the fourth coordinate is 1.
+No mistakes there.
+1, 1, 1.
+That visual inspection looks like the correct location
+of point b in coordinate frame a.

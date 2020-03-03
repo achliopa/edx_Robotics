@@ -1,0 +1,59 @@
+OK, let's recap and bring it all together.
+Reasoning about space, and how things move in space.
+There are two problems that always come up.
+One is when my vantage point is changing,
+when I want to see the world from a different perspective.
+I've seen the world from the perspective of my camera,
+but now I want to see it from the perspective of my robot.
+My vantage point changing is one reason to use transforms.
+Another one is when things actually move in the world.
+A mobile robot used to be at some location,
+but now it has moved and it's at a different location.
+Again, we used transforms for that.
+So in 3D space, points are encoded
+as four dimensional vectors.
+Column vectors always.
+A transform always has a very specific form.
+There is a rotation part.
+There is a translation part.
+And then 0 and 1 on the bottom.
+You can use a transform for two different things.
+First, you can say, my vantage point is moving.
+I've moved my vantage point to t1.
+Then from t1, I've moved my vantage point to t2.
+And then from t2, I am observing point p.
+Right.
+I moved to t1, I've moved to t2, I'm seeing p.
+Another way of looking at the same problem
+is p is being observed in coordinate frame c, which
+is related to coordinate frame b, which is related
+to coordinate frame a.
+So I can see point p from the perspective of a.
+OK.
+The other way to use transforms is to say, hey, you know what?
+It's actually the point that's moving.
+My vantage point stays the same.
+So I have a p that has moved in some way,
+and that has moved again.
+And this was p old.
+And after those two moves, now I have p new.
+So something in the world has moved.
+Mathematically, these are indistinguishable.
+Whether it's the vantage point that has moved
+or the actual contents of the world that has moved,
+there is no difference from a mathematical perspective, which
+is why these, if you take away subscripts, superscripts,
+they look the same.
+These transform matrices have very, very specific properties.
+So r is always a 3 by 3 matrix.
+It has determinant 1.
+It's orthonormal.
+And its inverse is its transpose.
+t is a 3 by 1 vector, and it can really be anything.
+In robotics, the bottom left, 1 by 3, always 0s.
+The bottom right, 1 by 1, always 0.
+So this is the essence of this lecture,
+the essence of transforms and reasoning about 3D space.
+And then in the next lectures, we
+will start looking at how this is used for very
+specific robotic applications.

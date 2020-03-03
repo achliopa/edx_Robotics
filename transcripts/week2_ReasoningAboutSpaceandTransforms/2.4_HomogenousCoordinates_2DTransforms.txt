@@ -1,0 +1,129 @@
+But there is one trick that we can use to turn this
+into a single operation.
+And that trick is referred to as the use of homogeneous
+coordinates.
+If we write pb as its component along x, its component along y,
+just as we've done so far, and we add a third component--
+we add a one at the end, OK--
+now I can combine my rotation and my translation
+into a single matrix operation.
+So if I write a transform matrix that
+transform from a to b as being the rotation from a
+to b, the translation vector from a to b, 0, 1.
+OK.
+So let's spell this out.
+Point p in a, which I also have to write in homogeneous
+coordinates.
+So I'm going to have px, py, and a 1 at the bottom.
+So let's spell out this matrix.
+We have the rotation part from a to b.
+This one is 2 by 2.
+Then we have tx and ty, which is the translation part.
+And then I have 0, 1.
+And this gets multiplied by pbx, pby, 1, also
+in homogeneous coordinates.
+OK?
+So if you carry out the multiplication, what you get
+is the rotation from a to b times pxb,
+pyb plus the vector txty, and then a 1 and the bottom.
+And all of this in matrix form, which
+is what we were looking for.
+So to recap.
+Homogeneous coordinates.
+You can think of homogeneous coordinates
+as simply the trick of adding the 1
+at the bottom of the column vector, which
+denotes a position in space.
+In robotics, this additional coordinate that we put here
+is always 1.
+In other fields, like computer graphics,
+there are reasons to make this something other than 1.
+But in robotics, this is always a 1.
+Why do we need it?
+Well, if we use it like this, we can
+afford to write transform matrices in this form,
+then we can have the same relationship hold.
+pa is the transform from a to b times pb.
+Transform matrices are really, really important.
+This is the key to doing any operation
+in 3D space in robotics.
+And they always have this form.
+The top left sub matrix is a rotation matrix.
+The top right vector is the translation vector.
+That is a 1 in the bottom right.
+The bottom left is all zeros.
+Again, for example in computer graphics,
+you have reasons to make this something other than zero,
+to make this something other than 1.
+In robotics, always you look at the matrix.
+If it's a transform matrix, it has
+zeros on the bottom left, a 1 in the bottom right,
+a rotation part here, a translation part here.
+Let's do a concrete example.
+So this is our coordinate frame a.
+And then coordinate frame b.
+Let's say that the transform from a to b is--
+The first question.
+Is this a valid transform matrix?
+We inspect it.
+We look for the telltale structure.
+It has zeros on the bottom left.
+It has a 1 in the bottom right.
+The top left is a valid rotation matrix,
+because it's orthonormal.
+The top right?
+The top right is always fine, because any vector
+can be a translation vector.
+So yes, this is a legal transform matrix.
+What does coordinate frame b look like?
+Well, we look first of at the translation part.
+So to get to the origin of b, we have to move by 2 units along x
+by 2 units along y.
+So then this is the origin of b.
+The axis of b, we look at the column vectors of the rotation
+matrix.
+And we see that this is xb and this is yb, OK?
+Now let's transform a couple of points.
+So let's look at two points along [INAUDIBLE]
+coordinate frame b.
+First, let's say that pb is 1, 0.
+So this is our point p, OK?
+That same point in coordinate frame a
+is going to be the transform from a to b times the point
+in coordinate frame b.
+So we need to multiply these two.
+We cannot do it yet, what's the problem?
+We forgot the homogeneous coordinate for b.
+So let's quickly fix that.
+OK.
+And I will try not to make the mistake again.
+I don't promise I'll succeed.
+That immediately tells you, though, the matrix dimensions
+didn't line up.
+Something was wrong.
+And what was wrong is that we had forgotten the homogeneous
+coordinate for pb.
+From this point on in the course,
+we should always, always, always remember
+the homogeneous coordinate.
+Now we can carry out this matrix multiplication.
+And what we get is 0.7 plus 2, 0.7 plus 2,
+and 1, which gives us 2.7, 2.7, 1.
+Let's check this.
+First of all, the homogeneous coordinate should be 1.
+If we've made no mistakes, then we
+should always end up with 1 as the homogeneous coordinate.
+Then the actual coordinates of pa, 2.7, 2.7.
+So this is point p in a coordinate frame
+a, and that is what we were expecting.
+Now let's look at a different p.
+Let's say that pb is 0, 2.
+Always remember the homogeneous coordinate.
+So if we go 2 units along the y-axis,
+this is our point p now.
+And if we carry out the multiplication,
+we're going to get negative 1.4 plus 2, and 1.4 plus 2.
+So 0.6, 3.4, 1.
+We got the 1, that is correct.
+And then 0.6, 3.4, those are the coordinates of p in a, which
+by inspection, looks right.
