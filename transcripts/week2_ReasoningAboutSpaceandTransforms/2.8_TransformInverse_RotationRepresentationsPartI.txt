@@ -1,0 +1,204 @@
+OK, so we have a few more concepts
+to finish up with transforms.
+Let's quickly recall the general form for the transform matrix.
+The rotation component, the translation
+component, 0, and 1.
+OK, the general form of the transform matrix.
+First, let's talk about the transform inverse.
+We've already talked about the inverse of a rotation matrix
+being its transpose.
+What is the inverse of a full transform matrix?
+And it's relatively easy to compute that t to the minus 1
+is going to be our transpose.
+And then for the translation part,
+you're going to have minus r transpose t,
+and then of course the 0 and 1.
+OK.
+And then you can very easily check
+that t times t to the minus 1 is the same as t to the minus
+1 times t.
+And it's equal to the identity.
+And in particular, know that the identity is a valid transform
+matrix, right?
+It does fit this form.
+The top three by three part of the identity
+is a valid rotation, and then you have a zero translation,
+and then you have the 1 in the bottom right.
+So this is a useful formula to remember.
+If you don't remember it, then you
+can always derive it from here.
+The most important part is to never forget
+that the inverse of a rotation matrix is its transpose.
+This you do have to remember, and if you know this,
+then this part is relatively easy to infer.
+Now, let's talk about other ways to represent rotations.
+So far, hopefully, the rotation matrix,
+the three by three rotation matrix,
+has become second nature.
+So, for example, let's say we have
+a coordinate system like this.
+For example, a rotation around x, right,
+so one representation for a rotation
+is the rotation matrix.
+And if, for example, the rotation
+happens to be around x, then, as we know,
+the rotation matrix is going to have this form.
+So here we have cosine theta, minus sine theta, sine theta,
+cosine theta.
+So this is a rotation around the x-axis.
+Rotation around the y-axis, it's similar.
+So if we have a rotation around y,
+then the y-axis is unchanged, so we can fill in the free part.
+And then we're going to have cosine theta, sine theta,
+minus sine theta, cosine theta.
+So this is the rotation around y, right?
+Remember, the new orientation of the axes
+is given by the columns, and here
+since we're rotating around y, the y-axis stays the same.
+And then of course, the rotation around z.
+Again, we can fill in the free part
+because the z-axis, we know, stays the same.
+OK.
+And then cosine theta, minus sine theta,
+sine theta, cosine theta.
+But a rotation matrix isn't restricted
+to just representing rotations around the x-axis,
+or the y-axis, or the z-axis.
+In fact, you can represent rotation
+around any arbitrary axis.
+Let's say the rotation is around this axis "a."
+Well in this case, I don't have off the top of my head
+a formula for what that rotation matrix will look like.
+It'll still be 9 numbers, obviously.
+OK.
+It'll still, of course, follow all the rules
+of a rotation matrix.
+It will be orthonormal, like all rotation matrices,
+and any rotation around any arbitrary axis
+can be represented by a rotation matrix.
+However, there are other ways to represent the same information.
+Since I am giving you an axis and an angle that we
+are rotating by, we might as well just
+list that information, right?
+So, instead of a full rotation matrix,
+we can just list the axis and the angle.
+So if somebody is telling you our rotation
+is around the following axis, and they give you
+the three components that define the axis "a,"
+and you are rotating by some angle
+alpha, that is enough to fully define your rotation.
+Now you know what the rotation is around,
+which axis it's around, and how much we are rotating by.
+So in this case for example, if you
+imagine that we're rotating around this axis,
+a, which is at a 45 degrees, then all
+axis x, y, and z, they all change.
+So we'll have nine numbers here, or we can specify
+the axis itself, and the angle.
+There are still other ways to specify rotations.
+Somebody might give you what's called "elementary rotations."
+They're going to tell you how much we are rotating around x,
+how much we are rotating around y,
+and how much we are rotating around z.
+So basically we are combining three elementary rotations,
+one around x, one around y, one around z,
+into a single big rotation.
+And in this case, what we are referring to here,
+is elementary rotations.
+And these are also sometimes referred to as Euler angles.
+OK.
+And the way this is specified, somebody will tell you,
+we are rotating by this much around x,
+by this much around y, and by this much around z.
+What's the difference between these two representations?
+Here, the axes that you are doing rotations around are
+pre-specified, usually your original x-, y-, and z-axis.
+Here, it's a new axis that you are rotating around.
+And here is a very important concept.
+Regardless of how you specify a rotation,
+any rotation in space is equivalent to rotating
+around a single axis.
+So, if I choose to rotate by some amount round x, and then
+by some amount around y, and then
+finally by some amount around z, that
+is equivalent to finding some axis in space--
+I don't know exactly what it is--
+and choosing to do a single rotation
+around that particular axis.
+Any rotation in space can be represented
+by a single axis, and the single angle
+that we are rotating around that axis by.
+However, sometimes it's more convenient to specify it as--
+to break it up into individual rotations
+around your original axis.
+When is this, for example, the case?
+There are specific domains where this representation
+makes a lot of sense.
+So if you think, for example, in aviation.
+You've definitely heard about roll, pitch, and yaw,
+and in aviation what happens is people have a convention--
+this is my best attempt at drawing an airplane.
+OK, so if you imagine that the plane is along the x-axis,
+then by convention, in the aviation domain,
+roll is the rotation around x, pitch is the rotation around y,
+and yaw is the rotation around z.
+So then, if two people who know of that convention
+talk to each other, they can specify rotations
+just by saying roll, pitch, yaw.
+Three numbers, I give you three numbers,
+you know that those numbers are meant to be roll, pitch, yaw,
+and then with just those three numbers
+you know exactly the overall attitude,
+rotation of the airplane in space.
+So it's three elementary rotations.
+It doesn't have to be, the axes for elementary rotations
+don't have to be x, y, and z.
+Sometimes somebody will say a rotation around x, followed
+by rotation around y, followed by another rotation around x.
+And that's fine.
+This is another way of specifying
+a rotation, but very important to remember that these
+are always equivalent.
+Even if you specify a rotation as a combination
+of elementary rotations, there's is always
+one axis and one angle that that rotation is equivalent to.
+And then finally, there is one more rotation representation,
+as a unit quaternion.
+A quaternion is four numbers, it has four components.
+But it's a unit quaternion, so you'll have norm 1,
+and this is also another very common way
+of representing rotations.
+There is no easy intuition for what particular rotation
+a quaternion corresponds to.
+If somebody gives you four numbers, that make up
+a unit quaternion that is a representation
+of some rotation, it's very hard to just look
+at those four numbers and know what that means.
+So why do we have so many rotation representations,
+and how do we deal with them in practice?
+The important things to remember here
+are that all these are equivalent and interchangeable.
+All are interchangeable.
+OK, so if somebody gives you a rotation matrix,
+from the rotation matrix you can always
+compute the axis and the angle that this
+corresponds to, and vice versa.
+If somebody tells you, hey, it's a rotation around this axis,
+by this angle, you can always compute the rotation matrix
+that that corresponds to.
+You can always transfer that, for example, to roll, pitch,
+yaw, and you can always convert that to a quaternion.
+How do you do all of these conversions?
+You don't need to remember that by heart.
+Almost every computer library for doing transformations
+and rotations will have functions for you
+to use for all of these, and in a minute,
+we'll see in Ross examples of the transform library in Ross
+allowing you to move between all of these formats.
+In this course we're going to use mostly rotation matrices.
+But if you ever see a rotation expressed as x's angle,
+or as roll, pitch, yaw, or as a quaternion, you can be unfazed,
+you know what that is, you know that you can always
+transform between all of these components.
+So let's quickly summarize the advantages and disadvantages
+of all these representations for rotations.

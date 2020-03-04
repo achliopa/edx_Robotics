@@ -556,3 +556,46 @@ print(matrix_result)
     * keep the vantage point stable and move p using translation for each move (remeber right to left mult)
     > ![i](https://latex.codecogs.com/gif.latex?T_%7B1%7D%20%5Ccdot%20T_%7B2%7D%20%5Ccdot%20p_%7Bold%7D%20%3D%20p_%7Bnew%7D)
 * Mathematicaly they are the same
+* The rotation matrix for 3D 
+    * is always 3by3
+    * has determinat = 1
+    * is orthonormal
+    * *its inverse is its transpose
+* the translation matrix for 3D
+    * is always 3x1
+* the bottom of transform matrix filed with
+    * zeros in 1by3 spots
+    * bottom right corner 1 in1by1
+
+### 2.8 Transform Inverse, Rotation Representations Part I
+
+* We start from the general representation of trnansform
+* The the general fom of transform inverse is
+> ![t](https://latex.codecogs.com/gif.latex?T%5E%7B-1%7D%3D%5Cbegin%7Bbmatrix%7D%20R%5ET%20%26%20-R%5E%7BT%7Dt%5C%5C%200%20%26%201%20%5Cend%7Bbmatrix%7D)
+* also the folloing holds for the trasform (we have seen that)
+> ![t](https://latex.codecogs.com/gif.latex?T%5E%7B-1%7D%5Ccdot%20T%20%3D%20T%20%5Ccdot%20T%5E%7B-1%7D%20%3D%20i)
+* the identity matrix i is a valid transform matrix
+* also the transpose of the rotation matrix is its transpose (we know that)
+* we have seen in a previous lecture the 3D rotation matrices along the 3 axes
+* we need to be able to represent a rotation on an arbitrary axis. not necessarily x, y or z
+* if we want the 3D rotation matrix across an arbitrary axes a the rotation matrix will follow all the rules we know so far
+    * a 3x3 matrix
+    * orthonormal
+* if we have axis and the angle we are rotating by we can represent rotation in other ways
+* if we have the ax,ay,az of axes a and say the angle is α we have what we need to define the rotation
+* we might be given elementary rotations. how much we rotate around x,y and z (rx,ry,rz) and combine these elementary rotations into a single big rotation. 
+* the elementary rotations are refered as EULER angles (λx,λy,λz)
+* Regardless of how we specify a rotation, any rotation in space is equivalent to rotating around a single axis
+* using the 3 elementary rotations (EULER) is equivalent to  a single rotation on a single arbitrary axes by an angle
+* in some domains (eg aviation roll,pitch,yaw) using the elementary rotations (EULER angles) makes more sense
+    * if the airplane is along the x axis
+    * roll is λx
+    * pitch is λy
+    * yaw is λz
+* elementary rotations do not follow the x,y,z pattern. thaey can be csahined in any orderlike λx,λy,λx
+* The last rotation representation is as a UNIT QUATERNION (gx,gy,gz,gw).
+*   * it has 4 elements (gx,gy,gz,gw)
+*   * its normal is 1
+* So in total we have 4 different representations of rotation which are interchangeable
+    * from a Rotation matrx we can compute the single axis rotation and the angle or the roll,pitch,yaw or a quaternion
+    * all computer libraries have methods to allow us to move between these forms
