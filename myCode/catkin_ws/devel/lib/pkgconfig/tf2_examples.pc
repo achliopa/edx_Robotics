@@ -1,0 +1,8 @@
+prefix=/home/achliopa/workspace/projects/tegraTx2/ros/catkin_ws/devel
+
+Name: tf2_examples
+Description: Description of tf2_examples
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

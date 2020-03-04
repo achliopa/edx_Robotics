@@ -638,4 +638,122 @@ print(matrix_result)
 
 ### 2.10 Transforms in ROS, the TF Library
 
-* 
+* we will talk about TF the ROS library for transformations an more specificly its 2nd version TF2
+* TF manages a tree of transforms
+* we have talked about coordinate frames that are relative to each other with transforms to go from one to the other
+* TF2 keeps a tree so that it knows e.g that A is our base transform and B is defined relative to B so its places as a branch to A and C and D are defined relative to B so are its children
+* As we have seen transformations have a direction between frames so they are represented as arrows in the tree
+* As we define the transforms TF builds the tree for us
+* at any point we can ask TF say whats the transform from D to A and it will calculate it for us
+* we visit [TF ROS wiki](http://wiki.ros.org/tf2) and read the tutorial
+* we will run some Python ROS code that uses TF
+```
+#!/usr/bin/env python
+import rospy
+import numpy
+import tf
+import tf2_ros
+import geometry_msgs.msg
+
+def message_from_transform(T):
+	msg = geometry_msgs.msg.Transform()
+	q = tf.transformations.quaternion_from_matrix(T)
+	translation = tf.transformations.translation_from_matrix(T)
+	msg.translation.x = translation[0]
+	msg.translation.y = translation[1]
+	msg.translation.z = translation[2]
+	msg.rotation.x = q[0]
+	msg.rotation.y = q[1]
+	msg.rotation.z = q[2]
+	msg.rotation.w = q[3]
+	return msg
+
+def publish_transforms():
+	T1 = tf.transformations.concatenate_matrices(
+		tf.transformations.translation_matrix((1.0,1.0,0.0)),
+		tf.transformations.quaternion_matrix(
+			tf.transformations.quaternion_from_euler(1.0,1.0,1.0)		
+		)		
+	)
+	T1_stamped = geometry_msgs.msg.TransformStamped()
+	T1_stamped.header.stamp = rospy.Time.now()
+	T1_stamped.header.frame_id = "world"
+	T1_stamped.child_frame_id = "F1"
+	T1_stamped.transform = message_from_transform(T1)
+	br.sendTransform(T1_stamped)
+
+	T2 = tf.transformations.concatenate_matrices(
+		tf.transformations.translation_matrix((1.0,0.0,0.0)),
+		tf.transformations.quaternion_matrix(
+			tf.transformations.quaternion_about_axis(1.57,(1,0,0))		
+		)		
+	)
+	T2_stamped = geometry_msgs.msg.TransformStamped()
+	T2_stamped.header.stamp = rospy.Time.now()
+	T2_stamped.header.frame_id = "F1"
+	T2_stamped.child_frame_id = "F2"
+	T2_stamped.transform = message_from_transform(T2)
+	br.sendTransform(T2_stamped)
+
+# T2_inverse = tf.transformations.inverse_matrix(T2)
+# T3_stamped = geometry_msgs.msg.TransformStamped()
+# T3_stamped.header.stamp = rospy.Time.now()
+# T3_stamped.header.frame_id = "F2"
+# T3_stamped.child_frame_id = "F3"
+# T3_stamped.transform = message_from_transform(T2_inverse)
+# br.sendTransform(T3_stamped)
+	
+# T1_inverse = tf.transformations.inverse_matrix(T1)
+# T4_stamped = geometry_msgs.msg.TransformStamped()
+# T4_stamped.header.stamp = rospy.Time.now()
+# T4_stamped.header.frame_id = "F3"
+# T4_stamped.child_frame_id = "F4"
+# T4_stamped.transform = message_from_transform(T1_inverse)
+# br.sendTransform(T4_stamped)
+
+if __name__ == "__main__":
+	rospy.init_node("tf2_examples")
+	
+	br = tf2_ros.TransformBroadcaster()
+	rospy.sleep(0.5)
+
+	while not rospy.is_shutdown():
+		publish_transforms()
+		rospy.sleep(0.5)
+```
+* in the code above:
+	* we import tf and geometry msgs type
+	* we get a transformation matrix and generate various rotation etc using tf
+	* we use the tf2_ros package and broadcat transformations to the rest of the ROS system
+	* again we use tf transformations related methods to manipulate matrices
+	* the publish message method builds a transformation matrix using tf
+	* note how we get quaternions from other formats ofr perfomrmance
+	* the transform is stamped and the relationship established before we build the message and broadcast it
+	* also note how tf builds the transformation matrix from a translation vector and a rotation matrix
+* to run the code:
+	* start roscore `roscore`
+	* inside the catkin workspace src '/catkin_ws/src/' run `catkin_create_pkg tf2_examples roscpp rospy tf tf2_ros geometry_msgs` to create the package adding the libs we will use
+	* we build the package. in /catkin_ws we run `catkin_make`
+	* in catkin_ws/src/tf2_examples we `mkdir scripts` to put our python script
+	* we cd into scripts and create anew python script and make it executable
+```
+touch tf2_examples.py
+chmod +x tf2_examples.py
+```
+	* cp the code into it
+* run it with `rosrun tf_examples tf2_examples.py`
+* with `rostopic list` we see the active topics. our node is boradcasting in \tf
+* we listen to it with `rostopic echo \tf` while running the script and see the transformations being broadcasted. success!!!
+* to visualize what we do we start visualizer with `rosrun rviz rviz` before running our script. also in rviz we need to add TF. also name fixed frame 'world'
+* before running rviz run `rosrun tf static_transform_publisher 0 0 0 0 0 0 1 world map 100` to set the world frame
+* vizualizer shows our transforms in 3d space the the coordinate frames are shown with their axes in RGB color. Red =x Green=y Blue=z
+* also we see the world coordinate frame in the 3d space and confirm that our transforms start from it
+* we see that our applied transformations have logical explanation in 3d space visualizer
+* we see that with tf library its very easy to invert transformations and go back so F3 ends up on F1 and F4 on world frame
+* to run the inverse transformation we uncomment the inverse code in a new py file 'tf2_examples_inverse.py' and run it `rosrun tf2_examples tf2_examples_inverse`
+* what our initial code 'tf2_examples' does is:
+> ![t](https://latex.codecogs.com/gif.latex?%5E%7Bworld%7DT_%7BF1%7D%5Ccdot%20%5E%7BF1%7DT_%7BF2%7D)
+* what our second code file 'tf2_examples_inverse.py' does is:
+> ![t](https://latex.codecogs.com/gif.latex?%5E%7Bworld%7DT_%7BF1%7D%5Ccdot%20%5E%7BF1%7DT_%7BF2%7D%5Ccdot%20%5E%7BF2%7DT_%7BF3%7D%5Ccdot%20%5E%7BF3%7DT_%7BF4%7D%20%3D%20T_%7B1%7D%5Ccdot%20T_%7B1%7D%5E%7B-1%7D%5Ccdot%20T_%7B2%7D%5Ccdot%20T_%7B2%7D%5E%7B-1%7D%20%3D%20i)
+* note that transformations.py lib is availalble in [github](https://github.com/ros/geometry/blob/melodic-devel/tf/src/tf/transformations.py)
+* we can review the avialble methods
