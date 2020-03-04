@@ -599,3 +599,43 @@ print(matrix_result)
 * So in total we have 4 different representations of rotation which are interchangeable
     * from a Rotation matrx we can compute the single axis rotation and the angle or the roll,pitch,yaw or a quaternion
     * all computer libraries have methods to allow us to move between these forms
+
+### 2.9 Rotation Representations Part II
+
+* Advantages and Disadvandages of each Rotation Representation Format
+* Rotation matrix:
+    * (+) easy intuition
+    * (+) easy to chain rotations
+    * (-) memory consumption (9 nums)
+    * (-) not CPU friendly
+* Axis Angle:
+    * (+) easy intuition
+    * (-) difficult to chain rotations
+    * ( ) memory consumption (4 nums)
+    * ( ) not very  CPU friendly
+* Elementary Rotation (Euler Angles):
+    * (+) easy intuition
+    * ( ) not so easy to chain rotations
+    * (+) memory consumption (3 nums)
+    * ( ) not very CPU friendly
+* Unit Quaternion:
+    * (-) difficult intuition
+    * (+) easy to chain rotations
+    * ( ) memory consumption (4 nums)
+    * (+) very CPU cycle friendly
+* So the verdict is: Rotation matrices are best for Human understanding. Quaternions are best for computers.
+* How many numbers we need to uniquelly define our rotation in space?
+* How many intrinsic degres of freedom are there?
+    * Rot.matrix 9 nums are not independent as the table is orthonormal
+    * Axes-angle 4 nums are not independent because the axis is normalized,  its just direction in space, the magnitude of the vector is meaningless. so the axis has 2 only 2 independent variables + the angle. 3 independent variables
+    * Elementary rotations 3 EULER angles are independent
+    * Unit quaternion has 3 independent variables and 1 dependent derived by the fact thats a unit quaternion
+* So the answer to the question is 3. Any rotation in space has 3 independent degrees of freedom
+* For the complete Transfor matrix in 3D space. we know that
+    * Rotation matrix has 3 degrees of freedom
+    * Translation vector has 3 degrees of freedom
+* So a complete Transform in 3D space has 6 D.O.F.
+
+### 2.10 Transforms in ROS, the TF Library
+
+* 

@@ -1,0 +1,257 @@
+In this section, we make the notion
+of transforms, and especially a software library
+for managing transforms, a little bit more concrete.
+We're going to talk about TF, which is the ROS library
+and framework for handling transforms.
+So in ROS, the library for transforms is TF,
+and in particular, right now, it's at its second generation.
+So it's TF2 that we're going to be using.
+You will be reading most about TF2 from its own wiki page,
+but before we get to that, just to give you
+a very quick high level idea of what TF2 and TF in general,
+does for you in ROS.
+What TF does, is it manages a tree of transforms for you.
+So remember how, in the past, we've
+talked about how various frames are relative to each other,
+how maybe we'll frame A, then relative to frame A
+you might have frame B, and you have this transform here.
+Relative to frame B you might have frame C, and frame D.
+And you have to use transforms given, and so on and so forth.
+What TF does for you, is it takes
+care of such a transform tree.
+So, for example, it knows that transform A is your base
+transform, that B is defined relative to A,
+that C and D are defined relative to B.
+So what your job is, is to tell TF all
+these individual transforms.
+So, for example, the transform from A to B,
+or the transform from B to D, or the transform from B to C,
+and then TF will build this tree for you behind the scenes.
+And such a tree, in general, can be
+way big, especially when dealing with the real robotic systems.
+And, at any point, you can ask TF, hey,
+what's the transform, for example, from E to A, or from A
+to E. And then TF, behind the scenes, maintains this tree.
+So whenever you ask for any transforms
+that connects two frames in your tree,
+it'll compute and give it a result.
+So let's look at a small, concrete example.
+Before we start looking at code, very briefly, this
+is the TF documentation page.
+It's on the ROS wiki.
+And, before you start off on assignments,
+it's important to go through the tutorials
+here, and get a really good sense for how TF works
+and what TF does.
+So here, we're going to be running--
+we're going to be running some code that uses TF.
+Let's take a quick look at our code.
+It's Python ROS code.
+So first, we import rospy, we import numpy,
+which we're going to use for multiplication,
+matrix multiplication, and things like that.
+We're going to need tf, tf2 ros, and geometry messages.
+OK, so those are our imports.
+The core of what we do here, in the main,
+is we set up a transform broadcaster.
+What this is, you will know after reading the TF tutorials.
+And then, we always use this broadcaster
+to keep broadcasting specific transforms to the rest
+of the ROS universe.
+So until we're shut down via control C, every half a second
+we are going to publish some transforms to the world.
+What transformers are we publishing?
+This is the publish transfer function.
+This is really the most interesting bit.
+This is very typical for software transfer
+from libraries.
+Here, we're using one of them, many others will do the same.
+So here, we are setting up one specific transform
+based on a translation component and a rotation component.
+So let's look at it inside out, right?
+So first, we say we have our rotation,
+express those Euler angles.
+1, 1, 1, as Euler angles, OK?
+First, what we are doing here, is
+we are converting that into a quaternion.
+Again, you don't have to know by heart how
+to convert from Euler angles to quaternions,
+libraries will do that for you.
+The TF transformations library will do that for you.
+So then, we have our quaternion, then
+we are going from a quaternion to a rotation matrix.
+So this function takes in a quaternion
+and gives us the rotation matrix.
+So overall, this bit here, from here until here,
+sets up a rotation matrix from a quaternion,
+from a sort of Euler angles.
+This is very typical for the kind of transforms
+that you find yourselves doing whenever dealing
+with software libraries.
+Then you have the translation bit,
+which is just basically three numbers, the XTYTZ.
+This sets up a matrix, a transform matrix, just
+for the translation.
+And then this bit, all the way from here to here,
+concatenates our translation and our rotation.
+So this gives us one big transform matrix, right?
+So when we're done with all of that, T1 is a transform matrix,
+the translation component is 1, 1, 1,
+the rotation component is a matrix
+that's created from a quaternion, that's created
+from Euler angles 1, 1, and 1.
+And then, we have a little bit of code here
+that allows us to tell the ROS universe, hey,
+who is this transform between.
+And we are telling it that this is a transform from the frame
+world, which we, by convention here,
+decide is our base coordinate frame, to frame F1.
+So T1 is the transform from the world coordinate frame
+into coordinate frame F1.
+Then we're going to do the same thing again
+with a different transform.
+We're going to set up T2.
+This time, the rotation bit is axis angle, right?
+So we have a rotation by 90 degrees around the x-axis.
+So from the axis angle representation,
+we go to a quaternion using the library.
+Then, from a quaternion, we go to a rotation matrix.
+Then we concatenate that with the translation bit, which
+is 1, 0, 0, so translation along x and nothing along y and z,
+and we get T2, our second transform matrix.
+And then we tell the world, hey, this
+is a transform from frame F1, into frame F2.
+And then we use the broadcaster to publish these transforms.
+So let's run this code and see what happens.
+So first we're going to need a ROS core.
+Then I'm going to start rviz, our visualizer,
+so that we can see the results of what we're doing.
+And then, finally-- so, so far we have nothing in rviz.
+And then, I'm going to start our little transform broadcaster
+code.
+Right.
+So ROS run, TF2 examples, TF2 examples at py.
+Now this is broadcasting its transforms.
+So, if we go back to rviz now, all of a sudden, the frames
+have shown up, and we can check the relative positioning
+of this frames.
+So the convention, whenever we see frames in rviz,
+you have three axes, a red one, a green one, and the blue one.
+Unfortunately, the green one doesn't show up
+in these recorded lectures.
+This is a technical difficulty.
+But, when you run rviz on your computers,
+you're going to see the red axis, the green axis,
+and the blue axis, what are the coordinate frame.
+And the convention that you have to remember,
+is that red is x, green is y, and blue is z.
+So, in general, you can think RGB.
+So red, green, and blue.
+Red is x, green is y--
+but this one we're not seeing it here,
+you'll see it on your computers--
+and blue is z.
+OK?
+So here we have our world coordinate frame.
+You see here the x and z axes.
+And relative to it, we have our frame F1.
+OK.
+What's the transform between the world and F1?
+Again, it's this.
+So it's a translation along x and along y,
+and a rotation by Euler angles 1, 1, 1.
+What exactly is that rotation?
+Well this, right, you see that the x and z-axis in F1
+are rotated relative to the x and z-axis of the world.
+And then the translation is, as you can see,
+along the x and y-axis.
+We have no translation component between F1 and world.
+We have no translation component along z.
+We only have a translation along x and y.
+And then, let's look at the transform between F1 and F2.
+The transform between F1 and F2 is a little simpler.
+So we're going to have a rotation
+by 90 degrees around x, and a translation that's
+purely along x.
+So then, if we go back to rviz, you
+can see that the translation from F1 to F2,
+is purely along the x-axis of F1.
+And that the rotation from F1 to F2
+is a rotation by 90 degrees around the x-axis.
+You can see that the x-axis is between F1 and F2 is the same.
+And then the other axes have rotated by 90 degrees.
+So now, we have published those two transforms,
+so now the ROS ecosystem knows about both of them.
+Let's do a couple of more things.
+Let's bring in this little bit of the code.
+What's happening here?
+One nice thing about these transform libraries,
+is it's very easy to do things like invert transfer.
+So we already have T2 defined.
+So T2 is defined here.
+Now, we're just going to say, hey, T2 inverse
+is just the inverse of it.
+Piece of cake, right?
+So then, we're going to tell it, there
+is a transform F3 which is relative to F2,
+and transform from F2 to F3 is T2 inverse.
+So, to go from F1 to F2, we've used T2.
+Then, from F2 to F3, we use T2 inverse.
+Where do you think F3 is going to end up?
+Well, we run this, and not surprisingly, F3
+ends up directly above F1.
+You can see here that F3 and F1 are actually
+superimposed on each other.
+And that makes a lot of sense.
+We've gone from F1, frame one, to frame two,
+using transform two.
+Then, from frame two, if we're going
+to do transform two inverse, we're
+going to end up back at F1.
+So F1 and F3 are actually one and the same,
+as you can see here.
+And then we're going to do the same thing one more time.
+Let's go back to the code and comment in this bit.
+OK, and we're going to say that from F3,
+we're going to go to F4 by applying
+the inverse of transform 1.
+So then, once we run that bit, not surprisingly,
+F4 ends up right on top of our original coordinate system,
+which is the world.
+You can see that they are exactly superimposed here.
+So overall, our transform chain is, we go from the world,
+to F1 using T1, then we go to F2 using T2,
+T2 inverse brings us back here, and then
+T1 inverse brings us back to the world.
+So the four transforms that we are changing
+in this piece of code, from the world to F1,
+times the transform from F1 to F2,
+times the transform from F2 to F3,
+times the transform from F3 to F4.
+But, in fact, we've defined these as T1 times T2,
+times T2 to the negative one, times T1 to the negative 1.
+So these cancel out, and then these cancel out,
+and we get the identity, which means that F4 is exactly
+on top of our starting coordinate system,
+the world, which is the way we've defined it.
+One last note, the transforms that py library,
+is available online on GitHub.
+So a lot of the conversions that we've used here
+come from this particular file, which is well documented.
+And you can see here the kinds of operations
+that you can perform.
+In general, what you want to remember here,
+is that these kinds of conversions, from quaternions,
+to Euler angles, to matrices, to transform,
+multiplications, chaining, taking inverses,
+you will end up, in practice, using a software library
+for all of these.
+And it's a good idea to get very familiar with your software
+library for transforms.
+Know how to use it, know how to chain, know how to multiply,
+know how to do those conversions.
+The theory you now know, the math behind it,
+often is done by the library for you.
+And then, it's just a matter of being organized, and keeping
+track of your origin, keeping track of your coordinate frame,
+and always knowing which frame are operating in.

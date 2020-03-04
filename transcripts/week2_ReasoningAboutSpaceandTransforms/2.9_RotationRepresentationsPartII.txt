@@ -1,0 +1,163 @@
+So what are some of the advantages and disadvantages
+of each of these four?
+So let's do a nice table.
+Are there easy intuitions?
+Well, for rotation matrices, we have excellent intuition.
+We know that the columns of the rotation matrix
+represent the new orientation of your axes.
+So if you just look at a rotation matrix,
+you immediately have a sense for what rotation it represents.
+This is very intuitive.
+Axis angle, also very intuitive.
+Somebody gives you an axis and an angle,
+you immediately know what that rotation means.
+So that's also easy to understand.
+Elemental rotation, roll, pitch, yaw, for example, Euler angles.
+If somebody gives you a roll, a pitch, and a yaw,
+especially if it's a domain you're familiar with,
+then yes, you know immediately what rotation that represents.
+Quaternions, on the other, hand, there
+is really no good intuition.
+If somebody gives you four numbers and says,
+this is a quaternion, this is a rotation,
+it's very hard to know, just by looking at those,
+what rotation they represent.
+So quaternions are hard to deal with for humans
+because of that.
+That's one reason why in this course
+we use a lot of rotation matrices.
+We have very good intuition for them.
+How do you chain multiple transforms?
+If you have two transforms, and you
+want to chain them together, two rotations that you
+want to chain together, very easy to do
+with rotation matrices.
+You just multiply the two matrices.
+With axis-angle, it's complicated.
+It's not very clear, if I give you two of these and say,
+you have to do one, followed by the other,
+how you obtain the equivalent transform.
+Depending on which axes are chosen for the Euler angles,
+it can be easy or it can be hard.
+For quaternions, it's very easy to chain them,
+because you just multiply the two quaternions together.
+So this is very, very easy to use as well,
+very easy to perform the multiplication.
+How much memory does each of these representations use?
+Well, for the rotation matrices, you have to store nine numbers.
+For the axis-angle you have to store four numbers.
+For the elementary rotations, three angles.
+And for the quaternion, four numbers.
+So obviously, the rotation matrices are the most wasteful
+when it comes to storing them in memory.
+This day and age, computers have so much memory
+that it might look like, hey, that's not really
+that big of a deal, but still.
+Almost twice as big--
+more than twice as big-- as storing a quaternion in memory.
+So once you're dealing with--
+if you have to store millions of transforms in memory,
+then it starts to make a difference.
+And then finally, just from a numerical perspective,
+which of these are preferable?
+Rotation matrices, you keep multiplying them.
+Computational errors, rounding errors,
+accumulate, and then soon you end up
+with something that's no longer a rotation matrix.
+It's no longer orthonormal.
+So the rotation matrices are not ideal from
+a computational perspective.
+Quaternions, though, are excellent from
+a computational perspective.
+As the error accumulates from rounding, from floating point
+errors, it has desirable properties, in terms of,
+you still close to representing an actual rotation.
+So, if you look overall at this picture of advantages
+and disadvantages of various rotation representations,
+matrices are great for humans to look at,
+and we're going to be using them a lot.
+Quaternions are great for computers,
+where you don't really care about the intuition,
+but these are all very, very desirable, right?
+So most computer libraries that have
+to deal with rotations, transformations, will
+store them as quaternions, will pass them around
+as quaternions.
+That is sometimes annoying, because just
+by looking at a quaternion, again,
+it's very hard to understand what's going on.
+But remember that any transform library worth its salt
+will give you functions to convert between all
+of these representations.
+And this brings us to our final point, which
+is also a very important one.
+Ultimately, how many numbers do you need to uniquely define
+a rotation in space?
+Because you see, all of these representations
+use a different number of numbers.
+Matrix has nine numbers, axis-angle is four numbers.
+How many intrinsic, what we call "degrees of freedom,"
+are there?
+How many variables do you need to uniquely specify
+a rotation in space?
+Let's look a little bit more carefully
+are these representations.
+A rotation matrix has nine numbers,
+but they are not independent, because the rotation
+matrix is orthonormal.
+So once you specify a subset of these numbers,
+all the others can be derived automatically,
+because the matrix is orthonormal.
+The axis-angle, that's four numbers, but again,
+these four numbers are not independent,
+because the axis is normalized.
+The axis just specifies a direction in space.
+The magnitude of this vector is meaningless.
+So usually when you represent a rotation as axis-angle,
+the axis component is normalized.
+So this really is only two independent variables,
+plus the angle, so this gives us three independent variables.
+The elementary notation is the Euler angles,
+that's three variables.
+Not much else to say there.
+The unit quaternion, that's four numbers, but again,
+they are not all independent, because it's a unit quaternion.
+So really, it's three independent variables,
+and the fourth one can be derived from the fact
+that it's a unit quaternion.
+So you bring it all together, and the answer to the question
+is three.
+So this is very important to remember.
+Any rotation in space is three independent degrees of freedom.
+Three numbers are enough to uniquely specify a rotation.
+Any rotation can be uniquely specified by using
+exactly three numbers.
+Some of these representations are redundant,
+they have more numbers than that,
+but fundamentally, three numbers are
+enough to specify a rotation.
+So this brings us to a complete transform.
+How many numbers do you need to uniquely specify
+a complete transform?
+One way to represent a transform,
+again, is as a transform matrix.
+We know that the rotation part only really has
+three degrees of freedom.
+The translation part has another three degrees of freedom.
+So that a complete transfer in space
+has six, and exactly six, degrees of freedom.
+So, if I have two robots that are independent of each other,
+and they move through space independently of each other,
+how many how many numbers are needed
+to uniquely specify the pose of one
+robot relative to the other?
+Six.
+There are six variables that define this change in position,
+and exactly six.
+Now, some representations might use more numbers.
+For example, a transform, sure, is a four by four matrix,
+but a lot of that information is redundant.
+So this is important to remember.
+Two completely independent bodies,
+the pose changes between them, six variables,
+six degrees of freedom, and no more.
