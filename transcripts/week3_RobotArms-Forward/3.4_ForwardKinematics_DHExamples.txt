@@ -1,0 +1,103 @@
+Still.
+even though URDF is so general and so powerful,
+I started that component by saying it's not
+used in the industrial world.
+So all of the industrial robots, most of the industrial robots
+that we've seen in the videos, don't use URDF for programming
+for descriptions.
+Why not?
+Well, it's precisely how general and verbose URDF is
+that is its biggest drawback.
+Remember, industrial robots really
+came into their own decades ago, back at a time
+when computers were nowhere near as powerful as they are today.
+And really, industrial arms have had an impact
+on assembly and manufacturing since the times
+when holding a couple of kilobytes
+in the memory of a computer was actually a problem.
+A URDF file, because it's so general, can be very large.
+So doing these kinds of very general computations
+was a problem.
+What was needed was a more compact way
+of describing the kinematics of the robot.
+The other thing about URDF is that it really
+doesn't lend itself to computing forward kinematics
+analytically, to coming up with just a nice formula that you
+can drive by hand that will tell you the transform from the base
+to the end effector.
+URDF lends itself well for computer use,
+but it's not good for humans that
+would like to be able to compute this transforms
+and derive them analytically.
+So for all of these reasons, the industrial world
+came up with its own standards years ago, and many of them
+are still in use today.
+In some sense, URDF could take over,
+given how powerful computers are these days,
+but these standards used in industry because they've
+been in use for so long, and because they've proven--
+they're well known, they work--
+are still commonly used by industrial robots.
+And one example of that is the Denavit-Hartenberg notation,
+which we're going to talk about next.
+So the goal here is to come up with a way
+to describe robot kinematics that's more compact,
+and that also lends itself to people deriving
+transforms analytically.
+And the only way to be more compact
+is to be less general, is to start
+introducing some conventions.
+So it's important to know the Denavit-Hartenberg
+notation relies on a set of assumptions, of conventions,
+that you have to know, that are known by the robot
+manufacturer, and are known by the user.
+So the conventions, the two conventions
+that you have to remember, is that-- so first
+of all a joint axis is always the local z-axis.
+OK.
+So in other words, the axis for joint i
+is z i minus 1, which is really the z-axis of coordinate frame
+i minus 1.
+OK.
+And then the other convention that you must remember
+is that Li can only be one of two things.
+It can be a translation along the local x-axis, followed
+by, optionally, a rotation around the local x-axis.
+So what this all means--
+what these conventions mean-- is that
+in Denavit-Hartenber notation, if you
+want to describe the combination of a joint, which depends
+on the joint value and a link, you really
+only need four numbers.
+There is one number that tells you how much you're
+rotating around local z.
+There is another number that tells you how much you
+are translating, also around z.
+Finally, you can translate along x, and you can rotate around x.
+So once you have these numbers, theta, d, a, alpha,
+then these two transform together can only be--
+so you have a translation.
+Sorry, you have a rotation by theta around z,
+followed by a translation by d, also along z,
+followed by another translation by a along x,
+and finally followed by another rotation by alpha around x.
+So these two transform chained together always
+in Denavit-Hartenberg notation looks like this.
+Why are we doing this?
+Again, these are two transforms, two times 16 numbers.
+And really with this four parameters
+and a couple of conventions, we have
+specified those two transforms.
+What about the joint value?
+And this is the last bit of convention.
+So in Denavit-Hartenberg notation,
+either theta or d can be variable,
+and can actually be the joint angle.
+So either one of these two can take the value of qi.
+So really the way to think about the Denavit-Hartenberg notation
+is that the first two components correspond to Tji.
+The second two components correspond to Tji.
+Let's look at a couple of examples of robots specified
+in Denavit-Hartenberg notation.
+And we'll use this formula to see exactly
+what those robots look like.

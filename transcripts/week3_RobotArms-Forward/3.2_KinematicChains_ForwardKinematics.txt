@@ -206,3 +206,112 @@ the transform from the base of my robot to the end effector?
 This is what we're going to spend the next lecture on.
 If we know how to answer this question,
 then we know really how to characterize the entire robot.
+So let's start computing things.
+If this transform is what we need, then let's go ahead
+and compute it, the transform from the base to the end
+effector.
+In this particular case, for this particular robot,
+how do we compute this transform?
+We just start changing every single transform
+that is in the robot arm.
+So in our case, first is going to be
+the transform for link zero.
+This is going to take us from the base coordinate frame
+to the tip of link zero.
+Then we're going to have the transform for joint one.
+But the thing about the transform from joint one,
+it's not fixed.
+It depends on the joint angle.
+In a way, this is what makes a robot arm useful.
+If all of these transforms were fixed,
+then we would just have a petrified structure
+where the end effector is somewhere
+in space and never moves.
+The whole point of a robot is that these transforms
+for the joints can change, depending
+on the value of the joint.
+So then we have the transformer for link two--
+sorry, for link one, followed by the transform for joint one--
+sorry, joint two.
+The transfer for joint two, again,
+depends on the joint angle.
+Then we're going to have the transform for link two,
+followed by the transform for joint three,
+and finally the transform for link three.
+So if we now write this in a little bit
+more compact fashion, then what we do here,
+what we have is the transform for link zero.
+And then we have a product from joint one
+to joint n, the transform for that specific joint,
+which depends on the joint angle,
+times the transform for that specific link.
+This part can sometimes be missing.
+By convention some robots you just
+say that they begin directly with a joint.
+You don't have this fixed link that's
+rigidly attached to the world.
+So TL0 can sometimes be missing.
+But this is the more general way of looking at it.
+What's important to note about this formulation
+is that really we have two types of transforms here.
+So we have transforms that are fixed.
+And these correspond to the lengths.
+So the transform for each of these links,
+it doesn't change at runtime.
+It has to do with the physical dimensions of the link.
+If my upper arm is this particular length,
+then that's what it is, right?
+So the transform for a link is determined
+by the manufacturer of the robot when they
+physically build the robot.
+And then that's it.
+The transforms for the links are set in stone.
+However, the transforms for the joints change at runtime
+based on the joint angles.
+This is what makes a robot really a robot.
+And this is what gives us the ability
+to move the end effector in space as we want.
+So in general, when a robot is running and it's moving around,
+it will always tell you what its current joint values are.
+That's the case for the industrial robots
+that we've seen so far.
+So in most cases--
+we cannot really say all cases, but in most cases
+for industrial robots, the robot is equipped with what are
+called joint encoders.
+At any moment in time the robot knows its own joint values.
+So the robot will, at any given time, tell you,
+these are my joint values.
+The robot's firmware will let you know what
+the current values of qi are.
+So then if you are doing forward kinematics and you want to know
+where the end effector is in space,
+then your job is really to compute this given all
+the qi's.
+So if you know the qi's, how do you compute this?
+Well you obviously need a little bit more information.
+You need to know all the transforms for the links, which
+is another way of saying you need to know
+the dimensions of the links.
+But then you also need to know how
+to compute the transforms for the joints
+based on the joint value.
+And all of that information is given to you by the robot
+manufacturer, in some form.
+And in the next part of the lecture,
+that's exactly what we're going to be talking about,
+how you go from the specifications of the robot
+given by the manufacturer to being able to compute forward
+kinematics.
+But before we get to that, kind of a side point.
+Really when you have a system that comprises a robot along
+with a bunch of other things, what is a robot?
+To the rest of the system, a robot
+is just something that is continuously telling the world,
+hey, these are my joint values.
+So this is how the rest of your system
+sees the robot, as something that is constantly telling you,
+these are my joint values, and that
+maybe also accepts commands.
+Hey, go to these joint values.
+And we'll get to this point later in the class.

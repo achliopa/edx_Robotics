@@ -1,0 +1,285 @@
+Here is our first robot.
+It's a two-jointed robot.
+And then for every joint i, we're
+going to have Theta, d, a, and alpha.
+So there's joint one.
+This is actually the joint angle, d 0.
+A is half a meter.
+And alpha is 0.
+And then we have joint two.
+This is the joint.
+And this is 0.
+This is 0.3.
+And this is 0.
+So what does this robot look like?
+Let's draw ourselves a coordinate frame
+for the base to start.
+Let's say that this is the x-axis.
+This is the y-axis.
+The first joint, the joint angle, the joint value,
+is actually a rotation around z.
+So this tells us the fact that the joint value
+is in the Theta column, tells us it's a revolute joint.
+So we are rotating always in Denavit-Hartenberg Notation.
+The joint axis is local z.
+z is in this case, for us, coming out of the plane.
+So that means that for us, the first joint is just
+the rotation around the z-axis.
+OK, how much are you rotating by?
+We are rotating by q1, theta 1.
+OK, so we've done this a bit.
+d is translation along z, is 0.
+So we're staying in the xy plane.
+a is translation along x.
+So we are translating along x by 0.5 meters.
+So let's say that 0.5 brings us up to here.
+And then alpha is rotation around x, again 0.
+So we are done with the first line.
+We can draw ourselves the next coordinate frame.
+So this is x0, y0.
+Then this is going to be x1, y1.
+OK, so we're done with the first line of the table.
+We can look at the second line.
+So our next joint, q2, is again in the Theta column.
+So what we have here is another revolute joint.
+Again, we are rotating around z.
+In Denavit-Hartenberg always, by definition, z's
+still coming out of the board.
+So then the next joint is going to be a rotation like this.
+So we'll end up moving in this direction.
+This is going to be q2 right here.
+OK, we have 0 translation along z.
+So we're staying in the plane.
+0.3 translation along x.
+Let's say that 0.3 brings us up to here.
+And then 0 rotation around x.
+So we are done with the second line.
+And we can draw our second coordinate frame.
+Not a lot of screen real estate left.
+So we're just going to squeeze in here.
+So this is going to be our x2.
+And this is going to be our y.
+OK, and we're done.
+This is the robot.
+This is a very common simple type of robot.
+We're going to be using it a lot for exercises in this class.
+What we call it is the planar two-link robot.
+Planar because it's in the plane, it's in the xy plane.
+It's really a two dimensional robot.
+Two-link because it has two links.
+Link one and link two.
+Two joints.
+q1, q2.
+The joint axes, in both cases, are z, right?
+Which is the one coming out of the board.
+But other than that, this robot lives entirely in the xy plane.
+So we refer to it as the planar two-link robot.
+So what you see here is that in DH notation,
+Denavit-Hartenberg notation, a table like this
+completely specifies the kinematics of our robot.
+In a DH table, you're going to have one row for each joint.
+Each row will have four numbers.
+Those four numbers will be Theta, d, a, and alpha.
+So you have to remember, again, the conventions.
+All join axes are local z.
+Theta can be rotation around z. d can be translation along z.
+a is translation along x.
+Alpha is a rotation around x.
+The joint value, which is valuable,
+can go either in the Theta column or in the d column.
+And that's it, right? a and alpha are always fixed.
+They correspond to tli.
+So they have to be fixed.
+So a and alpha have to be numbers.
+Either Theta or d can be a variable, qi.
+If one of them is a variable, the other one has to be fixed.
+OK, and then once you're given a robot as a DH table,
+from that table you are always able to derive
+what that robot looks like.
+And compute its kinematics
+OK, and this is an exercise that will do again and again.
+Especially in some of the written assignments
+here's a DH table, what are the kinematics of the robot?
+For many industrial robots out there, when you buy a robot--
+you know a KUKA or a FANUC, or another type of robot--
+what the manual will have is a DH table.
+And then it's your job from the DH table
+to really figure out what the kinematics are.
+But so far, we've just drawn the kinematics.
+We haven't actually computed anything.
+We haven't computed, formally, the transform from the base
+to the tip of the robot.
+So let's go ahead and do it, right?
+And for that, what we're going to use
+is this particular formula.
+So we can just go ahead and plug some numbers in.
+Just going to make myself some space.
+So write this again in a little bit more compact form.
+So always in DH notation, each line
+you're going to have a rotation by theta i around z.
+Followed by a translation by di along z.
+Followed by another translation by a along x.
+Followed by one more rotation by alpha i around x.
+So what does this mean for this particular robot?
+So we're going to have, for this robot,
+we're going to have a translation--
+sorry, we're going to have a rotation--
+by q1 around z.
+Then we have a translation by d1 along z.
+But d1 is 0.
+So I'm just going to skip that.
+Then we'll have a translation by a1, which is 0.5, along x.
+Then we'll have a rotation by alpha 1.
+But alpha 1 is 0.
+So I'm just going to skip that as well.
+Then I'm going to go to the second row.
+So then we're going to have another rotation
+by Q2 around z.
+Then this translation.
+d2 is 0, so I'm going to skip it.
+We're going to have a translation by a2 along x.
+And then finally, another rotation.
+But alpha 2 is 0.
+So I'm going to skip that as well.
+So then if we spell this out.
+We are in two dimensions.
+So I'm just going to stick with two
+dimensional transform matrices.
+Rotation by Q1, we know what that looks like.
+So cosine c1 is going to be my shorthand, right?
+So cosine of q1 is going to be c1.
+And then sine of Q1.
+I am going to use shorthand, s1.
+One
+So this is my transform matrix for this bit.
+Then I'm going to multiply by the transform matrix
+for this bit.
+We know what that looks like.
+So the rotation component is the identity.
+And then we'll have 0.5 and 0.
+This rotation we're going to have
+the rotation component, which we know what it looks like.
+And then no translation.
+And then finally this translation bit.
+Again, identity rotation.
+And 0.3 along x.
+And there you go.
+That's your transform from the base to the end effector.
+Now it's just a matter of actually carrying out
+these multiplications.
+Nothing else to do except bite the bullet
+and go ahead and do that.
+So let's go ahead and compute that.
+Going to multiply these two first.
+OK, then we're going to multiply these guys.
+OK, so now what's left is to multiply these two matrices
+together.
+And we're going to run out of space over there.
+So we're going to use this space right here.
+OK, so from here, we're actually going to continue right here.
+OK, so what do we get when we multiply those two
+matrices together.
+So first of all, what goes in the top left?
+Let's carry out this multiplication
+to see what goes in the top left over there.
+So what we end up with is c1, c2, right?
+Minus s1, s2.
+And we remember from basic trigonometry
+that that is actually cosine of Theta 1 plus Theta 2.
+Which we're going to use c1, 2 as a shorthand form.
+So what we have here is c1, 2.
+Similarly here, we're going to end
+up with a negative sine of Theta 1, plus Theta 2.
+Sine of Theta 1 plus Theta 2.
+Cosine of Theta 1 plus Theta 2.
+If we've done things right, these should be 0s.
+This should be a one.
+And let's look at the translation part.
+So we carry out the multiplication.
+And what we end up with is 0.3, c1, c2 minus 0.3, s1, s2.
+plus 0.5 c1.
+We can see here that actually, again,
+we can use that same rule.
+So what we have is actually 0.3 c1, 2.
+Plus 0.5 c1.
+Then what we get on the bottom--
+again, using the same trigonometric rules--
+we'll end up with 0.3s1, 2 plus 0.5 s1.
+OK, and this is the transform we've been looking for.
+OK, we're going to be doing a lot of these exercises.
+It's generally a good idea to stop here for a second.
+And just kind of do a sanity check.
+Look at your final formulation for the forward kinematics.
+And then look at the sketch of the robot.
+Do they make sense?
+So let's think about it for a second.
+The rotation part, we notice that it's and actually
+ends up being a rotation around z by q1 plus q2.
+And again, remember we are looking
+for the transform from the base to coordinate frame 2.
+Does it make sense that the rotation from here to here
+is a rotation around z by q1 Plus q2?
+Well it does, right?
+Because to get from here to here,
+we've rotated first by q1.
+And then we have rotated again by Q2.
+It makes sense that the full rotation
+is a rotation by q1 plus q2.
+OK, then let's look at the translation part.
+Does the translation part of this transform make sense?
+Let's look at the x component, right?
+So to get from here to here, the x component of that
+is going to be 0.3 cosine q1 plus q2.
+So that's, 0.3, is the length of the second link projected
+along x.
+You have to multiply by cosine of q1 plus q2.
+Because this link has been rotated relative to x0 first
+by Q1, then by Q2.
+So projecting it and multiplying by the cosine of q1 plus q2
+makes sense.
+Then 0.5, which is the length of the first link projected
+along x.
+You have to multiply by cosine of q1.
+So this seems to be right.
+Similarly, if you look at the y component.
+Same idea, the length of the second link, sine q1 plus q2.
+Because you are projecting that on y.
+Then 0.5 which is the length of the first link multiplied
+by cosine of Q1 to project on y.
+This seems to make sense.
+Generally a good idea for the examples I use in this class.
+Do the sanity check and make sure
+that the sketch agrees with the computed formula.
+So this-- all of this-- is forward
+kinematics for a simple planar two-link
+robot given to you in Denavit-Hartenberg notation.
+Let's again, very quickly, go through all of the steps.
+The table completely specifies the robot
+as long as you know the DH conventions.
+Every row is a combination of a joint and the link.
+Theta is a rotation around z. d is translation along z.
+One of these is the joint value.
+So the joint axis is always local z.
+a is translation along x.
+Alpha is rotation around x.
+Again, one row for each combination of joint and link.
+This is the general way of specifying the formula
+for one row of this table.
+Just by looking at the table is all
+you need to actually sketch the robot.
+And figure out what it looks like in space.
+And then you can spell out and actually
+compute your forward kinematics transform.
+So if we spell this out for both rows of our table,
+this is what this looks like.
+Where we simply ignore the transforms
+that have 0s in the table.
+And then you spell it all out.
+And what you end up having computed
+is the transform from the base to the end effector.
+So in our case, the base is coordinate frame 0.
+The end effector is coordinated frame 2.
+This is what it looks like.
+Now you have an analytical formula for that.
+And you can check that against your sketch just
+to make sure that it looks right.

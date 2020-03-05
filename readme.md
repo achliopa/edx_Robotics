@@ -845,4 +845,94 @@ echo "robotics_ws workspace was sourced"
     * we use q(d) for prismatic joints
     * we use q(Θ) for revolute joints
 * we can have kinematic chains connected to other kinematic chains
-* In many applications we just care about a robot arm ability to deliver its end effect at a certain location in space
+* In many applications we just care about a robot arm ability to deliver its end effector at a certain location in space
+* What we do in that case is set some values to joints so that the end effector get to the desired location. this analysis is called forward kinematics
+* So the Forward Kinematic Analysis asks given the values of all the joints, where my end effector will end up in space. also it considers about the surrounding space not allowing any movement so that links could hit an obstacle
+* we attach a coordinate frame to every link assuming that every link has a coordinate frame attached to it. also the end effector has a coordinate frame attached to its end point
+* So we rephrase the question of Forward Kinematics. given certain joint values where in space do the coordinate frames attached to the links end up in space?
+* Whats the transform of the base coordinate frame to the end effector coordinate frame and all other links defined coordinate frames
+* our convention is that going from base to end effector Joint i (Ji) connects Link i-1 (Li-1) to Link i (Li). Li has a coordinate fram i attached to its end {i}
+    * for n Joints
+    * we have n+1 Links
+    * and {n+1} coordinate frames
+    * Ji moves Li
+    * coord frame {i} is at the tip of Li
+    * coord frame {n} is the end effector
+* If we now how to compute where the end effoctor coord frame ends up we can compute where all intermendiate coordinate frames end up
+* in essensce the question of Forward Kinematics is what is the transofrm from the base to the end effector coordinate frame
+> ![i](https://latex.codecogs.com/gif.latex?%5E%7Bb%7DT_%7Bee%7D%3D%3F)
+* To compute it we chain robot arm transforms of all robot arm koints and links in sequence from base to end effctor. not that the Joint transforms are not  fixed but demend on the joint value q. otherqise the robot arm whould be rigid
+> ![t](https://latex.codecogs.com/gif.latex?%5E%7Bb%7DT_%7Bee%7D%3DT_%7BL0%7D%5Ccdot%20T_%7BJ1%7D%28q_%7B1%7D%29%5Ccdot%20T_%7BL1%7D%5Ccdot%20T_%7BJ2%7D%28q_%7B2%7D%29%5Ccdot%20T_%7BL2%7D%5Ccdot%20T_%7BJ3%7D%28q_%7B3%7D%29%5Ccdot%20T_%7BL3%7D%20%3D%20T_%7BL0%7D%5Ccdot%5Cprod_%7Bi%3D1%7D%5E%7Bn%7DT_%7BJi%7D%28q_%7Bi%7D%29T_%7BLi%7D)
+* some robots miss the TLo as tey dont have rigid base
+* So the FW Kinematics Equation has:
+    * Fixed Transforms for the rigid parts (Links)
+    * Variable Transforms for the moving parts (Joints) that change at run-time
+* When a Robot moves around it will always tell us what its current joint values are through sensors. so the Forward Kinematics Equation will be calculated at real time
+* The Robot mnanufacturer gives the transformations so we can compute the forward kinematics
+* for the rest of the system the robot is just something broadcasting its joint values qi and also accepting commands to go to specific joints values
+
+### 3.3 Forward Kinematics: URDF notation
+
+* We write again the Forward Kinematics Full Notation
+> ![t](https://latex.codecogs.com/gif.latex?%5E%7Bb%7DT_%7Bee%7D%3D%20T_%7BL0%7D%5Ccdot%5Cprod_%7Bi%3D1%7D%5E%7Bn%7DT_%7BJi%7D%28q_%7Bi%7D%29%5Ccdot%20T_%7BLi%7D)
+* The robot manufacturer in the device manual will give us the TLi and how to compute TJi based on the joint values qi
+* This notation is not very much used in industry but is used in robot research and ROS
+* An example of a notation is URDF(Universal Robot Decription Format)
+* It is a format that allows us to define a robot and its general
+* we will see the part of [URDF](http://wiki.ros.org/urdf) that can help us describe kinematics
+* it uses xml syntax with tags for links and joints
+* the kinematic information we care about is wrapped in the joint tags (joint tags have also the joint type)
+* the URDF descripition below
+    * assumes a base coordinate frame {b}
+    * the <origin> tag tells us where the coordinate frame is in relation to the previous coordinate frame. it is a complete transform. it contains the translation part "xyz" and the rotation part in our case in EULER angles (roll,pitch,yaw) "rpy"
+    * Tj1 rotates around the z axis according to the angle q1. if q1=0 its on x axis. if its q1>0 it starts pointing to the viewer. if its <0 it points inwards
+    * the robot arm is like a human arm locked in the vertical position
+```
+<robot>
+    <link name="L0" />
+    <joint name="J1" type="revolute">
+        <origin xyz="0 0 0.1" rpy="0 0 0" />
+        <axis xyz="0 0 1" />
+        <parent link="L0" />
+        <child link="L1" />
+    </joint>
+    <link name="L1" />
+    <joint name="J2" type="revolute">
+        <origin xyz="0.1 0 0" rpy="0 0 0" />
+        <axis xyz="0 0 1" />
+        <parent link="L1" />
+        <child link="L2" />
+    </joint>
+    <link name="L2" />
+</robot>
+```
+* the first job when we design a robot in ROS is to make its representation in URDF format
+* URdF can contain much more info apart from kinematics such as shape info, inertia, mass, collission info, vision info, sensor info. all these with their respective tags
+
+### 3.4 Forward Kinematics: DH Examples
+
+* DH stands for [Denavit-Hartenberg](https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters) which is a notation used more in the industrial world
+* Industry does not use URDF because its verbose and general. when robots came into tthe scene decades ago processors were small so they could not afford it. also URDF is not optimised for computing FW kinematics analytical. to come up with a formula that we can derive by hand that will tell us the transform from base to the end effector
+* URDF is good for computers but not for human intutition and manual computations
+* DH Notation is old,proven and widely used in industry, its compact
+    * it uses conventions, its not general
+* The conventions are:
+    * the Joint Axis is always the local z axis (axis for Ji is zi-1) so its the z axis for coordinate frame {i-1}
+    * Li can be only 1 of 2 things: a translation along the local x axis OR a rotation around the local x-axisthe local x
+* With DH notation to calculate 
+> ![t](https://latex.codecogs.com/gif.latex?T_%7BJi%7D%28qi%29%5Ccdot%20T_%7BLi%7D)
+we need only 4 numbers
+    * θi the rotation around local z
+    * di the translation across local z
+    * ai the translation accross local x
+    * αi the rotation around local x
+* The 2 transforms chained together always in DH notation look like this
+> ![dh](https://latex.codecogs.com/gif.latex?T_%7BJi%7D%28qi%29%5Ccdot%20T_%7BLi%7D%20%3D%20T_%7BROT%7D%28%5Ctheta_%7Bi%7D%2Cz%29%5Ccdot%20T_%7BTRANS%7D%28d_%7Bi%7D%2Cz%29%5Ccdot%20T_%7BTRANS%7D%28a_%7Bi%7D%2Cx%29%5Ccdot%20T_%7BROT%7D%28%5Calpha_%7Bi%7D%2Cx%29)
+* In DH notation the joint value q can be either θ οr d param
+
+### 3.5 DH Notation Example: 2-link Planar Robot
+
+* Our first robot is a 2-jointed robot.
+* for every joint i we will have θi di ai αi: 
+    * for joint 1: θ1=q1, d1=0 a1=0.5m α1=0
+    * for joint 1: θ1=q1, d1=0 a1=0.5m α1=0

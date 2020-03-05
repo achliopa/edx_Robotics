@@ -1,0 +1,194 @@
+So let's look at two specific ways in which you
+get, from the manufacturer, information
+about everything you need, in order
+to compute for kinematics.
+Before we begin, let's write, again,
+our general expression, just so that we
+have it always available.
+So we care about the transform from the base
+to the end effector.
+And there's going to be the transform from link zero.
+And then we are going to have, for each joint, the transform
+for that joint, which depends on the joint value
+times the transform for the link that that's connected to.
+And then this component is variable.
+Whereas, does this component and this are fixed.
+So the more general way to specify the design of a robot
+is to really just give the user all of these transforms, right?
+So in this case the robot manufacturer
+will give you, maybe in the user manual,
+in the reference manual, will tell you what all of the TLs
+are.
+Just complete transforms.
+And also, how to compute the transform for each joint,
+based on its joint value.
+So this is the full notation.
+It's the most general.
+It's not commonly used in industry.
+But it's very commonly used in robotics research.
+And it's very commonly used in ROS, which is
+why we cover it in this class.
+But again, the one we're talking about right
+now is not the most common in research.
+An example of this is what's called the URDF notation.
+URDF stands for universal robot description format, right?
+So it's a format that allows you to define, to describe a robot.
+Of course, the universal is very ambitious.
+But it's really meant to be very, very general.
+And we're not going to cover all of URDF here.
+We're only going to look at what we care about, in terms
+of specifying kinematics.
+So let's look at the robot that is described
+in this particular URDF file.
+As you can see, it's a sequence of links and joints,
+which makes sense.
+We've said that all kinematic chains are
+comprised of links and joints.
+Each link is in its own tag of the type link.
+Its joint is in its own tag of the type joint.
+The kinematic information that we care about
+is all comprised in the joint tags,
+by convention, in the URDF.
+So let's go through this file.
+We're going to have a base coordinate frame.
+So this is our base coordinate frame.
+Let's say that this is the x-axis,
+and then this is the z-axis.
+And then the y I'm not going to draw, just for clarity.
+Link zero starts at the base.
+But then the kinematic information
+is comprised in joint one.
+That origin tag tells you where the joint coordinate
+frame is, with respect to the previous coordinate frame.
+So right now we are in coordinate frame b,
+for the base.
+To get to the joint coordinate frame,
+so to get to the coordinate frame of joint one,
+we have to do this particular transform.
+And you see that this tag gives you a complete transform.
+Here's the translation bit.
+Translation by 0.1 meters along z.
+And here's the rotation bit, roll, pitch yaw, the roll zero.
+So in this case, it's an identity rotation.
+But nevertheless, this could be any rotation in the world,
+right?
+And we know that from roll, pitch, yaw
+we can convert the rotation matrix.
+So here we're given a rotation component.
+We're given a translation component,
+which really means that this origin tag is giving us
+a complete transform.
+So this tag gives us, essentially, TL0.
+So in our case, TL0 is a translation along z by 0.1,
+and an identity rotation.
+So let's say that up here we've moved 0.1 along z.
+There is no rotation component.
+So you orientation is the same.
+This is coordinate frame zero.
+This is going to be the x-axis.
+This is going to be the z-axis.
+And then link zero is what physically connects these two.
+OK.
+We don't necessarily know exactly what
+link zero looks like.
+But we know that it gets us from the base
+coordinate frame to the coordinate frame of joint one.
+So this is TL0.
+What about TJ1?
+Well, what do we know about TJ1?
+We know the joint one is a revolver joint.
+So TJ1 is going to be a rotation.
+And this also tells us that the axis of rotation is 001.
+So it's the z-axis.
+We are rotating around this vertical axis, right?
+So then if I extend this like this
+then my next link is going to be coming out
+of the plane of the board.
+And then this angle right here is q1, or theta one.
+Since it's an angle we can use the letter theta.
+And TJ1 is going to be a rotation
+by q1 around this axis, OK?
+If q1 equals zero then we are still
+pointing along the original x-axis.
+If q1 is not zero, then we're coming out
+of the plane of the board and pointing in the direction
+denoted by that rotation.
+And we are done with the joint up to here.
+The next link is l1.
+So this guy is l1.
+Let's make it a little longer for illustration purposes.
+And then we get to joint two, right?
+This bit, the origin tag, will give us TL1.
+So TL1 is going to be a translation by 0.1 along x.
+Followed by a rotation expressed as roll, pitch, yaw.
+Again they are all zeros.
+They don't have to be.
+So this gives us a full transform, right?
+So TL1 ends up being a translation along x.
+Our x-axis now points in this direction, because we've
+rotated by q1 around z.
+So then what we end up with, if we do the 0.1 here,
+we end up with a coordinate frame that looks like this.
+This is coordinate frame 1.
+This is the x-axis.
+This is the z-axis, OK?
+Then we have to look at TJ, so the transform of joint two,
+which is going to be, again, a rotation,
+because we have a revolver joint,
+and it's going to be a rotation, again, around the z-axis.
+So if we extend this out a little bit
+then this is what the next link will look like.
+And this angle right here is q2, Two or theta two, OK?
+And then we have link two, OK?
+So what we've really ended up with, if we want to illustrate,
+let's say it's a two length robot,
+so think about my upper arm and my forearm,
+the base is maybe right here, right?
+Down here.
+Then we have coordinate frame zero right here.
+We have the first joint which is this rotation.
+Allows me to do this rotation.
+So it's a rotation around the vertical axis at the shoulder.
+And then we have the second joint,
+which allows me to do this.
+So it's a rotation around the vertical axis at the elbow.
+So what this ends up looking like
+is a robot with this particular ability to move.
+And it's expressed as a universal robot description
+file, which gives us the transforms TL0,
+and then also the transforms TLI, including tl0,
+and then tells us how to compute TJI,
+because it tells us what type each joint is, and it tells us,
+also, the joint axis.
+I strongly encourage you to go and look
+at the full description of the URDF format.
+Again, in the ROS world URDF is used to describe robots.
+Any time you have a new robot that you want to use in ROS,
+that process starts by describing that robot in a URDF
+file.
+And you'll see on the ROS wiki there is the repository that's
+very rich.
+Lots and lots of robots described as URDF.
+Now, URDF a very rich format.
+It's not used to only specify kinematics.
+URDF will have shape information for the links,
+will have inertial parameters, mass, inertial matrices.
+It will have collision information.
+It will have visual information, sensor information.
+So you will see a lot more tags if you open a URDF file.
+In this lecture, what we cared about
+is the kinematics of the robot.
+How do you define the kinematics?
+And these are the tags in URDF that specify kinematics.
+So take home messages for URDF, this
+is the de facto standard for describing robots in ROS.
+It's very rich.
+It's also very general.
+All of these transforms, TLI, are given to you
+as full transforms.
+So they can really be anything.
+TJI, you will always know the type of the joint,
+and the axis of the joint.
+And then based on that, you know how to formulate TJI.
+Very general.
+The de facto standard in ROS.
