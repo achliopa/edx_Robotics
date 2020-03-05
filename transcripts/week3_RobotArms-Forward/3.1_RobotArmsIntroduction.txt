@@ -1,0 +1,297 @@
+OK.
+Today we start talking about robot arms.
+Why robot arms?
+Why do we start with that?
+And my personal answer to why robot arms
+is such an important topic is because they've
+had such a key crucial impact on life as we know it,
+on society all around us.
+Think, for example, of the smartphone revolution
+that people talk about a lot these days--
+ubiquitous computing.
+Everybody has a computer in their pocket connected
+to the internet.
+That revolution is not possible if all
+of those electronics-- if smart phones are not manufactured
+using making heavy use of robots,
+which makes them affordable, makes them low cost.
+So robot arms have transformed how manufacturing is
+done in consumer electronics.
+But that actually started way before smart phones.
+If you think about the automotive automotive
+industry-- cars.
+Robots have had a major role in how cars are built.
+Robots are part of the reason why
+cars are as good as they are, as affordable as they are.
+In general, a lot of the technology that
+now is in everybody's hands, it is like this thanks
+to the use of widespread robotics in manufacturing
+industry.
+So robot arms, mainly in manufacturing, in assembly,
+that's where they are being very, very heavily used.
+They're not so present in everybody's eyes.
+You know, most of us, we can happily live our entire lives
+never seeing an industrial robot arm in operation.
+And that can easily lead us to say, hey, wait a second,
+for all this talk about robotics, all these movies
+that we've seen, where are the robots?
+Why am I never seeing a successful working robot
+in everyday life?
+And one of the answers is well, those successful working robots
+have actually transformed all of our lives.
+It's just that they are working behind the scene.
+They are working somewhere where most of us
+don't have any reason to go, in manufacturing, in assembly--
+everything from cars to consumer electronics
+and many, many things in between.
+OK.
+So let's take a look at just a couple of examples
+of industrial robot arms in operation
+so you can get a sense of the kind of applications
+that we're talking about here.
+And these are videos that I've chosen
+from two very well-known manufacturers
+of industrial robot arms.
+One of them is European--
+Kuka Robots from Germany.
+These are just videos from the company's public YouTube
+channel.
+They're not hard to find.
+If you search the internet, you will easily
+find many, many examples like this of industrial robot arms
+in operation.
+And here is the Kuka robot doing a machine tending task.
+It's basically loading and unloading
+a machine that is processing parts.
+So you can get a sense of what the robot arm does, right?
+It's main role here is to move things in space,
+to pick up parts from one side of the enclosure,
+place them in the machine, then again, pick them up
+from the machine, and place them on a table.
+So some things to look at, right?
+An important thing here, the key role of the robot
+is to deliver its end effector at a precise location in space
+where it picks up the part.
+Then it has to exit this trajectory through space,
+move the part to a new location-- obviously,
+without hitting anything--
+precisely insert it in the machine.
+Then it comes out.
+It waits for the machine to do its job.
+One thing to look at is the end effector.
+Notice how, first of all, this robot has multiple custom end
+effectors all in one.
+So the end effector typically does not
+come with the robot itself.
+The end effector is custom built for the task.
+And here you see that the robot has
+this custom built gripper, which is designed
+to pick up an individual part.
+A little earlier you saw a pick up an entire tray.
+Here it switches to a suction gripper
+to pick up an entire sheet.
+And throughout, it does kind of similar things, right?
+It delivers the end effector to a very precise location
+in space.
+Where here it picks something up,
+then it executes this smooth, elegant trajectory
+to place its payload at a new location.
+And then goes ahead and picks up a new payload.
+Here again, it switched to a different kind of gripper
+in order to pick up the part and place it
+at a defined location in space.
+And then this robot does it again.
+And again, and again, repeats the task.
+Let's look at a couple of more examples.
+Where do robot arms really right now shine?
+What are some areas where they really
+exceed human capabilities?
+They are tireless, in a sense.
+That's one, right?
+They repeat the task again and again exactly the same way.
+They can be incredibly precise, much more precise than a human.
+So here's an example of a Kuka robot doing a task, actually
+installing screws on a cell phone.
+So this is a consumer electronics example.
+And you saw the size of the screw
+relative to the human hand.
+So here is the robot doing these incredibly precise tasks.
+And actually, robot arms can even
+do tasks requiring even more precision than this.
+So precision is a place where really robot companies compete,
+one of the specs that they compete on,
+and one area where the robot can exceed human capabilities.
+Another thing to notice in this video.
+Look how fast the robot moves between picking up its payload
+and putting it down.
+That's another example of where robot arm scan exceeds
+human capabilities-- speed, and another place
+where robotics companies compete in terms of who can deliver
+the best specifications.
+So it's one thing that's very important here
+to the user of the robot is turnaround time, how
+quickly the robot can execute a number of these screwing tasks.
+So look how fast the robot moves in between its goals,
+but on the other hand, also, how smooth the motion is.
+And this is an example of the kind of introspection
+that the robot offers.
+This is the interface that the user has
+to program these trajectories.
+And again, you see the robot executing it.
+So this is an example of precise,
+being fast, precise at a relatively small scale.
+Let's look at even more examples.
+But this time, let's go at the other end of the size spectrum.
+Now we're talking big tasks.
+This is a sheet--
+a metal sheet bending robot.
+Now here's another example of where a robot arm can exceed
+human capabilities-- strength.
+Right?
+A robot can be precise and tireless, but also at a scale--
+and things like mass, volume--
+bigger than it's possible for humans to operate at
+or to be just as precise.
+So here is an example of the robot picking up sheet metal.
+It's doing an alignment step.
+Again, notice the suction gripper,
+custom designed for this task.
+And then it's picking up the piece of sheet metal,
+inserting it into the machine, and that's
+where the bending task occurs.
+Re-orienting, picking up the part in a different way,
+and then placing it down, and starting again
+with another piece of sheet metal.
+And if I haven't convinced you yet
+that, in terms of sheer scale, strength, industrial robot
+arms can exceed human capabilities,
+let's look at another example.
+This time we are looking at a different manufacturer.
+This is Fanuc, a very large manufacturer
+of industrial robot arms.
+And this is meant to show precision, smooth operation
+at a scale and mass that really obviously exceeds
+human capabilities.
+What are we talking about here?
+So this is an example of the robot moving around a car.
+And even at this scale, at this mass,
+industrial robot arms are capable of achieving
+really impressive repeatability, precision.
+Not the same as when operating at small scales, but still,
+what we're talking about here obviously far
+exceeds human capabilities.
+And then one more example, also from Fanuc.
+Here is an industrial robot arm, but this time
+not in assembly or manufacturing,
+but in a different application domain.
+So here is a team of arms, if you wish,
+doing what's called palletizing--
+so taking these beverage cases and assembling them in pallets.
+Notice how one robot was feeding one conveyor belt from another,
+and then a different robot, large, very powerful,
+is picking up an entire set of these cases,
+and putting them on a pallet.
+So here is an example of industrial robot arms
+being critical in the logistics part of the business,
+shipping, moving things around.
+So really, industrial robot arms are touching every aspect
+of our lives, even though they are not
+in places where we would normally see them.
+Interestingly, though, one place where these kind of robot arms
+are very visible-- although I'm not
+sure it's what people will focus on.
+These are the opening credits to a very popular HBO TV
+show called Westworld, which many of you
+probably are watching.
+And there you go.
+Those are robot arms.
+Here they are essentially acting as 3-D printers.
+Any 3-D printer is a robot, by the way.
+But here what this robot arms are building
+is actually what looks like biological organisms,
+almost, right?
+So in this particular example, this is an artificial being.
+And there are so many things that we
+don't know about in terms of how to build these.
+This is still the domain of science fiction.
+And this is where a lot of what's
+commonly considered artificial intelligence goes into.
+But what I'd like it to focus on in this image
+is not the center, but these guys right here.
+This is what we care about at this point in the course.
+These we know how to build.
+And I love the fact that, even in this science fiction
+setting, the authors have found it--
+needed to show that, look, even in the process of building
+these highly advanced intelligent machines,
+we are still going to need something
+like industrial robot arms.
+Industrial robot arms have transformed
+society, life as we know it.
+And if the imagination of the creators of this show
+is anything to go by, then they'll continue to do it,
+and they will be crucial in inventing
+and us building the next stage of technology, which we don't
+even know how to build yet.
+So the next couple of letters are about these robots.
+And who knows?
+Maybe some years from now it's you
+that will be building this generation of robots,
+really combining robotics as we know it today
+with the successes it has achieved already
+with the new artificial intelligence that's
+being discovered as we speak.
+One more aspect to consider, again,
+combining the concepts of robotics-- industrial
+robotics-- and artificial intelligence.
+So all the examples that I've shown you they
+talk about robot arms as very efficient, precise, powerful,
+tireless ways to move to deliver an end effector at a desired
+location in space, to move it around, place it
+somewhere else.
+One thing that really separates these applications where robots
+are already widely deployed and the applications of the future
+is, where does this information come from?
+Who tells the robot where it needs to go in space?
+And for now we are going to imagine
+that that information is given to us
+by the operator of the robot.
+If I am a user of an industrial robot,
+and I get my robot from one of these manufacturers,
+then what will happen is a person
+will program this robot with the trajectories
+that it has to follow.
+So in this next couple of lectures,
+in general, we're going to assume
+that where the robot has to go in space
+is given to us by a human operator,
+by a human programmer.
+And in these industrial settings,
+that is generally the case.
+Now, think about a robot in your kitchen,
+looking to open the fridge and to make a sandwich.
+Obviously, it's not feasible for a human operator
+to tell the robot exactly where to place the end
+effector to find the cheese, to find the bread.
+So a lot of the next generation robotics,
+and especially robotics and artificial intelligence,
+is concerned with this kind of high level questions.
+Where should a robot place its end effector
+in space, especially in a complicated cluttered scene?
+We are not there yet in the course.
+So for now, we are saying this is a robot
+that a human operator has instructed about where it
+has to go, how it has to move.
+And we're going to learn about how the robot actually
+executes that motion--
+in a sense, the nuts and bolts.
+And only after we've really mastered this component
+can we start talking about robots that
+have the artificial intelligence to know what they have
+to do on their own, based on sensory input from the scene,
+for example, and knowing how to operate in environments
+they've never seen before.
+So for now, we are worried more about
+how does the robot actually do what it needs to do,
+assuming that a human operator has given it
+very precise instructions about where it needs to go in space.

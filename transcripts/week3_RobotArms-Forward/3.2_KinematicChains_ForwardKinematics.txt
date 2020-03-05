@@ -1,0 +1,208 @@
+So let's formalize the concept of a robot arm.
+What is a robot arm from an analysis standpoint?
+And from this point on, we're actually
+going to start using the more general term
+of kinematic chain.
+What is a kinematic chain?
+Formally it's a sequence of two things.
+It's a sequence of links and joints.
+The links are simply the rigid components
+that comprise the arm.
+The joints are articulations, things that can move.
+So in general you can think of my upper arm is a link.
+The elbow is a joint.
+The lower arm is also a link.
+The wrist is a joint, and so on.
+And an important thing to remember
+is that when we're doing kinematic analysis,
+joints are generally modeled as having a single what's
+called degree of freedom, a single direction of movement,
+a single possibility of movement.
+If a real life joint can move in more than one way,
+then we model it as a sequence of joints each
+of them having a single degree of freedom.
+What does that mean?
+It generally actually means that joints,
+in this type of analysis that we do here,
+we can really only have two types, so two types of joints.
+There's a revolute joint which again
+think about it as a hinge.
+My elbow is a hinge joint.
+There's only one type of movement it can do.
+It can rotate around one axis.
+What about, for example, the shoulder?
+The shoulder can do rotations around multiple axes.
+And in this case, actually in the case of the shoulder,
+it can rotate around three different axes.
+Well, when we are doing this kind of kinematic analysis,
+we model something like the shoulder
+as a sequence of three joints, each joint being
+of this type, a revolute joint with a single axis of rotation.
+The other type of joint that we deal with,
+which the human body doesn't really
+have one, so it's harder to illustrate,
+is a prismatic joint.
+A prismatic joint allows translation along one axis.
+Most of the robots that we've looked at so far in the videos
+only had revolute joint.
+But prismatic joints are also not all that uncommon.
+So each of these joints, a single degree of freedom,
+a single possibility of movement.
+And what completely characterizes
+one of these joints is the joint axis.
+The axis for a revolute joint is the axis
+around which the joint rotates.
+So in the case of, let's say, my elbow,
+if I hold my arm like this, then the joint axis is this.
+It's the one pointing straight up
+because this is the axis that I'm rotating around.
+For a prismatic joint, the joint axis
+is the axis along which we move.
+And then a joint, the current position of a joint,
+is defined by what's generally called the joint value, which
+is either the angle that I'm currently at if I'm rotating
+or how much I've translated in case it's a prismatic joint.
+So here is an example of two joints.
+So if we sketch a prismatic joint--
+there are many conventions about how to sketch something
+like a prismatic joint.
+But we're going to say this is how we're going
+to sketch a prismatic joint.
+And then here we're going to have a revolute joint.
+So for this prismatic joined, the joint axis
+is obviously along this direction.
+And the joint value is how much we've translated by.
+So this is the joint value.
+And in general what we do is, in this course,
+we're going to use the letter q to denote the joint value.
+So if this is joint one, then the value of this joint is q1.
+And q1 tells us how much we've translated
+along the joint axis.
+And then for the revolute joint, the joint value
+is given by this angle, how much we have rotated.
+And we're going to use here q2.
+This is the value of joint two, how much
+we've rotated around our joint axis, which is the axis going
+through the board.
+So q is a general term for joint values.
+It doesn't matter if a joint is prismatic or revolute.
+We use the letter q for both of them.
+Sometimes if we want to differentiate,
+we're going to use the letter d to denote distance
+if it's a prismatic joint and the Greek letter theta
+to denote angle if we're talking about revolute joints.
+So if you see theta for a joint value, it means it's an angle.
+It's a revolute joint.
+If you see d for a joint value, it's a distance.
+It means it's a prismatic joint.
+But if you just see q, that's the joint value.
+It doesn't really matter if we're
+talking about a revolute joint or a prismatic joint.
+That is just the value of that particular joint.
+So now you can see now, again, what
+we mean by kinematic chain--
+links connected by joints, each joint having
+a single degree of freedom.
+Maybe it's a revolute joint.
+Maybe it's a prismatic joint.
+And we use the more general term kinematic chain
+because this doesn't necessarily have
+to be what's commonly considered of as an arm, right?
+The arm obviously is a kinematic chain,
+but then again so is a finger.
+Every finger is a kinematic chain.
+A leg for that purpose is also a kinematic chain.
+So any collection of links connected by joints
+is going to be a kinematic chain.
+Obviously you can have kinematic chains attached
+to other kinematic chains.
+I have five fingers attached at the end of the arm.
+So that's five small kinematic chains
+attached at the end of a larger kinematic chain.
+But again, the term is more general
+than if we're just thinking about arms.
+So what's the purpose of a kinematic chain
+in this context?
+And we've talked about how really
+in many, many applications, what we
+care about is a robot arm's ability
+to deliver its end effector at a certain location in space.
+So really what we often care about the most
+is setting some values for all of these joints
+such that the end effector gets to some location in space
+that we need.
+And this becomes the analysis of what's
+called forward kinematics.
+So forward kinematics really asks,
+given the values of all the joints, given specific values
+for all the joints, where is my end effector
+going to end up in space?
+And actually to be a little bit more complete than that,
+yes, we care about where the end effector ends up.
+But it's not enough to only worry about that.
+We don't want, for example, the elbow of the robot
+to hit an obstacle.
+So we want the end effector to reach somewhere in space,
+but we are also concerned about where every link of the robot
+is.
+So in the most general way to think about it,
+let's say that we attach a number of coordinate frames,
+that each link of the robot has a coordinate frame attached
+to it.
+And in yellow here, I've shown a bunch of coordinate frames.
+Coordinate frame zero comes after link zero.
+That is the base coordinate frame at the base of the robot.
+And then there is the last coordinate frame
+is the one attached to the end effector.
+So forward kinematics asks, for specific values
+of all of my joints, where do all of these coordinate frames
+end up in space?
+What's the transform from my base
+coordinate frame to the end effector coordinate frame?
+And for that matter of fact, what's
+the transform from my base coordinate frame
+to every other coordinate frame that I've defined?
+Let's think about notation for a little bit.
+So the convention that we use in this course
+is that a robot is a sequence--
+a sequence of links and joints.
+And our convention is that joint i is followed by link i.
+Then it's preceded by link i minus 1.
+And then at the end of link i, we
+have a coordinate frame attached.
+And that is coordinate frame i.
+And obviously this is just a matter of convention,
+how we decided to set this subscripts.
+But this is the convention that we've used in this class.
+And what this generally means is that, for example,
+for a robot like this, we're going to have--
+let's say if we have n joints, then
+we're going to have n plus 1 links.
+This assumes that there is a base coordinate frame here.
+So the robot starts with a link that's
+rigidly attached to the world.
+And we have a base coordinate frame
+at the beginning of that link.
+Obviously that also means we have n plus one coordinate
+systems, And one of them being b, the coordinate frame b.
+And then there is one attached to every link.
+One thing to remember in our convention
+is that joint moves link i.
+So joint i comes before the link i.
+And changing the value of joint i will move link i.
+And also by convention for us, coordinate frame i
+is at the tip of link i.
+So that means, of course, that coordinate frame n
+is the end effector.
+What we're going to worry about the most
+in the next part of the class is where the end effector ends up.
+But of course if we know how to compute where the end
+effector ends up, we know how to compute
+where every coordinate frame that precedes it ends up.
+So we have solved the more general problem.
+So fundamentally, forward kinematics in this case
+means that we are asking the question, what's
+the transform from the base of my robot to the end effector?
+This is what we're going to spend the next lecture on.
+If we know how to answer this question,
+then we know really how to characterize the entire robot.

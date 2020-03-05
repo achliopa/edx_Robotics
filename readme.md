@@ -783,8 +783,66 @@ chmod +x tf2_examples.py
 * The transforms must be published in a continuous loop at a rate of 10Hz or more. The skeleton code you are provided already does that, so all you need to do is edit the publish_transforms() function to fill in the transforms with the appropriate values. 
 * This assignment also includes some visual feedback. Once you have sourced setup_project2.sh you can click the 'Connect' button. You will see an interactive visualization containing a cube, a cylinder and an arrow. Initially they are all placed at the origin (and the cube will occlude the cylinder).
 * Once you run your code, these bodies will position themselves in space according to the transforms your code is publishing. The cylinder denotes the object, the cube and arrow the robot and camera respectively. If your code works correctly, you should see the arrow point out of the cube directly at the cylinder. Here is an example of the correct output (note that the colored axes show you the location of the base coordinate frame with the usual convention: x-red, y-green, z-blue):
+
 ![image](https://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_P2_1.png)
+
 **Setup**
 * As always, make sure to `source setup_project2.sh`  before trying to invoke any ROS commands (catkin_make, roscd, etc.). This will also start a roscore for your session. Please do not start your own roscore.
 * As mentioned above, after you have sourced `setup_project2.sh` simply run your `node rosrun project2_solution solution.py`. After that, you can click the 'Canvas' button on the right corner and then click the 'Connect' button. You will see an interactive visualization of the transforms in the assignment (if you're curious, this was created using [ROS Markers](http://wiki.ros.org/rviz/DisplayTypes/Marker)).
 * Each of the three transforms that you need to publish is worth 5 points. For each transform, you will get the points only if the transform you publish is correct in its entirety (within numerical precision) - no partial credit if only the rotation part is correct, or only the translation, etc. 
+**How do run this project in my own Ubuntu machine?**
+* Launch Project 2, then in Vocareum click Actions>Download Starter code. This will download all the files you need to make the project run locally in your computer.
+* IGNORE all the files outside the catkin_ws folder. You do not need these in your local machine 
+* The downloaded files are structured as a catkin workspace. You can either use this structure directly (as downloaded) and build the workspace using the "catkin_make" command or use whatever catkin workspace you already had, and just copy the packages inside your own src folder. If you are having troubles with this, you should review the first ROS tutorial "Installing and configuring your ROS Environment".
+* Once you have a catkin workspace with the packages inside the src folder, you are ready to work on your project without having to make any changes in any of the files. 
+* NOTE: You can source both your ROS distribution and your catking workspace automatically everytime you open up a terminal automatically by editing the ~/.bashrc file in your home directory. For example if your ROS distribution is Indigo, and your catkin workspace is called "robotics_ws" (and is located in your home directory) then you can add the following at the end of your .bashrc file:
+```
+source /opt/ros/kinetic/setup.bash
+echo "ROS Kinetic was sourced"
+source ~/robotics_ws/devel/setup.bash
+echo "robotics_ws workspace was sourced"
+```
+* This way every time you open up a terminal, you will already have your workspace sourced, such that ROS will have knowledge of the packages there.
+* To run the project, open up a terminal and fire up a roscore (just type "roscore"). Before moving forward, if you haven't followed the instructions on step 5, you will need to source ROS and the catking workspace every time you open a new terminal. On another 2 separate terminals you need to run the scripts in each package: "rosrun marker_publisher marker_publisher" and "rosrun project2_solution solution.py". Now, to visualize the markers we need to launch rviz. In a new terminal type "rosrun rviz rviz". First thing you need to do is change the Fixed Frame option on the left of the UI. Select "base_frame", and notice that the Global Status now reads "Ok". Now we need to add the information we want to be displayed. Click Add and on the popup screen select the tab "By topic". Here you will see the topic /visualization_marker>Marker. Select it and then you should be able to see the block, cylinder and arrow. You can also add the item "TF" if you want to see a visual representation of the frames.
+**How to aim the camera?**
+* Hint: There is a simple geometrical argument that can help you rotate the x-axis of the arrow to point at the cylinder. Calculate the vector pointing from the camera to the object, use the dot and cross products to deduce the angle and axis to rotate around.
+
+## Week 3: Robot Arms - Forward
+
+### 3.1 Robot Arms Introduction
+
+* Robot Arms revolutionized manufacturing (cars,consumer electronics)
+* not so visible to public eye
+* [Kuka](https://www.kuka.com/) robots have
+    * multiple custom end effectors to perform varius tasks 
+    * repetitive tasks. delivers end effector to same position again and again
+    * switches grippers
+    * forward trajectory and reverse again and again
+* Robot arms exceed humans
+    * precision
+    * tireless
+    * speed (turnaround time)
+    * strength
+    * smooth operation
+    * cooperations/synchronization
+* [FANUC](https://www.fanuc.eu/uk/en)
+    * huge payloads
+* Robot Arms can work as 3D Printers
+* Our first task is to understand how the Robot arms executes the instructions of moving in 3d space
+
+### 3.2 Kinematic Chains and Forward Kinematics
+
+* What is a Kinematic Chain (aka Robot Arm in Kimematic Analysis):
+    *  Asequence of Links and Joints (links connected by joints)
+    *  Links are the rigid components that comprise the arm
+    *  The Joints are articulations, things that can move
+* when we do kinematic analysis joints are modeled as having a single degree of freedom (DOF). 1 direction of movement
+* if a real robot joint has >1 DOF we model it as a sequence of joints i Kinematic Analysis
+* in kinematic analysis we have the folloing 2 types to model joints
+    * Revolute Joint Type: The joit axis is the axis around which we rotate and the joint value (current position) is the rotation angle
+    * Prismatic Joint Type: like a hydravlic cylinder. the joint axis is the axis along which we translate. the joint value (current position) is the translation distance
+* q is used to represent the joint value and 
+    * we use q(d) for prismatic joints
+    * we use q(Θ) for revolute joints
+* we can have kinematic chains connected to other kinematic chains
+* In many applications we just care about a robot arm ability to deliver its end effect at a certain location in space
