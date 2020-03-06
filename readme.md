@@ -947,4 +947,9 @@ we need only 4 numbers
 * depending on the joint type. the joint value qi goes to θ or d respectively, the other is fixed
 * a and α are fixed as they represent the link
 * Manufacturer (KUKA, FANUC) gives the DH table and from this we derive the robot kinematics
-* The true chaleng is to formally compute the Transform from Base to EndEffector using the DH table
+* The true challenge is to formally compute the Transform from Base to EndEffector using the DH table
+$$x=\sqrt{2}$$
+
+<script type="text/javascript" async
+
+src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
