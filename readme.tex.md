@@ -948,4 +948,21 @@ we need only 4 numbers
 * a and α are fixed as they represent the link
 * Manufacturer (KUKA, FANUC) gives the DH table and from this we derive the robot kinematics
 * The true challenge is to formally compute the Transform from Base to EndEffector using the DH table
-$$x=\sqrt{2}$$
+* We start with the FW Kinematic analysis using DH notation for each Joint
+$$T_{ROT}(\theta_{i},z)\cdot T_{TRANS}(d_{i},z)\cdot T_{TRANS}(a_{i},x)\cdot T_{ROT}(\alpha_{i},x)$$
+* what this means for the 2-axis planar robot with the DH params we have seen ? we chain the transforms
+$$\cos(q_{i})=c_{i}\:\:\:\sin(q_{i})=s_{i}$$
+$$T_{ROT}(q_{1},z)\cdot T_{TRANS}(0.5,x)\cdot T_{ROT}(q_{2},z)\cdot T_{TRANS}(0.3,x)=\begin{bmatrix}
+c_{1} & -s_{1} & 0 \\ 
+s_{1} & c_{1} & 0 \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0.5\\
+0 & 1 & 0 \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} & 0 \\ 
+s_{2} & c_{2} & 0 \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0.3\\
+0 & 1 & 0 \\
+0 & 0 & 1\end{bmatrix}$$
+
