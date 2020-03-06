@@ -949,7 +949,3 @@ we need only 4 numbers
 * Manufacturer (KUKA, FANUC) gives the DH table and from this we derive the robot kinematics
 * The true challenge is to formally compute the Transform from Base to EndEffector using the DH table
 $$x=\sqrt{2}$$
-
-<script type="text/javascript" async
-
-src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
