@@ -974,7 +974,7 @@ s_{2} & c_{2} & 0.3s_{12}+0.5s_{1} \\
 0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
 c_{12} & -s_{12} & 0.3c_{1} \\ 
 s_{12} & c_{12} & 0.3s_{1} \\
-0 & 0 & 1\end{bmatrix}=^{b}T_{2}$$
+0 & 0 & 1\end{bmatrix}$$
 
 * to get to c12 s12 we use trigonometric rules
 
@@ -985,5 +985,172 @@ $$c_{1}c_{2}-s_{1}s_{2}=\cos(\theta_{1}+\theta_{2})=c_{12}$$
     * the translation part makes sense trigonometrically according to our sketch
 
 ###  3.6 DH Notation Example: SCARA Robot
+
+* we will see another robot fully defined in DH notation
+* the specification of the robot is:
+    * i=0: θ0=0 d0=0.5 a0=0 α0=0
+    * i=1: θ1=q1 d1=0 a1=0.7 α1=0
+    * i=2: θ2=q2 d2=0 a2=0.7 α2=0
+    * i=3: θ3=0 d3=q3 a3=0 α3=0
+    * i=4: θ4=q4 d4=0 a4=0 α4=0
+* we see that it has 5 joints. (acually 4 and one fixed to represent L0 link) the j=0 is a fixed link
+* we scetch it starting from base coordinate frame (y points toward viewer)
+    * first fixed joint J0 is 0.5m towards the +z axis (L0 link). no rotation
+    * second joint J1 rotates around z axis for q1 degrex (new x and new y axis) and L1 link is 0.7m along the rotated J1 x axis with no further fixed rotation
+    * third joint J2 rotates around z axis of L1 tip for q2 deg  (z is still not rotated in system) (new x and new y axis) L2 link is 0.7m along the rotated J2 x axis with no further fixed rotation
+    * forth joint J3 is a prismation one (varialble translation on rotation) wher q1 is the joint value (distance) along the positive z axis. prismatic joint has no a and α as it serves as a movable link. no rotation of any axis
+    * last joint J4 is a rotation around the z axis for q deg no link. so J3 and J4 work together as a movable link with a rotated tip that rotates the end effector
+* this robot is an efficient pick and place robot
+* we now know how to calculate analytically its transform matrix base->endeffector from DH params
+* we will use the ci si notation for cos(θi) sin(θi) and cij sij for cos(θi+θj) and sin(θi+θj)
+$$^{b}T_{4}=\begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0.5 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+c_{1} & -s_{1} & 0 & 0 \\
+s_{1} & c_{1} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0 & 0.7 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+c_{2} & -s_{2} & 0 & 0 \\
+s_{2} & c_{2} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0 & 0.7 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & q_{3} \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+c_{4} & -s_{4} & 0 & 0 \\
+s_{4} & c_{4} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}$$
+
+* when we multiply a trasform matrix containing only translation (R=i) with a transform matrix containing only rotation we can just concatenate the matrices. This works ONLY IN THIS ORDER: Pure transaltion followed by pure rotation
+* when we have consecutive Pure Translations we can just add them up
+$$^{b}T_{4}=\begin{bmatrix} 
+c_{1} & -s_{1} & 0 & 0 \\
+s_{1} & c_{1} & 0 & 0 \\
+0 & 0 & 1 & 0.5 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+c_{2} & -s_{2} & 0 & 0.7 \\
+s_{2} & c_{2} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix} 
+c_{4} & -s_{4} & 0 & 0.7 \\
+s_{4} & c_{4} & 0 & 0 \\
+0 & 0 & 1 & q_{3} \\
+0 & 0 & 0 & 1 \end{bmatrix}$$
+
+* we can mutliply the matrixes to produce the final transform
+
+### 3.7 Kinematic examples: 6DOF and 7DOF robots
+
+* we will now look ata a more complicated robot with 6 joints aka 6DOF
+* all joints are revolute (no prismatic)
+* this robot uses a lot α (fixed rotation around x axis)
+* such a robot is very common in industrial robotics
+* this exact DH description is from a [Staubli]() robot
+    * joint1: θ1=q1 d1=0 a1=0 α1=90deg
+    * joint2: θ2=q2 d2=0.16 a2=-0.4 α2=0
+    * joint3: θ3=q3 d3=-0.14 a3=0 α3=90deg
+    * joint4: θ4=q4 d4=0.45 a4=0 α4=90deg
+    * joint5: θ5=q5 d5=0 a5=0 α5=-90deg
+    * joint6: θ6=q6 d6=0.07 a6=0 α6=0
+* we start our attempt to draw the robot arm by draing the base coordinate frame in 3d perspective and z pointing up, x towards vier y points right
+* first joint is rotation around z axis by variable angle. the α rotates the frame of joint 90o around x so now z points left and x unchanged and y down
+* second joint is rotating arouns the new z by variable angle and is translated on z axis. the next link is translated on x axis negative so points inside the screen
+* third joint rotates around the left pointing z by variable angle and translates negative on z. the link is rotated 90deg around x. so the new frame has a z pointing down
+* forth joint rotates around the new down pointing z by variable angle and is translated on z axis producing the link. the new frame is fixed rotated around x 90deg so z now points right
+* fifth joint rotates around the new z and has no translation on any axes so 4 and 5 is a double joint. it has a fixed rotation on x of -90deg so the new frame has a z pointing down again
+* 6th joint rotates around the new z axis and translates on it by 0.07
+* [Graspit](https://graspit-simulator.github.io/) is an open source simulator for robotic hands and arms. if we model this arm we see the degrees of freedon and can move it
+* a is used in these robots heavily because we need the next z axis to point to the right dir
+* we will look at a similar robot in ROS
+* he uses a robotsim and then rviz to visualize and enables a robotmodel and then uses a python script to command it
+* rviz actually uses TF info underneath. we can enable it and see the joint frames in realtime
+* so as we have seen TF is used broadcasting the frames or the rviz to consume
+* there is a ROS module computing forward kinematics based on the input from the applet. the transformations are published to TF . rviz listens to TF and visuzalizes
+
+### 3.8 Recap
+
+* Kinematic chains are collections of links and joits
+* diffrent values of the joints (joint values or variables) mans the robot is moving
+* the transformation params or robot model params are given in URDFor DH format
+
+### Project 3
+
+**Description**
+* In this project you will implement the forward kinematics for a robot arm defined in a URDF file and running in a ROS environment.
+* The setup contains a "simulated" robot that continuously publishes its own joint values. After you have run through the Setup instructions (see below), you can check that the robot is indeed publishing its joint values by using the 'rostopic echo /joint_states' command. However, that is not enough for the robot to be correctly displayed: a forward kinematics module must use the joint values to compute the transforms from the world coordinate frame to each link of the robot. This is the code you must fill in.
+* Your job will be to complete the code 'solution.py' in the 'forward_kinematics' package provided to you. When you familiarize yourself with the starter code you will see that the 'ForwardsKinematics' class subscribes to the topic 'joint_states' and publishes transforms to 'tf'. It also loads a URDF description of the robot from the ROS parameter server. You will only have to edit 'solution.py' and fill in the compute_transforms function. If you want, you can also peruse the rest of the skeleton we provide to get an even better understanding of what is going on behind the scenes.
+* Every time the subscribed receives new joint values, we do some prep work for you. We unpack from the URDF all the data you will need, including the structure of the robot arm as lists of joint objects and link names. Then, we pass this data, along with the joint values, to the compute_transforms function which you must fill in.
+
+**The 'compute_transforms' function**
+* This is the function that performs the main forward kinematics computation. It accepts as parameters all the information needed about the joints and links of the robot, as well as the current values of all the joints, and must compute and return the transforms from the world frame to all the links, ready to be published through tf.
+* Parameters are as follows:
+* link_names: a list with all the names of the robot's links, ordered from proximal to distal. These are also the names of the link's respective coordinate frame. In other words, the transform from the world to link i should be published with world_link as the parent frame and link_names[i] as the child frame.    
+* joints: a list of all the joints of the robot, in the same order as the links listed above. Each entry in this list is an object which contains the following fields:
+    * joint.origin.xyz: the translation from the frame of the previous joint to this one
+    * joint.origin.rpy: the rotation from the frame of the previous joint to this one, in ROLL-PITCH-YAW XYZ convention
+    * joint.type: either 'fixed' or 'revolute'. A fixed joint does not move; it is meant to contain a static transform. 
+    * joint.name: the name of the current joint in the robot description
+    * joint.axis: (only if type is 'revolute') the axis of rotation of the joint
+    * joint_values contains information about the current joint values in the robot. It contains information about all the joints, and the ordering can vary, so we must find the relevant value  for a particular joint you are considering. We can use the following fields:
+* joint_values.name: a list of the names of all the joints in the robot;
+    * joint_values.position: a list of the current values of all the joints in the robot, in the same order as the names in the list above. To find the value of the joint we care about, we must find its name in the name list, then take the value found at the same index in the position list.
+* The function must return one tf message. The transforms field of this message must list all the transforms from the world coordinate frame to the links of the robot. In other words, when you are done, all_transforms.transforms must contain a list in which you must place all the transforms from the world_link coordinate frame to each of the coordinate frames listed in link_names. You can use the convert_to_message function (defined above) for a convenient way to create a tf message from a transformation matrix.
+
+**Setup**
+* Similarly to the first two projects, please make sure you source the 'setup_project3.sh' before  you attempt to run your code. This starts a roscore and loads the robots URDF into the ROS parameter server. After you have done that, you can press the 'Connect' button and you should see the robot arm with all its links placed at the origin. This is because no transform tree is being published and ROS does not know where to place the links.
+![image](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_P3_1.png)
+
+* The setup script will also start a nodes that you can find in the 'robot_mover' and 'robot_sim' package. These node publish joint values on the 'joint_states' topic, which your forward kinematics code subscribes to. All that is left for you to do is to run your completed code. If you have done everything correctly, you should see the robot arm move back and forth in a physically correct fashion. 
+![ιμαγε](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_P3_2.png)
+
+* When you run solution.py, you will get a Warning along the lines of "Unknown tag: comScalar element defined multiple times...". You can safely ignore this.
+* If you get a notification that the websocket connection has closed that means that the connection between ROS and the Canvas has broken down. You will have to reload the page and source the setup script again before ROS can use the Canvas again.
+
+**Resources and Hints**
+* It will help to get familiar with  the [URDF documentation](http://wiki.ros.org/urdf). In particular, the documentation for the [URDF Joint](http://wiki.ros.org/urdf/XML/joint) element will be very helpful in understanding the nature of the joint object that is being passed to the compute_transforms function, and what you must do with the data in each joint object.
+* Remember that you must compute (and publish) the transform from the world coordinate frame (called world_link) to each link of the robot. However, the URDF tells you the transform from one link to the next one in the chain (through the joint between them). Thus, one way to complete the assignment is in iterative fashion: assuming you have compute the transform from the world_link coordinate frame to link i, you just need to update that with the transform from link i to link i+1 and you now have the transform from the world_link frame to link i+1.
+
+### Project 3 FAQ
+
+* How do run this project in my own Ubuntu machine?
+    * Launch Project 3, then in Vocareum click Actions>Download Starter code. This will download all the files you need to make the project run locally in your computer.
+    * Install the needed ROS package(s). Run the following lines on your terminal:
+```
+sudo apt-get update
+sudo apt-get install ros-kinetic-urdfdom-py
+```
+
+* Replace kinetic with the ROS version that you are running on your local machine.
+    * IGNORE all the files other than 'catkin_ws' and 'kuka_lwr_arm.urdf'. Copy the folder catkin_ws to your home directory (you can rename it project3 if you want). Also put the file 'kuka_lwr_arm.urdf' in the home directory.
+    * The downloaded files are structured as a catkin workspace. Navigate to the folder catkin_ws in your home directory using "cd catkin_ws" or whatever name you gave the workspace ("cd project3"). If you are running ROS Kinetic you need to modify the CMakeList.txt file in the robot sim package before running catking_make (see note in the last FAQ bullet point). Once inside your catkin workspace, run the command "catkin_make".
+    * If you are having troubles with this, you should review the first ROS tutorial "Installing and configuring your ROS Environment".
+    * At this point if the catkin_make command was successful, you are ready to work on your project without having to make any changes in any of the files. 
+    * NOTE: You can source both your ROS distribution and your catkin workspace automatically everytime you open up a terminal automatically by editing the ~/.bashrc file in your home directory. For example if your ROS distribution is Kinetic, and your catkin workspace is called "project3_ws" (and is located in your home directory) then you can add the following at the end of your .bashrc file:
+```
+source /opt/ros/kinetic/setup.bash
+echo "ROS Kinetic was sourced"
+source ~/project3_ws/devel/setup.bash
+echo "project3_ws workspace was sourced"
+```
+    This way every time you open up a terminal, you will already have your workspace sourced, such that ROS will have knowledge of the packages there.
+    * Before moving forward, if you haven't followed the instructions on step 6, you will need to source ROS and the catkin workspace every time you open a new terminal. To run the project, first open up a terminal and type "roscore". In the second terminal (remember to source ROS and the catkin workspace if you didn't do step 6)  run "rosparam set robot_description --textfile kuka_lwr_arm.urdf", followed by "rosrun robot_sim robot_sim_bringup".
+    * On another 2 separate terminals you need to run the scripts for the robot mover and the your solution in forward kinematics : "rosrun robot_mover mover" and "rosrun forward_kinematics solution.py". Note that you can find these lines from setup_project3.sh in the starter code.
+    * Now we can open up Rviz using "rosrun rviz rviz". Inside Rviz, first change the Fixed Frame to "world_link" (you might not be able to do this until you start writing your solution code since there will not be any TF for "world_link"). Then click Add and select RobotModel from the list of options. At this point if you code works, you should see the robot arm rendered and moving in a coherent way back and forth from an upright position to a another predetermined pose. You can also see the transforms if you select Add > TF. 
+
+## Week 4: Robot Arms - Inverse Kinematics
+
+### 4.1 Analytical IK, Planar Robot Example
 
 * 

@@ -1,0 +1,23 @@
+With this, we're wrapping up the lecture on kinematic chains
+and forward kinematics.
+The things to remember are that kinematic chains are simply
+collections of links and joints.
+Different values of the joints mean that the robot is moving
+and the end effector-- but also all the other links--
+move in space.
+That in order to characterize a robot,
+you need information about these transforms,
+the transforms associated with the links, which never change,
+which are rigid; and the transforms
+associated with the joints, which
+depend on the joint values.
+That information can be given to you in multiple ways,
+and we've seen two ways of doing it--
+URDF, the Universal Robot Description Format,
+and DH, DenavitHartenberg-- parameters.
+The first one, URDF, used in ROS, used in research;
+DH parameters heavily used in industry.
+And then using that information, forward kinematics
+is the task of computing the pose of all the links,
+and in particular the end effector,
+given the joint angles.

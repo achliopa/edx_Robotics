@@ -129,3 +129,104 @@ So this sketch that we just drew by hand, same as this one.
 Except this one also shows the lengths sketched a little bit
 better, so you can get a sense for what
 this robot is used for.
+OK, now that we know what the SCARA Robot looks
+like from the DH parameters, we've
+gotten the sense for the axes, and the orientations.
+Now let's actually carry out all the computations
+and compute analytically the forward kinematics.
+So basically, once again, we have
+to take each transform in the DH table
+and actually turn it into a transform matrix.
+And chain them all together.
+So finally the transform from our base coordinate system
+to the end effector-- which is going to be, in our case,
+transform coordinate frame four--
+is going to be--
+and let's start at the beginning.
+The first transfer that we have here
+is a translation by 0.5 along the z-axis.
+So we have a transform matrix where
+the rotation is the identity.
+And then we have a translation by 0.5 along z.
+And then we have the rest of the matrix as usual.
+We have 0, 0.
+The next transfer is going to be a rotation by theta
+1 around the local z-axis.
+So let's spell that out.
+So first we have the rotation part.
+It's a rotation around z.
+So we know part of the rotation matrix, the easy part, and then
+the rest of your typical rotation matrix
+around one of the axes.
+And then we have no translation in this case.
+The next component, we have a translation
+by 0.7 along the x-axis.
+So for a, so next we have a transformed matrix.
+Again with an identity rotation.
+And this time we have a 0.7 along x.
+All right, the next component, a rotation by theta
+2 by Q2 around the z-axis.
+So very similar to this one except that it's Q2 not Q1.
+And with a zero translation.
+OK, another translation.
+Again, by 0.7.
+Again, along x.
+So really the same as this one.
+So we can just copy it over.
+OK, then we have a translation by Q3
+along the local the z-axis.
+So this is again an identity rotation.
+And then we have the translation by Q3 along z.
+And then finally, one last rotation.
+Q4 theta 4 around the z-axis.
+So another matrix that looks like this one.
+And like this one except that this time it is angle Q4.
+And then no translation component.
+OK, there you go.
+This is our forward kinematics.
+We can go ahead and carry out the multiplication.
+One thing that makes our life easier is that, in general,
+whenever we have a translation-- a pure translation--
+followed by a rotation, by a pure rotation, right?
+So this is a pure translation.
+The rotation is identity.
+This is a pure rotation or the translation is 0.
+So whenever we have two of these,
+you can easily check that yes, one thing you can do
+is multiply.
+But when you multiply, all that happens
+is that you essentially concatenate the two matrices.
+So you can simply take the translation part
+and write it over in that translation component
+of the rotation matrix.
+So really these two multiplied together really have--
+the result has this rotation and this translation.
+So we can just do this.
+And we can get rid of this one.
+The same thing here.
+We have a pure translation followed by pure rotation.
+Note that this only works if they are in this order.
+Translation first, rotation next.
+So we can just take the translation
+and copy it over here.
+And we can get rid of this.
+OK, here we have two consecutive translations.
+And when you have two consecutive translations,
+it's very easy.
+You just add up the two translation vectors.
+Again, you can carry out the multiplication
+and see that that's exactly what you get.
+And if we add up this translation vector
+and this translation vector, basically we're
+going to get a 0.7 here.
+And we can't get rid of this.
+And then finally, here again, we have
+a pure translation followed by a pure rotation, right?
+So we can just dig the translation. bit
+and copy it over here.
+OK, so now this is our forward kinematics for the SCARA Robot.
+And we're not going to carry out the multiplications here.
+But you can see that it's really nothing all that complicated.
+Just two more matrix multiplications.
+And you've got yourselves a nice analytical formulation
+for the former kinematics for this particular robot.

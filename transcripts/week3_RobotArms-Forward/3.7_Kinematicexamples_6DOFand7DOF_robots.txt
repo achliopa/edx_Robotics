@@ -1,0 +1,258 @@
+Now we can look at a more complicated robot--
+six degrees of freedom, six joints.
+And the other thing that you'd notice just
+by looking at the DH table--
+all revolute joints.
+So we have no prismatic joints.
+All the joint variables are in the theta column.
+And now, we're making heavy use of the alpha parameter
+rotations around x.
+So let's see what that looks like.
+And this configuration-- a robot with six degrees of freedom
+and all of them revolute joints--
+is actually very common in industrial robots.
+And this particular robot that we're looking at here
+is a model of a Staubli robot.
+Staubli is another industrial robot manufacturer whose robots
+are very commonly used.
+So let's sketch what this robot looks like.
+Let's give ourselves a base coordinate frame.
+Let's say x0 and z0.
+And again, we're just going to do x and z for clarity.
+First row of the DH table--
+our first degree of freedom is a rotation
+around the local z-axis.
+So this is our first joint.
+Then we have no translation, no translation,
+a rotation by 90 degrees around x.
+So if we rotate by 90 degrees around x,
+this means that z1 is going to be pointing like this,
+and x1 is going to be pointing in the same direction as x0,
+and at the same location.
+And we're done with the first row of the table.
+Second row of the table, we have our next degree of freedom,
+which, again, is a rotation around z.
+But now our z-axis is here.
+So this is our second degree of freedom.
+It's going to be a rotation right here.
+Then we have a translation by 0.16 along the z-axis.
+So that brings us our origin, let's say, here.
+And we're just gonna start to also sketch
+the lengths of our robot.
+Then we also have a translation by negative 0.4
+along the x-axis.
+The x-axis still points like this.
+So if we translate by negative 0.4 along x,
+let's say that brings us somewhere back here.
+And then we have no rotation around x.
+So our next coordinate frame will have z,
+will be pointing like this.
+So z2 points like this--
+x2 still pointing in this direction.
+OK.
+And we're done with this part of the table.
+Let's look at this one. q3, our next degree of freedom,
+is, again, a rotation around the local z.
+So this is going to be the next joint of the robot.
+Then we're going to translate by negative 0.14 along z.
+So that'll bring us back in this direction.
+So let's say maybe here.
+We have no translation along x.
+We have a rotation by 90 degrees around the x-axis, which,
+again, makes z point straight down.
+So z3 is going to be right here.
+And then x3 is unchanged, still pointing
+in the same direction as x2.
+So we're done with this row.
+Let's look at this row.
+Again, our next degree of freedom
+is a rotation around the z-axis.
+So we are rotating right here.
+Then, we're going to go by 0.45 meters along z.
+So we're heading down, down, down, down, down,
+getting to maybe somewhere right here.
+So this is what the robot link looks like.
+We have no translation along x, and yet
+another 90 degrees around x.
+So now z is going to be pointing like this.
+And x is still pointing the way it has been
+for the last couple of rows.
+So now we're done with this row.
+The next row, we are once again rotating around the z-axis.
+This is yet another degree of freedom of the robot.
+We have no translation, no translation,
+but doing 90 degrees around x.
+So this means that z5 will be pointing straight down.
+And x5 is the same as x4, so this is x4 comma five.
+And then finally, our last degree of freedom,
+we once again rotate around z.
+So we are rotating around this axis right here.
+And we are translating along z by 0.7.
+So that maybe brings our end factor somewhere right here.
+And I'm not going to draw and z6 and x6 for clarity,
+but they are rooted right at this point.
+So this is what the robot looks like in a sketch.
+This can be a little hard to understand what's going on,
+just from the sketch.
+So what we're going to do is look at this same robot
+in a simulator.
+This piece of software is called GraspIt!
+It's an open source simulator for robotic hands,
+in particular, but useful for arms as well.
+It's a research piece of software
+that we use a lot at Columbia.
+We're not going to be making heavy use of it in this course,
+but I'm going to be using it here
+to illustrate this particular robot, because in GraspIt!,
+I can actually go ahead and change the individual degrees
+of freedom, which makes it a lot more
+clear what exactly is going on.
+So if you look at the sketch, the first degree of freedom
+is a rotation around this z-axis.
+And it corresponds to this rotation.
+OK.
+The second degree of freedom is a rotation around z1,
+so a rotation around this axis, which, as you can see,
+corresponds to this degree of freedom.
+OK.
+Then we have this translation and this translation,
+which-- you can see them right here.
+You get to the elbow and then back.
+And that gets us to our next degree
+of freedom, which is a rotation around this axis, where
+we're essentially doing this.
+OK, the next degree of freedom--
+the rotation around z3--
+so pointing down.
+There you go, right here.
+Then we go down to the rest of the robot, where
+we have two degrees of freedom.
+One of them is a rotation around this axis--
+around z4.
+So we're doing this.
+And then our last degree of freedom-- all the way
+at the tip, we are rotating around z5, which is this.
+And this can be a little hard to see what's going on.
+But I can zoom in.
+And you can see that what's basically happening here
+with this last degree of freedom is that we are rotating
+the tool tip of the robot.
+And you can imagine that if there is a hand or an end
+effector or a gripper attached right here,
+that would be rotating.
+OK, so now, you have a better sense for what role
+each of these axes plays.
+One thing that I want you to notice here is--
+so first of all, we have six degrees of freedom, all of them
+in the DH convention.
+They all have to be rotations around the local z-axis.
+So then what happens is that the alpha parameters--
+or rotation around x--
+is used very heavily, because we always
+need the next z-axis to point in the right direction.
+Since our first rotation is around the vertical axis here,
+and our next rotation is around a horizontal axis,
+we use a 90-degree alpha to essentially have z lie down,
+so that the next z points in the right direction.
+So with DH parameters, you have to be
+a little bit careful in how you use theta, d, a, and alpha.
+But it's possible to express even complicated, six
+degree of freedom robots like the Staubli.
+Why is six degrees of freedom a very common configuration?
+That's something to think about, and something
+that we'll come back to in earnest
+at the end of the next lecture.
+Now let's look again at an interesting robot,
+but this time in ROS.
+And ROS we care about more, because we're
+going to make heavy use of ROS in the class,
+and especially in the assignments.
+So what I'm going to do here is go inside my catkin workspace
+and fire up a little fake simulated robot.
+And then I'm going to start our rviz, our visualizer,
+and have rviz display our robot.
+This is actually a model of a robot arm built by KUKA--
+again, a manufacturer that we've briefly looked at in the past.
+This is a robot with seven degrees of freedom.
+So what we're going to do next is,
+I have a little applet that simply
+allows me to change the joint positions of the robot.
+So here what I'm going to do is be
+changing the values of all the joints
+and you can see how the robot reacts.
+So the first joint is a rotation at the base.
+So it's right here.
+It's a rotation around the vertical axis here.
+The next degree of freedom is--
+the next joint-- is right here, a rotation
+around this horizontal axis.
+Joint three-- another rotation right here.
+Joint four-- this is right here.
+The next to last joint is a rotation around this axis
+right here.
+Let me zoom in a little bit.
+We also have the rotation right there.
+And then finally, the last joint of the robot
+is a rotation at the wrist around the axis
+that's coming out of the wrist.
+OK, so we can look at this robot from multiple viewpoints,
+and get a sense how changing each particular joint angle
+affects the pose of the robot.
+OK, so again, the degrees of freedom
+that we're talking about, you can actually kind of see them
+in the model.
+So it's a vertical rotation around this axis right here.
+Then you have rotation around this axis
+right here, then rotation around this axis,
+rotation around this axis, rotation around this axis
+right here, then rotation around this axis,
+and then finally rotation around the axis that's
+just coming out of the end effector right there.
+One thing I want to take a moment to notice
+is how rviz uses TF information.
+So if I actually display the TF information in rviz,
+you can see all the TF frames that the ROS ecosystem
+knows about.
+And you can see that for each link of the robot,
+there is an associated TF frame that's being published.
+So somebody is telling the ROS ecosystem--
+for example, we can look at all the TF frames here.
+Somebody is telling the ROS ecosystem
+that the transform from the base to lwr
+arm seven link is the transform that you see here,
+which allows rviz to display the transform here.
+But it also allows rviz to display
+the entire link of the robot in the right position in space.
+And in fact, that's true of all the links.
+There is a transform in rviz associated with each link.
+And that transform is being published.
+All of these frames here have names.
+But this is the equivalent we've used-- for example,
+the transform from the base to, let's say, link three,
+in our notation.
+Here, just the names are different.
+So here, this would be called the transform from the whirl
+link to lwr arm three link.
+But it's really the same thing.
+And what this means is that somebody
+is reading in these joint angles,
+computing forward kinematics, computing these transforms
+for all the links of the arm, and then publishing them to TF.
+And then rviz listens to that TF information
+and uses it, and knows how to render
+all the links of the robot in the right place,
+so that when we change one of the joint values,
+all the links and all the transforms move appropriately.
+So there is a ROS module that's running
+right now that's computing forward
+kinematics for our robot.
+And this is relevant, because your next assignment
+will be to write your own replacement for that module.
+So you'll be basically writing a ROS
+node that will be getting the joint values from the robot.
+From the joint values, it will be computing the transform
+from the base to each individual link,
+doing forward kinematics, and then publishing all of those
+transforms to TF, so that rviz can
+publish the robot in the appropriate pose.
+So this will be the next programming assignment.
