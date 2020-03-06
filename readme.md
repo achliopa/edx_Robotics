@@ -784,7 +784,7 @@ chmod +x tf2_examples.py
 * This assignment also includes some visual feedback. Once you have sourced setup_project2.sh you can click the 'Connect' button. You will see an interactive visualization containing a cube, a cylinder and an arrow. Initially they are all placed at the origin (and the cube will occlude the cylinder).
 * Once you run your code, these bodies will position themselves in space according to the transforms your code is publishing. The cylinder denotes the object, the cube and arrow the robot and camera respectively. If your code works correctly, you should see the arrow point out of the cube directly at the cylinder. Here is an example of the correct output (note that the colored axes show you the location of the base coordinate frame with the usual convention: x-red, y-green, z-blue):
 
-![image](https://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_P2_1.png)
+![image](https://drive.google.com/uc?export=view&id=1TbYxJsFdQHTc2AT6gxDlQXtbI8ZQoQu5)
 
 **Setup**
 * As always, make sure to `source setup_project2.sh`  before trying to invoke any ROS commands (catkin_make, roscd, etc.). This will also start a roscore for your session. Please do not start your own roscore.
@@ -935,4 +935,16 @@ we need only 4 numbers
 * Our first robot is a 2-jointed robot.
 * for every joint i we will have θi di ai αi: 
     * for joint 1: θ1=q1, d1=0 a1=0.5m α1=0
-    * for joint 1: θ1=q1, d1=0 a1=0.5m α1=0
+    * for joint 2: θ2=q2, d1=0 a1=0.3m α1=0
+* How this robot looks like?  
+* for simplicity we draw 3D space as 2D assuming z axis of base frame to point towards the viewer
+* joint1 is a revolute joint around base z axis. the angle is q1
+* the link between joint 1 and 2 is 0.5m along the x axis of joint 1 and it
+* again joint 2 is revolute it rotates around z axis by q2 and link 2 is 0.3 on its x axis. 
+* this is where end effector is 
+* this is a planar 2-link robot. a 2d robot
+* We see that DH notation is very intuitive for humans. conventions help on this
+* depending on the joint type. the joint value qi goes to θ or d respectively, the other is fixed
+* a and α are fixed as they represent the link
+* Manufacturer (KUKA, FANUC) gives the DH table and from this we derive the robot kinematics
+* The true chaleng is to formally compute the Transform from Base to EndEffector using the DH table
