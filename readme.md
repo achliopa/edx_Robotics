@@ -953,6 +953,16 @@ we need only 4 numbers
 
 * what this means for the 2-axis planar robot with the DH params we have seen ? we chain the transforms
 <p align="center"><img src="/tex/1605da9de51f61e2dacc0370e5949034.svg?invert_in_darkmode&sanitize=true" align=middle width=175.86145994999998pt height=16.438356pt/></p>
-<p align="center"><img src="/tex/f6218cef37c32650ca165ddee1a7ae55.svg?invert_in_darkmode&sanitize=true" align=middle width=833.8989103499999pt height=59.1786591pt/></p>
+<p align="center"><img src="/tex/4c389897a4b10cc740548a64cd5246ae.svg?invert_in_darkmode&sanitize=true" align=middle width=1404.28625865pt height=59.1786591pt/></p>
 
+* to get to c12 s12 we use trigonometric rules
 
+<p align="center"><img src="/tex/56034d267cdfbb4a92babbec5565bf5c.svg?invert_in_darkmode&sanitize=true" align=middle width=228.35023694999998pt height=16.438356pt/></p>
+
+* we take a look on our full derived translation matrix and see if it makes sense. if it follows the rules
+    * we have a rot matrix with a rotation q1+q2 around z and that makes sense
+    * the translation part makes sense trigonometrically according to our sketch
+
+###  3.6 DH Notation Example: SCARA Robot
+
+* 
