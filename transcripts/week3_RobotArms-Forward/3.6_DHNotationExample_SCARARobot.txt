@@ -1,0 +1,131 @@
+Start of transcript. Skip to the end.
+Let's do one more full example of a robot specified
+in DH notation.
+So another DH example.
+And here is the specification of the robot.
+So what do we notice, just by looking at it, compared
+to the previous robot that we've looked at.
+For joints, we have a first transform that's fixed.
+So this, the first row, has no joint variable in it, right?
+So we have a row zero, which means from the base
+to the first joint, we have a link.
+So that's just a robot where we've
+decided by convention that our base coordinate frame is not
+at the first joint.
+So we have a fixed link in between,
+which is always possible.
+Four joints.
+Three of them are revolute joints.
+One of them is a prismatic joint.
+Let's sketch it and see what this robot looks like in space.
+So we have a base coordinate frame.
+x, b; z, b; so this is the base coordinate frame.
+I'm not going to draw the x-axis, just for clarity.
+OK, so the first row of our table, just a fixed transform.
+No rotation around z.
+0.5 translation along z, which brings us,
+let's say to 0.5 up to here.
+Zero translation along x, zero rotation around x.
+So the coordinate frame for our first joint is up here.
+So that is a fixed link that gets us
+from the base coordinate frame to the first joint.
+So this is the first, this is L0.
+This row, our joint is--
+so we have a rotation by Q1 around the z-axis.
+So let's move this x0 here.
+Just for clarity.
+So if we extend this a little bit,
+then we're moving like this.
+OK, we have no translation along z.
+We have 0.7 translation along x.
+We've rotated x by Q1.
+So we have a translation along x by 0.7.
+So let's say that 0.7 brings us to here.
+And then we have zero rotation around x.
+So we're done with that row.
+We can go ahead and draw our coordinate frame.
+There's going to be x2, x1.
+This is going to be z1.
+And we are done with this row of the table.
+The next one we have, again, a rotation around z.
+Just for clarity, I'm going to draw it going back
+towards the original axis.
+So if we extend this a little bit.
+A positive rotation around z will bring x into y.
+So this is actually going to be a negative rotation.
+This is minus 2.
+But this will just make it easier to draw.
+OK, then we'll have zero translation along z,
+0.7 along x.
+So that will bring us somewhere
+let's say, over here.
+And we have our next coordinate frame.
+So x2, z2.
+And we're done with this row of the table.
+Now we go to this row.
+This is the prismatic joint.
+So we have zero rotation around z.
+But we have a translation along z.
+Again, a positive translation will be moving up.
+I'm going to draw it pointing down,
+just for reasons that will become clear in a second.
+So this is a prismatic joint.
+OK, so then this distance is going to be Q3.
+And we have no other component.
+There's no translation along x.
+There's no rotation around x.
+So then x3 just points like this.
+And z3 points up.
+And then finally, the last joint is, again,
+rotation around z by Q4.
+So this is going to be x4.
+z3 is the same as z4, it's unchanged.
+And this is Q4.
+OK, and we're done.
+If we were to sketch an end effector,
+then the end effector would maybe look like this.
+And again, I mentioned that a positive translation is
+obviously along z2 is going up.
+So this is a negative translation.
+OK, so this is a negative translation.
+And now you can get a sense for what this robot looks
+like in space, right?
+Up to here, it's just the simple robot
+that we've talked about in the past.
+So you imagine two links, the two parts of my arm,
+so the robot is moving like this.
+It has one degree of freedom here around the vertical axis.
+Another degree of freedom here around this vertical axis.
+The base is down at my hip, so down here.
+So this is what the robot looks like.
+But then from here, it also has an end effector
+that can move up and down.
+And then finally, rotate.
+So if we can go back to the computer for a second,
+this is another sketch.
+Obviously it's the same as this, except that this one is
+a little easier to interpret.
+Because now you have the wings of the robot also drawn.
+So you can imagine that this robot, right?
+This bit right here, this part, moves up and down.
+The end effector can rotate around the vertical axis.
+So what this robot can do is it can pick things up.
+If you imagine this plane right here--
+so the plane of the base, for example.
+This robot can go ahead and pick up objects
+that are sitting in that plane.
+Because it can move the effector up and down.
+And it can also rotate the end effector.
+And can easily pick things up that
+are sitting in the plane of the base.
+So this type of robot is actually
+referred to, as you see here, as a SCARA Robot.
+It's a very common kinematic arrangement.
+You can look it up.
+And you'll easily find videos of this robot in operation.
+And a very commonly used pick and place
+robot for moving things around in the plane, right?
+So this sketch that we just drew by hand, same as this one.
+Except this one also shows the lengths sketched a little bit
+better, so you can get a sense for what
+this robot is used for.

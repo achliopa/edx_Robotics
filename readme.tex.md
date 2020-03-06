@@ -965,6 +965,25 @@ s_{2} & c_{2} & 0 \\
 0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix} 
 1 & 0 & 0.3\\
 0 & 1 & 0 \\
-0 & 0 & 1\end{bmatrix}$$
+0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
+c_{1} & -s_{1} & 0.5c_{1} \\ 
+s_{1} & c_{1} & 0.5s_{1} \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} &  0.3c_{12}+0.5c_{1} \\ 
+s_{2} & c_{2} & 0.3s_{12}+0.5s_{1} \\
+0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
+c_{12} & -s_{12} & 0.3c_{1} \\ 
+s_{12} & c_{12} & 0.3s_{1} \\
+0 & 0 & 1\end{bmatrix}=^{b}T_{2}$$
 
+* to get to c12 s12 we use trigonometric rules
 
+$$c_{1}c_{2}-s_{1}s_{2}=\cos(\theta_{1}+\theta_{2})=c_{12}$$
+
+* we take a look on our full derived translation matrix and see if it makes sense. if it follows the rules
+    * we have a rot matrix with a rotation q1+q2 around z and that makes sense
+    * the translation part makes sense trigonometrically according to our sketch
+
+###  3.6 DH Notation Example: SCARA Robot
+
+* 
