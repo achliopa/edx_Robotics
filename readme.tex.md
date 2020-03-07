@@ -1153,4 +1153,51 @@ echo "project3_ws workspace was sourced"
 
 ### 4.1 Analytical IK, Planar Robot Example
 
-* 
+* Inverse Kinematics is the opposite problem of Formward Kinematics
+* Forward Kinematics problem is: Having the robot description and the Joint Values to calculate the Trasform Matrix from Base Frame to EndEffector Frame AKA. the relative position of End Effector
+$$q_{i}\overset{Fk}{\rightarrow}^{b}T_{ee}$$
+
+* In real robot applications we care much more about the inverse problem: we know where the target object is (the desired end effector position). this is the relative position to the base frame which we know so we know the Trasform matrix to go from base to end effector. what we dont know are the joint values
+$$q_{i}\overset{Ik}{\leftarrow}^{b}T_{ee}$$
+
+* We will see analytical methods to compute the joint values
+* The course of action in real life robotics is 
+    * Design the Mechanical of Robot 
+    * Measure it
+    * Derive DH params
+    * Calculate FW kinematics
+    * Calculate INV kinematics
+* we will start simple in 2D using the planar 2 link robot we ve seen in previous chapter
+* The DH params of the 2-Link Planar Robot are:
+    * Joint1: θ1=q1 d1=0 a1=0.5 α1=0
+    * Joint2: θ2=q2 d2=0 a2=0.3 α2=0
+* we start from base frame. x->right y->up z-> to viewer
+* first joint is q1=Θ1 around z axis so new x axis is rotated by θ1. the link is a translation of 0.5m on the new x axis
+* joint is a q2=Θ2 rotation around the z axis. so new x axis is the old rotated by θ1. the link is a translation of 0.3m on the new x axis
+* we calculate first transform matrix from nbase to endeffector (Forward Kinematic) which we have doen in previous chapter:
+$$^{b}T_{ee}=\begin{bmatrix}
+c_{1} & -s_{1} & 0 \\ 
+s_{1} & c_{1} & 0 \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0.5\\
+0 & 1 & 0 \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} & 0 \\ 
+s_{2} & c_{2} & 0 \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix} 
+1 & 0 & 0.3\\
+0 & 1 & 0 \\
+0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
+c_{1} & -s_{1} & 0.5c_{1} \\ 
+s_{1} & c_{1} & 0.5s_{1} \\
+0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} &  0.3c_{12}+0.5c_{1} \\ 
+s_{2} & c_{2} & 0.3s_{12}+0.5s_{1} \\
+0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
+c_{12} & -s_{12} & 0.3c_{1} \\ 
+s_{12} & c_{12} & 0.3s_{1} \\
+0 & 0 & 1\end{bmatrix}$$
+
+* remember that the following convention is used for trigonometric methods::
+$$\cos=c\:\:\:c(q_{1}\pm q_{2})=c_{12}=c_{1}c{2}\mp s_{1}s_{2}$$
+$$\sin=s\:\:\:s(q_{1}\pm q_{2})=s_{12}=s_{1}c{2}\pm c_{1}s_{2}$$
