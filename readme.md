@@ -1137,7 +1137,78 @@ echo "project3_ws workspace was sourced"
 <p align="center"><img src="/tex/86a073c2704212e1503b3fee6ed7a4e1.svg?invert_in_darkmode&sanitize=true" align=middle width=138.27759659999998pt height=35.77743345pt/></p>
 
 * the immediate thought it to introduce the solution of c2 into the first equation and solve for c_{1}
-* not yet. we have to deal with some cases.also we draw a circle of maximum reach for the robot
-    * if the fraction is > 1 it cannot be a cosine so we have no solutions and theoretically the point is in infinite position outside of max reach
-    * if the fraction is equal to 1 then c2=1 so:
-<p align="center"><img src="/tex/a4223c8987d75456dbce5cc150c5cbf7.svg?invert_in_darkmode&sanitize=true" align=middle width=290.2580076pt height=39.452455349999994pt/></p>
+* not yet. we have to deal with some cases.also we draw a circle of maximum reach for the robot of radius L1+L2
+* CASE 1: if the fraction is > 1 it cannot be a cosine so we have no solutions and theoretically the point is in infinite position outside of max reach
+* CASE 2: if the fraction is equal to 1 then c2=1 and we have only 1 solution:
+<p align="center"><img src="/tex/931fb9cc664bcedb25f37e3008070616.svg?invert_in_darkmode&sanitize=true" align=middle width=305.52425145pt height=39.452455349999994pt/></p>
+
+* the solution if c2=1 is that arm is always fully stretched out on the max reach circle
+* when we get c1=a we are tempted to do q1=acos(a) but in the range [0,2π] there are muliple angles with c1=a not one. same for sin. there is not a unique solution. combining both equations gives a unique solution using arctan2. arctan2 is an arctangent that looks at the quadrant that the angle that should be in
+<p align="center"><img src="/tex/13c26fcd1aa559dbf2e098a74d7d4ac3.svg?invert_in_darkmode&sanitize=true" align=middle width=214.09940805pt height=39.452455349999994pt/></p>
+
+* so keep in mind. if only cos or sin is given there are multiple solutions. if both are given there is a unique solution for angle
+* CASE 3: fraction is between -1 and 1 so -1< c2 <1 then there are 2 possible solutions
+<p align="center"><img src="/tex/fd9ba4497c067302dc06c818fb1a5457.svg?invert_in_darkmode&sanitize=true" align=middle width=205.27369664999998pt height=45.046174799999996pt/></p>
+
+* if we use these 2 possible solutions in the original equations we can solve for cos and sin of q1
+* this is a valid concept as fir every point inside the max reach circle there are 2 ways for the robot to reach it aka 2 posiible solutions
+* CASE 4: when fraction is equal to -1. then c2= -1 so q2=π so again a single possible solution for q1 like what we did for c2=1. 
+* in the physical world the external link is folded on the nternal so the robot is on an inner circle with radious L1-L2
+* CASE 5: fraction < -1 . we are inside the inner circle in a region impossible to reach so 0 solutions
+* so for the 2-Link Planar Robot the workspace is donut shaped limited between the external and the internal max reach circle
+
+### 4.2 Robot Workspaces and IK Solutions
+
+* what if apart from translation vector and point postion we put rotation matrix and orientation of the endeffector point in the mix (OMG!!!!!)
+* i want to get the end effector in a certain position in space but also i care about the orientation of it.
+* then we will have postion (α,β) and an angle (γ) from the x axis
+* we start again from the FW full transform matrix to form the equation
+<p align="center"><img src="/tex/b9d605f483002bf231abb0f3e52d8e31.svg?invert_in_darkmode&sanitize=true" align=middle width=393.88655789999996pt height=59.1786591pt/></p>
+
+* we cannot solve this linear system. we ask our system to acheive an end effector pose specified by 3 variables (α,β,γ) which is valis for position and orientation in 2d space... but the only means the robot has at its position to acheive that are 2 joint values (angles) (q1,q2)... its needs a 3rd join
+* we validated that the robot can achieve position in the donut shaped worskspace. once α and β are set γ also... the robot has 2DOFs... we need a 3rd DOF a 3rd joint to acheive that
+* we ll now dig into 3D space.... (OMG^2) to understand the relationship between DOFs and what the end effector can achieve
+* In 2D
+    * we talk about the x,y plane
+    * variable to define the position=(x,y) and orientation=θ of a point in 2D plane: (x,y,θ) 3vars
+    * ROBOTS: #DOF #InvKinem Solutions for arbitrary (x,y,θ)
+        * '<3 DOF' => no workspace where the number of solutions is >1. 0 solutions (there always be unachievable space where). no space where the robot can achieve ANY combination of x,y,θ
+        * '3 DOF' => 0< FINITE for some workspace if the robot is well designed. still there will be some space where the robot cannot achieve ANY combination of x,y,θ (remember the donut shape)
+        * '>3 DOF' => a reduntant robot with a part of workspace where we can have infinite solutions
+    * so the sweet spot is 3DOF for 2D robot
+* In 3D
+    * we talk about full cartesian 3D space (x,y,z)
+    * to define the position and orientation of a body in space. 6 variables. 3 for position (x,y,z) and 3 for orientation along the 3 axis (roll,pitch,yaw)
+    * ROBOTS: #DOF #InvKinem Solutions for arbitrary (x,y,z,r,p,y)
+        * '<6 DOF': 0 solutuions. no space where it can achive any combination of x,y,z,r,p,y
+        * '6 DOF': >0, FINITE ways to achive ANY combination in some part of 3d space
+        * '>6 DOF': redundant robot, INFINITE solutions at some part of space
+    * Sweet spot is 6DOF for 3D space robot
+* An example of a robot working in 3d space with '<6 DOF' is the SCARA robot we have seen.
+* SCARA robot has 4DOF (3 rotations + 1 transaltion). by design its end effector is always pointing down
+* A robot with exactly 6DOF is a [Puma](https://en.wikipedia.org/wiki/Programmable_Universal_Machine_for_Assembly) robot (6 rotations). there is some space where it can place the end effector at any combination of position,orientation
+* A human arm has 7 degrees of freedom (3 at elbow,1 ant elbow,3 at wrist) why??? redundancy is useful in natural world to overcome obstacles
+* in industrial world where environment is controlled jist 6 is enough (also budgetwise)
+* for autonomous robots to release in physical world redundancy is ok to oevercome obstacles
+* more than 7DOF only in research
+
+### 4.3 IK Recap
+
+* IK given the end effector position and orientation  find the axis values to achieve it given the robot model
+* First calculate FK analytically then use it to get Ik as analytical formula
+* 6 DOF for 3d 3DOF for 2D
+
+### 4.4 Analytical IK, Spherical Robot
+
+* we go full mode on 3D space doing Forward and inverse Kinematics on a Spherical Robot.
+* The DH params of the robot are
+    * Joint1: θ1=q1, d1=0, a1=0, α1=-90deg
+    * Joint2: θ2=q2, d2=0, a2=0, α2=90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+    * Joint4: θ4=q4, d4=0, a4=0, α4=0
+* we start with designing the robot on paper
+* our base coordinate frame is: x=viewer y=right z=up 
+* first joint is rotating around z and its next coordinate frame is rotated -90deg around x. so new z points right and new frame is at 0,0,0 position (no link)
+* second joint is rotating around new z and its next coordinate frame is rotated 90deg around x. so new z points up and new frame is at 0,0,0 position (no link)
+* third joint is prispatic so a variable length link of d=q3 on ze axis. new axis frame is translated but not rotated.
+* forth joint is rotating around z. nothing more
