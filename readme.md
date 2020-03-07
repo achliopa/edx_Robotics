@@ -953,7 +953,7 @@ we need only 4 numbers
 
 * what this means for the 2-axis planar robot with the DH params we have seen ? we chain the transforms
 <p align="center"><img src="/tex/1605da9de51f61e2dacc0370e5949034.svg?invert_in_darkmode&sanitize=true" align=middle width=175.86145994999998pt height=16.438356pt/></p>
-<p align="center"><img src="/tex/083efbbc7a4ae67e8cfc88e13e2ac830.svg?invert_in_darkmode&sanitize=true" align=middle width=1359.6071642999998pt height=59.1786591pt/></p>
+<p align="center"><img src="/tex/bf481c3eb009ba29f02f65dd490a8d91.svg?invert_in_darkmode&sanitize=true" align=middle width=1359.6071642999998pt height=59.1786591pt/></p>
 
 * to get to c12 s12 we use trigonometric rules
 
@@ -1114,8 +1114,30 @@ echo "project3_ws workspace was sourced"
 * first joint is q1=Θ1 around z axis so new x axis is rotated by θ1. the link is a translation of 0.5m on the new x axis
 * joint is a q2=Θ2 rotation around the z axis. so new x axis is the old rotated by θ1. the link is a translation of 0.3m on the new x axis
 * we calculate first transform matrix from nbase to endeffector (Forward Kinematic) which we have doen in previous chapter:
-<p align="center"><img src="/tex/938fe1647a196add229761213510aaca.svg?invert_in_darkmode&sanitize=true" align=middle width=987.2226341999999pt height=59.1786591pt/></p>
+<p align="center"><img src="/tex/b77bcefd5418f4a09613a17b51f12783.svg?invert_in_darkmode&sanitize=true" align=middle width=987.2226341999999pt height=59.1786591pt/></p>
 
 * remember that the following convention is used for trigonometric methods::
 <p align="center"><img src="/tex/00afb99363be23587ae1fac241e43170.svg?invert_in_darkmode&sanitize=true" align=middle width=275.5416972pt height=16.438356pt/></p>
 <p align="center"><img src="/tex/24d8de1242992f80ba568cc55baff3a7.svg?invert_in_darkmode&sanitize=true" align=middle width=275.49025845pt height=16.438356pt/></p>
+
+* say now we want our end effector at position x=a,y=b we dont care about the orientation of end effector coordinate frame yet just the position. therefore we use only the translation part of the transform matrix frpm base to end effector to derive the joint values (angles θ1 θ2)
+<p align="center"><img src="/tex/65d9964d7f04be46227d6fac05b09643.svg?invert_in_darkmode&sanitize=true" align=middle width=266.9802927pt height=13.881256950000001pt/></p>
+
+* a good trick to solve the above equation system is to square them both and then add them up
+* what we get is 
+<p align="center"><img src="/tex/8a2a76fef8f1b225897d3da2eff975e0.svg?invert_in_darkmode&sanitize=true" align=middle width=480.1584612pt height=18.2666319pt/></p>
+
+* we make use of the theorem 
+<p align="center"><img src="/tex/2662b434ff963ff244d2c3c85fc433ba.svg?invert_in_darkmode&sanitize=true" align=middle width=149.08671195pt height=18.312383099999998pt/></p>
+
+* using this and the main trigornometric methods for θ1+θ2 our equation is simplified
+<p align="center"><img src="/tex/ad21da414174930ba41c958bc028bc60.svg?invert_in_darkmode&sanitize=true" align=middle width=353.84316164999996pt height=18.312383099999998pt/></p>
+
+* so we have c2.
+<p align="center"><img src="/tex/86a073c2704212e1503b3fee6ed7a4e1.svg?invert_in_darkmode&sanitize=true" align=middle width=138.27759659999998pt height=35.77743345pt/></p>
+
+* the immediate thought it to introduce the solution of c2 into the first equation and solve for c_{1}
+* not yet. we have to deal with some cases.also we draw a circle of maximum reach for the robot
+    * if the fraction is > 1 it cannot be a cosine so we have no solutions and theoretically the point is in infinite position outside of max reach
+    * if the fraction is equal to 1 then c2=1 so:
+<p align="center"><img src="/tex/a4223c8987d75456dbce5cc150c5cbf7.svg?invert_in_darkmode&sanitize=true" align=middle width=290.2580076pt height=39.452455349999994pt/></p>
