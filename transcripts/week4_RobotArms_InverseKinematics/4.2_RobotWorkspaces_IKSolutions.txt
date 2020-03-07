@@ -1,0 +1,361 @@
+What if we also add orientation?
+What if we throw orientation into the mix?
+What if we say that, hey, you know what?
+After all, I care about the orientation of my end effector
+and not just its position.
+This is what my robot looks like.
+Now I have an end effector whose orientation matters.
+And what I'd like to do is get my end effector
+to a certain position in space.
+So I'm going to have a desired a and b.
+But now I also care about the orientation of my end effector.
+So the angle that the end effector
+makes with the horizontal, this is now important to me.
+I want to achieve that.
+So now, then, obviously we'd have
+to achieve these three variables using our forward kinematics.
+So we can try to say, just as before, the translation part is
+going to be called a and b.
+And then the rotation part should end up
+being a rotation by gamma.
+And we can attempt to solve that resulting big system.
+So in that case what we'd be saying
+is, if we do it in matrix form, then what we'd like
+is for these matrices to just be equal.
+So this is our forward kinematics.
+We need this to be equal to--
+Can we go ahead and solve this?
+Don't bother.
+We cannot.
+And what's the intuition between that?
+Well, now basically we are asking our robot
+to achieve an end effector pose specified by three
+variables, a, b, and gamma.
+In matrix form this can be confusing
+because the matrix form, as we've talked about,
+is redundant.
+You have more numbers than actual degrees of freedom.
+But fundamentally, we are asking for a position and orientation
+in 2-D space.
+Position and orientation in 2-D space
+is defined by three variables.
+So two for position, one for orientation.
+But then the only means that the robot has at its disposal
+are two joints, q1 and q2.
+So something has to give.
+It's impossible for the robot to achieve any combination of a,
+b, and gamma using q1 and q2.
+OK.
+So there is no part of the workspace where the robot can
+achieve any combination of position and orientation
+for the end effector.
+We've seen before that there is some finite workspace
+in the shape of the donut in which the robot can achieve
+any position.
+But once you have achieved the position, once q1 and q2 have
+been set in order for you to achieve a and b,
+gamma is also set.
+There is nothing you can do to change it.
+This robot has just two degrees of freedom.
+You can use those two degrees of freedom, maybe to set a and b.
+You cannot use them to also decide on the gamma that you
+want.
+The gamma is decided once you set a and b.
+If you want a robot that can achieve any a, b, and gamma,
+then what you need is another degree of freedom.
+You can maybe add another joint.
+You don't even necessarily need another link.
+So you have one rotation here, you have one rotation here,
+if you add one rotation and the wrist.
+So if you now add a q3, now your robot
+has enough degrees of freedom that you
+can think about achieving any position
+and orientation somewhere.
+There will be some part of the plane
+where you can achieve any position and orientation.
+Even with q3, the robot cannot reach infinitely far.
+So there will be part of the plane that the robot simply
+cannot get to, that you'll have no solutions.
+But at least there will be some part of your workspace
+where you will have a solution for any combination of a, b,
+and gamma.
+So now we're going to extend this intuition
+to three dimensions.
+OK, so now let's look at 2-D space and 3-D space
+to really understand the relationship between robot,
+number of joints, number of degrees of freedom,
+and what they're end effector can achieve.
+So let's think about 2-D and 3-D. Obviously, in 2-D
+space we're talking about the plane, x and y.
+In 3-D we are talking about the full Cartesian 3-D space.
+x, y, and c.
+OK.
+How many variables does it take to fully specify
+the position and orientation of a body in space?
+So variables, for position and orientation.
+If I have a body in 2-D space, and I
+want to specify the position and the orientation,
+I'm going to need x, y, and theta.
+OK.
+So it's three variables that are needed to fully specify this.
+In 3-D space, if I want to completely specify
+both the position and the orientation of the body,
+I'm going to need six variables.
+And this is something that we've stressed
+at the end of the transform lecture.
+So in this case it can be, for example, x, y, and theta.
+Here we're going to have, for example, x, y, z, and then
+roll, pitch, and yaw, as an example.
+But it's really six variables.
+So now let's think about our robots.
+OK, now let's look at robots.
+And what we are going to do is compare the number
+of degrees of freedom of the robot
+and the number of solutions, the number of IK solutions,
+for arbitrary x, y, and theta.
+So if the robot has less than three degrees of freedom,
+has fewer than three degrees of freedom, there is no workspace.
+There is no part of the plane where the number of solutions
+is more than 1.
+So here the number of solutions is going to be 0.
+There will always be, everywhere in the plane,
+some combination of x, y, and theta, that you cannot achieve.
+Maybe a robot, if it has two degrees of freedom,
+maybe it can achieve x and y.
+There's some part of the workspace where you
+can achieve arbitrary x and y.
+It won't be able to achieve arbitrary theta.
+And the arbitrary is important.
+Because it will be able to achieve some combinations of x,
+y, and theta.
+But no, there is no workspace where
+it can achieve any combination of x, y, and theta.
+If the robot has exactly three degrees of freedom,
+there is some workspace.
+That is where this is finite.
+So the number of solution is going
+to be greater than 0 and finite for some workspace,
+assuming that your robot is well-designed.
+It's possible to design a robot with three degrees of freedom,
+where this doesn't hold.
+But you'd have no reason to design or build
+a robot like that.
+So again, chances are your robot won't
+be able to reach to infinity.
+So there will always be some parts of space
+where the number of IK solutions is 0.
+But there will be some workspace.
+Recall, for example, the donut-shaped workspace
+that we've seen in the past.
+There's going to be some workspace where
+the robot can reach any combination of x, y, and theta.
+So inside this little piece of space,
+you can reach any combination of x, y, and theta
+in a finite number of ways.
+Maybe one, maybe two, maybe four, six, and so on.
+If the number of joints is greater than 3,
+then you might even have what's called
+a redundant robot, where the number of solutions
+can be infinite in some workspace.
+And this is the case, for example, for the human arm.
+We'll get to that when we look at six dimensions.
+And redundant robots, which is this case,
+we're going to look at them a little bit in more depth later
+in the course.
+What about in 3-D?
+Again, let's look at the number of degrees
+of freedom versus the number of IK solutions
+for arbitrary problem.
+Very, very Similar situation.
+If your robot has less than six degrees of freedom,
+then there will never be a part of the workspace
+where it can achieve any position and orientation
+for the end effector.
+If it has exactly six degrees of freedom,
+there will be some workspace where it will have greater
+than 0, finite ways to achieve any possible position
+and orientation.
+And then if you have more than six degrees of freedom,
+then there will be some workspace
+where you'll have infinite ways to achieve any combination
+of position and orientation.
+So let's look at an example of each of these.
+And in particular, the 3-D case.
+OK for the first case fewer than six
+degrees of freedom, a simple example
+is the Scara robot that we've looked at already.
+Right?
+The Scara robot has four degrees of freedom.
+There Is a rotation around this axis.
+There is a rotation here.
+There is a rotation here.
+There is translation.
+And then you might even add the 5th degree
+of freedom, which is going to be the rotation around the end
+effector.
+The Scara robot is useful, it can pick things up.
+But if you think about it it's end effector
+is always pointing down.
+Right?
+It can rotate around the vertical axis,
+and it can reach there some finite places
+where it can reach any given position.
+But there is no way for this robot
+to make the end effector point towards you for example.
+To make the end effector point out anywhere other than along
+this vertical axis.
+Right?
+There is no work space where this robot
+can achieve any position and orientation for the end
+effector.
+There's some work space where it can achieve any position
+of the end effector.
+It can actually achieve any position in multiple ways.
+Right?
+And imagine the elbow towards us,
+or the elbow towards the back.
+But there is no work space where it
+can achieve any position and orientation for the end
+effector.
+For the sixth [INAUDIBLE] case, our robot
+would be exactly six degrees of freedom.
+Again we're going to quickly look
+at a model of a Puma robot.
+This is a commonly used, very popular,
+one of the most popular for a long period of time
+industrial robot arms from a few decades ago.
+And this robot has exactly six degrees of freedom.
+One, two, three, four, let's get to four.
+Four, five, and six and there's some work space
+where it can actually place the end effector in any position
+and orientation.
+And that work space is finite, it obviously cannot reach
+infinitely far away for example.
+And that workspace might have an interesting shape.
+But it exists, and it has volume.
+Right?
+And somewhere in that work space this robot
+might actually even be able to achieve the same position
+and orientation in multiple ways.
+One thing that you can imagine, for example,
+and this is again very typical for this kind of robot.
+Let's say that there is a specific position
+and orientation that I want, and the robot
+might be able to achieve it either with the elbow pointing
+up or with the elbow pointing down.
+So there will be a finite number of ways
+in which it will be able to achieve any position
+and orientation.
+And because of this right, because six degrees of freedom
+is the minimum number that gives you some work space
+where you can achieve any position and orientation.
+Because of that six degrees of freedom
+is a very popular configuration with robot manufacturers.
+You're going to see a lot of industrial robots
+have exactly six degrees of freedom.
+People will often refer to them as six axes robots, right.
+Some configurations with fewer than six degrees of freedom
+are useful.
+The Scara robot is actually commonly used
+for pick and place.
+But when an industrial robot manufacturer
+wants to build a general purpose robot arm more often than not,
+they're going to build that with six degrees of freedom,
+because that means that you're giving the user some workspace
+where the end effector can be placed
+in any combination of position and orientation.
+OK.
+What about a robot arm with more than six degrees of freedom?
+Well, we all have a couple of examples nearby.
+The human arm.
+So we are not going to talk about robot arm,
+we are going to talk about the human arm.
+The human arm if you think about it
+has seven degrees of freedom.
+Right?
+Let's count at the shoulder I have three axis of rotation,
+I can rotate like this, I can rotate like this,
+or I can rotate like this.
+So around vertical.
+Then around the axis coming out of the screen.
+And then finally around this axis.
+Then I have one degree of freedom and the elbow.
+And then three degrees of freedom at the wrist.
+One rotation, two rotations, three rotations.
+The row, you can think of it as being at the wrist,
+you can think of it as being at the elbow.
+It doesn't really matter all that much.
+But fundamentally I have seven degrees of freedom of the arm.
+Which means that there is some work space where
+I can achieve any position and orientation,
+and I can achieve it in infinitely many ways.
+Right?
+So for example, if what I'm going to do is place
+my end effector in a certain pose, and just my end effector
+isn't moving.
+Right?
+Notice that I can still move my arm around.
+So I have an infinity of ways in which I
+can achieve this particular position and orientation
+for the end effect.
+Anything inside this interval, this continuous interval
+will be a solution.
+So I have infinitely many solutions
+for that particular inverse kinematics problem.
+And this becomes an interesting point.
+So the human arm, not only is it fully actuated in that it
+can get to any position and orientation in space
+it's actually redundant.
+Why?
+Nobody knows of course why, but one possibility
+may be look in the real world, which is messy and full
+of obstacles, it's not enough to be
+able to reach anywhere you need to be able to reach anywhere
+in many, many ways.
+Because you might have to reach around things, under things,
+over things, avoid obstacles.
+Right?
+So maybe this is why seven degrees of freedom
+redundancy make such a difference for the human arm.
+Are there robot arms with more than six degrees of freedom?
+Yes.
+Not surprisingly, they are used a lot in research.
+Not as much an industry where six degrees of freedom
+is much more common.
+In industry as you've seen in our examples
+that we started with you control the environment.
+So you have the robot moving things around,
+you can take the obstacles out.
+You can design your environment such
+that the robot doesn't have to reach around obstacles, over,
+under things.
+So maybe you don't need six degrees of freedom,
+where you have a really complicated environment
+where you might have to avoid obstacles
+then people will use a robot with more than six degrees
+of freedom even in industry.
+But because you're controlling the environment
+six degrees of freedom is much more common.
+Remember any degree of freedom, any additional degree
+of freedom costs money.
+A robot with seven degrees of freedom
+will be more expensive than a robot
+with six degrees of freedom.
+Are there robots with eight, nine, ten degrees of freedom?
+Robot arms, actually in most cases it stops at seven.
+When people build redundant robot arms
+you need one more than six at least.
+So you build it with seven.
+There are of course, examples of prototypes especially research
+results with robots with more than 7 degrees of freedom.
+If you think about an elephant trunk, or an octopus arm.
+Right?
+Those can be modeled as having a lot more degrees of freedom
+than seven.
+And very, very versatile.
+But again robots manufactured in large numbers,
+you will have seven degrees of freedom
+if they are to be redundant.
+Six degrees of freedom in many cases, less than six
+for specialized robots like a Scara robot doing pick
+can place.

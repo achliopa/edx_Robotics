@@ -1,0 +1,74 @@
+end.
+So let's recap our inverse kinematics lecture.
+Inverse kinematics is essentially
+the task where, if you are given a desired
+transform from the base to the end effector,
+you have to come up with the values for all
+the joint angles, qi.
+The way you do it, at least for analytical, ik,
+you compute forward kinematics, and then
+you just invert it to get inverse kinematics.
+And you get an analytical formula
+for your inverse kinematics.
+And often that involves trigonometry,
+using simple tricks.
+Always good to remember the formulas
+for sine and cosine of sums and differences of angles.
+Sine squared plus cosine squared equals 1.
+We'll do a couple of more examples where
+we'll use these little tricks again and again.
+But then what we ended up seeing, for example,
+we did a little example for a planar two-link robot,
+which has two links, with the first link being a little
+longer than the second.
+And then what happens is we saw that that robot has
+what's called a workspace that's shaped like a donut.
+Anything outside the outer circle,
+the robot cannot reach in any way.
+Anything right on the boundary, the robot
+can reach in just one way, which is with the arm fully stretched
+out.
+Anything inside the circle, the robot can reach in two ways.
+But then there's also an inner circle.
+Anything on the boundary of the inner circle, the robot
+can reach in just one way, which is completely bent back
+on itself.
+Anything inside the inner circle,
+the robot cannot reach at all.
+So the number of solutions for inverse kinematics,
+we have zero solutions outside, one solution on the boundary,
+two solutions inside, one solution
+on the inner boundary of the workspace,
+and then again, zero solutions outside the workspace
+in the inner circle.
+And this is something that you see very, very often, where
+the number of solutions for inverse kinematics
+varies depending on where you are in space.
+And, then we talked about how the number of degrees
+of freedom of the robot relates to the number of solutions
+for inverse kinematics.
+In 2D space, position and orientation
+are specified using three variables.
+So a robot will need at least three degrees of freedom, such
+that it can achieve any position and orientation
+in some workspace.
+In 3D space, the robot is going to need at least six degrees
+of freedom, because you need six numbers to specify position
+and orientation.
+So a robot will need at least six degrees of freedom
+such that it can reach any position orientation of the end
+effector for some workspace.
+If a robot has fewer than these number of degrees of freedom,
+then it's restricted in terms of what it can do.
+If it has exactly these many degrees of freedom,
+so if it's a 3D robot with six degrees of freedom,
+it'll have some workspace where it
+can reach any position orientation
+in a finite number of ways.
+If it has more than this number of degrees of freedom,
+then it's a redundant robot, and there
+will be some part of the workspace
+where the robot can achieve any pose for the end effector
+in infinitely many ways.
+A good example of a redundant arm with seven degrees
+of freedom is the human arm.

@@ -1,0 +1,325 @@
+OK, let's run through a full robot example for kinematics
+and inverse kinematics.
+This one is called the spherical robot.
+It will become clear in a few minutes why.
+As always, what we're given to start with
+is the dh parameters.
+Go.
+And what that means is let's first sketch the robot so
+we get an intuition for how it works,
+then compute forward kinematics, then
+compute inverse kinematics.
+So let's start with our coordinate frame.
+And we're going to have x0, z0.
+The first thing that happens is a rotation around z.
+So this is our first degree of freedom, Q1.
+Then minus 90 around alpha.
+So that means-- or sorry, minus 90 alpha is minus 90,
+so around x.
+So that means we are rotating around x.
+And then z1 is going to point in this direction.
+And then x1 is unchanged.
+OK.
+Then we have Q2.
+So we have the next degree of freedom
+is a rotation around this axis.
+No translation, no translation, 90 degrees around x.
+So we get z pointing back up.
+So then x2 is pointing the same way.
+And then z2 is pointing the same way as z0, so z0 and z2.
+We have a prismatic joint.
+I think this is the first time we're
+looking at a prismatic join for a dh notation.
+So now we're going to be translating along the z-axis,
+so going up like this.
+Up to here, and then this length is going to be Q3.
+And then we have no rotation, no rotation
+so our axes stay the same.
+So then we're going to have x3 z3.
+And then finally, our last degree of freedom
+is one more time a rotation around z.
+And we are done.
+OK?
+So what does this robot look like in practice?
+If we actually make these values--
+the values of Q1, Q2-- be non-zero,
+then we get a better sense for what the robot looks like.
+So if we project this point down in the xy plane--
+so this is our basic coordinate frame.
+So if we project this point down in the plane,
+then this angle here is going to be Q2.
+This angle here is Q1.
+This distance is Q3.
+So this is a prismatic joint.
+So this thing can move up and down.
+And then finally, the end effector can also
+rotate around there for Q4.
+So now you get a sense for why this
+is called a spherical robot.
+And that's because the workspace is a sphere.
+So you can imagine this, as you know,
+it's just my arm stretched out.
+Q1 means I can do this.
+Q2 means I can do this.
+So the combination of those two means that I can essentially
+point the arm in any direction.
+Q3 means that the end effector can translate up and down along
+the arm, which is something that my arm obviously cannot do.
+But this robot can.
+And then finally Q4 can also rotate the end effector
+all the way to the end.
+So you can imagine that an arm, which
+has these capabilities, plus this translation,
+its workspace, it's going to be a sphere, which is why this is
+called the spherical robot.
+So the first thing to do always from the dh parameters
+is to just sketch the robot, and try
+to get an intuitive sense for what the degrees of freedom are
+and what each of them does.
+Then we have no choice but to bite the bullet
+and work our way through the forward kinematics.
+So let's go ahead and do that.
+So the transform from the base to the end effector
+is going to be this, this, this, this, this, and this.
+OK?
+So let's take them one by one.
+For this transform, an easier way to write it down
+is, again, the columns are the new axes.
+We were rotating around x, so x stays the same.
+Then what happens is since we are rotating that into y,
+it means y will be pointing in the old direction
+of negative z.
+And the new z will be pointing in the old direction of y.
+So this gives us a quick and easy way
+to write a transform like this.
+And then the same here, except that now we
+are turning back up.
+So then x again stays the same.
+When you are doing the positive rotation around x,
+y points in what used to be z.
+And then z ends up pointing in the direction of what
+used to be negative y.
+Now we have the translation bit.
+So we have a matrix where the rotation is identity
+and we have 0, 0, Q3.
+And then finally the last rotation here.
+And then you just go ahead and you carry out
+the multiplications.
+I'm just going to skip straight through the end.
+And I'm also going to make things
+a little easier because the rotation part of this
+gets really, really hairy.
+So I'm going to say that we only care about the translation
+of the end effector.
+So in the end result, I'm going to write the end result right
+here.
+There's going to be some rotation part
+and we don't necessarily want to compute that.
+Which means that you still have to carry out
+all of these multiplications but when
+you get all the way at the end, you
+don't need to multiply the last two rotation bits, which makes
+things quite a bit easier.
+And then what you end up for the translation part--
+always good.
+to do a sanity check.
+So let's look at this.
+The position of this end effector,
+well, first of all, one thing we notice
+is that Q4 doesn't show up in here at all.
+Did we lose it along the way?
+Well, it actually-- if we think about it,
+it makes sense a little bit--
+Q4 is a rotation around this point.
+Q4 doesn't change the position of the end effector at all.
+It changes its orientation.
+But remember, this is our end effector.
+I'm drawing the gripper here just for reference.
+But really, the position of our end effector
+is this point right there.
+And rotating around this axis doesn't change the position
+at all.
+So it makes sense that Q4 just doesn't show up here
+in any way.
+Then the x, y, and z coordinates of this point--
+the z coordinate is going to be Q3 cosine 2, which makes sense,
+right?
+We're projecting this onto the z-axis.
+And then for the x and y, this again makes sense.
+Q3 times sine 2 so that projects this point into the xy plane.
+And then we have cosine theta 1 to get
+it projected to x, sine Q1 to get it projected to y.
+So this makes sense.
+This makes sense.
+This passes our intuitive sanity check.
+Now let's take a look at inverse kinematics for this.
+Let's say that we want our end effector to end up
+at position xyz in space.
+Again, we're going to do position only inverse
+kinematics.
+The orientation bit, too complicated
+for our analytical methods right now.
+So we want the end effector at position xyz.
+So if we look at the forward kinematics,
+that just means we end up with a system that looks like this.
+So x equals c1, s2, Q3.
+y equals s1, s2, Q3.
+And then finally, z equals c2, Q3.
+And we have to solve this for the values of Q1, Q2, and Q3.
+So let's go ahead and do this.
+Again, a useful trick--
+square them up, add them all up.
+And what you end up with is x squared plus y squared plus z
+squared equals.
+And what you're going to have is Q3 squared times c2
+squared plus s2 squared times c1 squared plus s1 squared.
+So then this is just 1.
+So it goes away, which leaves inside this parenthesis c2
+squared plus s2 squared, which again is going to be 1.
+So all of this goes away.
+And finally, what we're left then
+is just this, which gives us Q3.
+Excellent.
+We are a third of the way there.
+Very careful though, we are forgetting one solution here.
+When you take the square root, always
+remember there are two solutions to that, mathematically.
+What does it mean intuitively?
+How can we have negative Q3?
+Well, if you think about it, if Q3 is positive
+and let's say we need the robot to get to this point,
+we have a positive Q3.
+The robot is reaching in that direction.
+The other thing that the robot could do
+is point in the exact opposite direction.
+And then extend by a negative Q3,
+and it gets to the exact point in space.
+Is that something that you can physically build?
+Can you have a prismatic joint that
+can have positive extents or negative extents?
+Maybe.
+Probably not.
+Or at least it wouldn't be practical.
+I've never seen a robot with that.
+Maybe you can come up with something.
+But we haven't told our system anything about limits.
+As far as our system knows, these
+are the equations that characterize it.
+We haven't told it, for example, that Q3 has to be positive.
+So in real life, when a manufacturer gives you
+the spec sheet for a robot, they will often
+also give you joint limits.
+They'll tell you Q3 can only be between 0.2 meters and 0.6
+meters, for example.
+Q1 can only be between 0 and 90 degrees.
+We don't know anything about joint limits here.
+So then, from a mathematical perspective,
+there are two solutions to this equation-- positive Q3
+and negative Q3.
+And it's our job, as we're doing the IK,
+to make sure we have all of our solutions.
+So, right here, right off the bat,
+we have two solutions for Q3.
+OK, now that we have the solutions for Q3,
+what do we do for Q1 and Q2?
+Well, let's try again more tricks for our equations.
+Well, for example, if we square and add up
+just these two, what we end up with is x squared
+plus y squared is going to be Q3 squared.
+And remember, we now know Q3 times s2
+squared times c1 squared plus s1 squared.
+This goes away.
+So this gives us solutions for s2.
+So s2 is going to be square root of x squared plus y
+squared divided by Q3 square.
+Again, very careful here.
+Plus and minus, so we have two possible solutions
+for sine of Q2.
+And then cosine is right here.
+So cosine of Q2 is going to be z divided by Q3.
+That, we have the sine and the cosine to find.
+So for these, we can do Q3 Q2 is going to be a 10 2
+of the sine and the cosine.
+And since we have two possibilities for the sine,
+then we have also two solutions for Q2.
+And remember, these, we have two solutions
+for Q2 for each of the two solutions for Q3.
+So by now, we are at four solutions.
+Also, the other thing that we now have to look carefully at
+is, wait a second, we are dividing by Q3.
+What happens if Q3 is 0?
+Because then obviously, we cannot really compute that.
+Well, if Q3 is 0, we plug it into here.
+Then we obviously, immediately get x, y,
+and z is all 0, 0, and 0.
+So if x, y, and z are all 0s, then you
+have a trivial solution.
+Q3 is 0.
+It doesn't matter what Q1 and Q2 are.
+You will be achieving 0, 0, and 0.
+But this is, again, something to not lose track of.
+And then, once we also have Q2 computed,
+we also have to compute Q1.
+By that point, it becomes easy because from this equation
+we have cosine of 1 is going to be x divided by s2 Q3.
+And remember, we know both of these at this point.
+And then from there we're going to have s1 is
+going to be y divided by s2--
+sorry this is, yes.
+Yes, same thing as 2Q3.
+And then Q1 is just going to be a 10 2 of sine 1 and cosine 1.
+So this uniquely specifies Q1.
+So there is just one solution.
+So if we multiply these together, two solutions for Q3,
+for each of them, two solutions for Q4,
+for Q2, for each of them, one solution for Q1.
+So all in all, we have four solutions
+to our inverse kinematics problem.
+That is regardless of where in space x, y, and z are.
+So this tells us that this robot has an infinite workspace.
+How come?
+Again, it boils down to joint limits.
+We haven't specified any joint limits.
+If Q3 could extend to infinity, then
+you can imagine that this robot will have,
+indeed, an infinite workspace.
+If we had specified it--
+look, Q3 has a limit.
+It can only get up to there, a certain point.
+Then as soon as we did this, we would see that for certain x,
+y, and z, you cannot get a Q3 that's legal.
+So it will show up over there.
+But the way we've defined the robot with no limits,
+then there will be four solutions
+to inverse kinematics, anywhere in space.
+Why force solutions?
+Again, always good to try to get an intuition for things.
+Well, one way to look at it is, again,
+let's say that this robot needs to get right here.
+The way we've drawn it here with positive Q1, positive Q2,
+that's one way to get to this point.
+Now imagine that instead, Q1 you get Q1 plus pi.
+So then Q1 gets you all the way to here.
+And then instead of a positive Q2, you have a negative Q2.
+You can imagine that, in this case,
+the robot ends up at exactly the same spot.
+Right?
+So Q1, Q2, Q3 are a solution.
+So you can have, let's say, a certain Q1, Q2,
+and Q3 as a solution.
+Then Q1 plus pi and negative Q2 and Q3 is also a solution.
+So this is one.
+This is the second one.
+And then, you have the solutions with negative Q3.
+So the robot can choose to use Q1 and Q2.
+In both of these cases, the robot
+can choose to use Q1 and Q2 to point
+in the exact opposite direction, but then
+extend by a negative Q3 and get to the exact same point
+in space.
+Again, we haven't placed joint limits in.
+So mathematically, all of this is possible.
+So if somebody asks you, can you characterize this robot,
+you say, well, it has an infinite workspace.
+It can achieve any position of the end effector
+in this workspace in four distinct ways.
