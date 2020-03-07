@@ -969,11 +969,11 @@ s_{2} & c_{2} & 0 \\
 c_{1} & -s_{1} & 0.5c_{1} \\ 
 s_{1} & c_{1} & 0.5s_{1} \\
 0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix}
-c_{2} & -s_{2} &  0.3c_{12}+0.5c_{1} \\ 
-s_{2} & c_{2} & 0.3s_{12}+0.5s_{1} \\
+c_{2} & -s_{2} & 0.3c_{2} \\ 
+s_{2} & c_{2} & 0.3s_{2} \\
 0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
-c_{12} & -s_{12} & 0.3c_{1} \\ 
-s_{12} & c_{12} & 0.3s_{1} \\
+c_{12} & -s_{12} & 0.3c_{12}+0.5c_{1} \\ 
+s_{12} & c_{12} & 0.3s_{12}+0.5s_{1} \\
 0 & 0 & 1\end{bmatrix}$$
 
 * to get to c12 s12 we use trigonometric rules
@@ -1191,13 +1191,37 @@ s_{2} & c_{2} & 0 \\
 c_{1} & -s_{1} & 0.5c_{1} \\ 
 s_{1} & c_{1} & 0.5s_{1} \\
 0 & 0 & 1\end{bmatrix}\cdot \begin{bmatrix}
-c_{2} & -s_{2} &  0.3c_{12}+0.5c_{1} \\ 
-s_{2} & c_{2} & 0.3s_{12}+0.5s_{1} \\
+c_{2} & -s_{2} & 0.3c_{2} \\ 
+s_{2} & c_{2} & 0.3s_{2} \\
 0 & 0 & 1\end{bmatrix}=\begin{bmatrix}
-c_{12} & -s_{12} & 0.3c_{1} \\ 
-s_{12} & c_{12} & 0.3s_{1} \\
+c_{12} & -s_{12} & 0.3c_{12}+0.5c_{1} \\ 
+s_{12} & c_{12} & 0.3s_{12}+0.5s_{1} \\
 0 & 0 & 1\end{bmatrix}$$
 
 * remember that the following convention is used for trigonometric methods::
 $$\cos=c\:\:\:c(q_{1}\pm q_{2})=c_{12}=c_{1}c{2}\mp s_{1}s_{2}$$
 $$\sin=s\:\:\:s(q_{1}\pm q_{2})=s_{12}=s_{1}c{2}\pm c_{1}s_{2}$$
+
+* say now we want our end effector at position x=a,y=b we dont care about the orientation of end effector coordinate frame yet just the position. therefore we use only the translation part of the transform matrix frpm base to end effector to derive the joint values (angles θ1 θ2)
+$$0.5c_{1}+0.3c_{12}=a\:\:\:0.5s_{1}+0.3s_{12}=b$$
+
+* a good trick to solve the above equation system is to square them both and then add them up
+* what we get is 
+$$a^{2}+b^{2}=0.25c_{1}^{2}+0.3c_{1}c_{12}+0.09C_{12}^{2}+0.25s_{1}^{2}+0.3s_{1}s_{12}+0.09s_{12}^{2}$$
+
+* we make use of the theorem 
+$$\cos(\theta)^2+\sin(\theta)^{2}=1$$
+
+* using this and the main trigornometric methods for θ1+θ2 our equation is simplified
+$$a^{2}+b^{2}=0.34+0.3(c_{1}c_{12}+s_{1}s_{12})=0.34+0.3c_{2}$$
+
+* so we have c2.
+$$c_{2}=\frac{a^{2}+b^{2}-0.34}{0.3}$$
+
+* the immediate thought it to introduce the solution of c2 into the first equation and solve for c_{1}
+* not yet. we have to deal with some cases.also we draw a circle of maximum reach for the robot
+    * if the fraction is > 1 it cannot be a cosine so we have no solutions and theoretically the point is in infinite position outside of max reach
+    * if the fraction is equal to 1 then c2=1 so:
+$$q_{2}=0\Rightarrow \left\{\begin{matrix}
+0.8c_{1}=a\\ 0.8s_{1=b}
+\end{matrix}\right. \Rightarrow q_{1}=atan2(b,a)$$
