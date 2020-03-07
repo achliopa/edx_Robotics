@@ -1092,4 +1092,30 @@ echo "project3_ws workspace was sourced"
 
 ### 4.1 Analytical IK, Planar Robot Example
 
-* 
+* Inverse Kinematics is the opposite problem of Formward Kinematics
+* Forward Kinematics problem is: Having the robot description and the Joint Values to calculate the Trasform Matrix from Base Frame to EndEffector Frame AKA. the relative position of End Effector
+<p align="center"><img src="/tex/7106c5a97bd6b42affbbf9cd9e4ab9d2.svg?invert_in_darkmode&sanitize=true" align=middle width=67.99830675pt height=26.07647955pt/></p>
+
+* In real robot applications we care much more about the inverse problem: we know where the target object is (the desired end effector position). this is the relative position to the base frame which we know so we know the Trasform matrix to go from base to end effector. what we dont know are the joint values
+<p align="center"><img src="/tex/841c3c6c1bfddf7db93626577e1391d7.svg?invert_in_darkmode&sanitize=true" align=middle width=67.0644447pt height=26.07647955pt/></p>
+
+* We will see analytical methods to compute the joint values
+* The course of action in real life robotics is 
+    * Design the Mechanical of Robot 
+    * Measure it
+    * Derive DH params
+    * Calculate FW kinematics
+    * Calculate INV kinematics
+* we will start simple in 2D using the planar 2 link robot we ve seen in previous chapter
+* The DH params of the 2-Link Planar Robot are:
+    * Joint1: θ1=q1 d1=0 a1=0.5 α1=0
+    * Joint2: θ2=q2 d2=0 a2=0.3 α2=0
+* we start from base frame. x->right y->up z-> to viewer
+* first joint is q1=Θ1 around z axis so new x axis is rotated by θ1. the link is a translation of 0.5m on the new x axis
+* joint is a q2=Θ2 rotation around the z axis. so new x axis is the old rotated by θ1. the link is a translation of 0.3m on the new x axis
+* we calculate first transform matrix from nbase to endeffector (Forward Kinematic) which we have doen in previous chapter:
+<p align="center"><img src="/tex/938fe1647a196add229761213510aaca.svg?invert_in_darkmode&sanitize=true" align=middle width=987.2226341999999pt height=59.1786591pt/></p>
+
+* remember that the following convention is used for trigonometric methods::
+<p align="center"><img src="/tex/00afb99363be23587ae1fac241e43170.svg?invert_in_darkmode&sanitize=true" align=middle width=275.5416972pt height=16.438356pt/></p>
+<p align="center"><img src="/tex/24d8de1242992f80ba568cc55baff3a7.svg?invert_in_darkmode&sanitize=true" align=middle width=275.49025845pt height=16.438356pt/></p>
