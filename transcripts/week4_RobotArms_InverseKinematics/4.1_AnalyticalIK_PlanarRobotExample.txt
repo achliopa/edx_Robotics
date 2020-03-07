@@ -1,0 +1,321 @@
+Today's lecture is about inverse kinematics,
+which, as you might guess by the name, is in a way
+the opposite problem of forward kinematics,
+which we've started last time.
+So let's briefly recall what we mean by forward kinematics.
+So assuming that you have a robot
+arm, a collection of links and joints,
+where each joint has a joined value.
+And then based on those joint values,
+if you have a base coordinate frame and end
+effector coordinate frame, then you can compute the transform--
+wrong transform-- you can compute the transform
+from the base to the end effector.
+So forward kinematics, if somebody is giving you
+all the Qi's, then you can go ahead and compute the transform
+from the base to the end effector.
+So this is forward kinematics.
+And it's not just the end effector,
+we can compute the transform from the base to every link.
+But the one you care about quite often is the end effector.
+So this is forward kinematics.
+But in the real world when you're using a robot,
+you actually care a lot more often
+about the inverse problem.
+You know where your target object is.
+So let's say that you'd like your end effector to be here
+to grab this object.
+So you know the desired transform
+from the base to the end effector.
+What you don't know is what are the joint values
+that your robot must have in order
+to get to the end effector to the desired point in space.
+And that is the inverse kinematics problem.
+You are given a desired transform
+from the base to the end effector
+and what you have to do is compute all the joint values
+that produce that transform.
+And in particular, in this lecture,
+we're going to be looking at analytical methods
+for computing the joint values.
+Later we'll also look at numerical options,
+but for now it's important to start with analytical methods
+because those will give us some very important insights
+into the capabilities of robot arms in general.
+We're going to start with a simple problem in just two
+dimensions and we're going to do inverse kinematics
+for the planar two-link robot, which we've seen already.
+So let's briefly recall what are the DH parameters
+for the planar two-link robot.
+So two links, two joints.
+This is a pretty common way in which you'll
+see problems phrased in this class,
+here are the DH parameters, sketch the robot,
+do forward kinematics, do inverse kinematics.
+So let's very quickly sketch our robot right here.
+We know it's a two dimensional robot,
+so we'll have our x and y-axes.
+So the first degree of freedom is a rotation around z.
+The z-axis is coming out of the board.
+This is a 2D problem, so we're not really going to draw it.
+So we're going to have--
+this is going to be Q1.
+And then there is a translation along x.
+So after we've rotated by Q1, x is pointing along the link.
+So by 0.5, so the length of this link is 0.5.
+And then here we're going to have another rotation by Q2.
+And then the length of this link is 0.3.
+And this is our end effector right here.
+This is what the robot looks like.
+To do inverse kinematics, first you
+have to do forward kinematics then invert it.
+So let's very briefly again recall
+how we have to do the forward kinematics for this robot.
+So in DH parameters, so we're going
+to have a rotation by Q1 around z, translation
+by 0.5 along x, rotation by Q2 around z,
+translation by 0.3 along x.
+We're going to be using the 2D version of the transfer
+matrices just to make life simpler for ourselves.
+So the transform from the base to the end effector
+is going to be rotation by theta 1, then translation by 0.5
+along x, then rotation by theta 2, then translation by 0.3
+along x.
+And then at this point, we just carry out the multiplications.
+When doing this, it's always useful to have
+handy our formulas for the sine and cosines
+of angle sums and differences.
+So we're going to say that cosine of Q1 plus Q2,
+which we're going to use shorthand here as cosine 1 2,
+is going to be C1 C2 minus s1 s2.
+And then if this is a minus, then this becomes a plus.
+And then similarly, sine of Q1 plus or minus
+Q2, which we use as 1 2 as a shorthand,
+is going to be s1 c2 plus minus c1 s2.
+So these are always useful to have around and memorize
+as well.
+So if we use these and we carry out these multiplications, what
+we're going to end up with is--
+what's a good place to write this down?
+The final result for forward kinematics,
+we're going to have--
+and then for the translation part--
+So this is our forward kinematics.
+The transform from the base to the end effector,
+forward kinematics.
+This is our starting point.
+Now let's assume that we want our end effector
+to be at this position in space.
+So it will have coordinates a and b.
+And in particular, what we're going to do quite a bit
+in this part of the course is look at position only IK.
+So we're not going to care about the orientation of the end
+effector, let's say that the orientation doesn't matter.
+The end effector is just a point and we
+want that point to be at a given position a, b in space.
+How do we achieve that?
+Well, it obviously means that the translation
+part of our forward kinematics has to take us to the point a,
+b in space.
+So in other words, what we have is
+that if we look at the x component, this has to equal a.
+And then the y component has to equal b.
+So inverse kinematics basically means
+solving these two equations.
+How do we go about this?
+In this particular case, and actually quite often,
+you'll see a good trick to always try
+is to square up your two equations and add them up.
+And if we do that, what we end up with is something like this.
+So a squared plus b squared equals
+OK.
+And why is this helpful?
+Because now, using a very simple relationship
+that the sum of the sine and the cosine squared equals 1,
+this greatly simplifies.
+So these two together give us 0.25.
+These two together give us 0.09, so we can just
+add it right here.
+So you get 0.34, plus.
+And then finally we get 0.3 c1, c1 2 plus s1, s1 2.
+Right?
+And using our formulas for the sine and cosine of angle sums
+and differences, what we notice is that that is akin to saying,
+so this bit is cosine of q1 plus q2 minus q1.
+So these cancel out.
+So this is equal to cosine of theta 2.
+So then, all of this ends up being equal to 0.34
+plus 0.3 cosine q2.
+OK.
+So from this, if we actually compute the value of cosine 2,
+we end up with a squared plus b squared
+minus 0.34 divided by 0.3.
+What happens next?
+Well, we have an expression for cosine of theta 2, or q2.
+Let's compute q2.
+Well, not so fast, right?
+Because now all of a sudden, we realize
+we have a bunch of cases that we have to deal with.
+So Case 1, what if this thing is greater than 1?
+OK.
+Obviously, then it cannot be equal to a cosine.
+So what's happening here?
+What gives, right?
+We have no way to solve that equation.
+Well, basically what that means is that we have no solutions.
+The point that we're asking for is too far away
+from the origin.
+And the robot simply cannot reach it.
+Case 2, if this thing is equal to exactly 1.
+OK.
+Let's start illustrating some of these.
+So if this is our core mind frame and this
+is our robot, all right.
+So here there is going to be a maximum reach for the robot.
+Anything that's outside of this circle falls in Case 1.
+We have no solution.
+There is no way for the robot to get there.
+In this case, so cosine of q2 is equal to 1.
+Which immediately tells us that q2 is equal to 0.
+OK.
+Then from these equations, what we end up
+with is that 0.8 c1 equals a.
+0.8 s1 equals b.
+And from this, we can compute q1 as a10 2 of b and a.
+The arctangent of the rate.
+The 0.8 cancels out when you're doing an arctangent,
+and you get the value of q1.
+So in this case you have one solution.
+So what does that mean?
+Well, if the point that we're asking for
+is exactly on the boundary of the workspace,
+then the robot arm has to be completely stretched out
+to get there.
+The robot being completely stretched out
+means q2 has to be 0.
+The angle, this is our q2.
+Remember this is q2 right here, so this is q1.
+So when q2 is 0, the robot arm is completely stretched out.
+So you can reach any point on the circle,
+but with just one solution.
+One quick note about a10 2.
+In general, if somebody gives you the cosine of an angle
+and says, c1 equals alpha, then you
+would be tempted to write that q1 equals arccosine of alpha.
+OK?
+But be careful with this because that's not necessarily true.
+Remember that there are, in the interval 0 to 2,
+pi there are multiple angles whose cosine equals alpha.
+The same thing with sine.
+If somebody tells you s1 equals beta,
+then you'd be tempted to say, q1 is arcsine of beta.
+But again, this is not the unique solution to this.
+There are multiple angles in the 0 to 2
+pi interval whose sine equals beta.
+So if you only have the cosine of an angle or the sine
+of an angle, you cannot uniquely identify that angle.
+However, if you are given both the sine and the cosine,
+that is enough to uniquely identify your angle.
+And if you are given both of these,
+then your angle q1 is going to be a10 2 of beta, alpha.
+And this is a unique solution.
+a10 2 is an arctangent that looks
+at the quadrant that the angle that should be in.
+It's offered by just about any programming language math
+library out there.
+But remember, if only the cosine is given,
+there are multiple solutions for the angle.
+If only the sine is given, there are multiple solutions
+for the angle.
+If both are given, there is a unique solution for the angle,
+and that's specified by a10 2.
+Which is what we used here because we have both
+the sine and the cosine for q1.
+OK.
+Case 3.
+If this is actually less than 1 but also greater than minus 1.
+OK.
+Now you have cosine of q2 equals something
+that's between minus 1 and 1.
+So in this case you have cosine of q2 equals something
+between minus 1 and 1.
+So then q2 can be arccosine of this, right?
+But careful because it can also be 2
+pi minus the arccosine of that.
+There are two angles in the interval 0 to 2
+pi whose cosine equals this.
+OK?
+So we have two possibilities for q2.
+For each of these two possibilities,
+if we plug them back into our original equations,
+we're going to get a value for sine 1, a value for cosine 1.
+So for each of these two, we have a uniquely identified
+theta 1.
+So in this case we have two solutions.
+And that makes sense, right?
+If the point that I'm going to is strictly inside my workspace
+here, then there are two ways for the robot to reach it.
+One like this and one like this.
+OK?
+So for this point, which is inside the circle,
+I have two possible solutions.
+Case 4, where this is equal to minus 1.
+OK.
+Then what we're going to have is q2 equals pi.
+And again, we're going to have a single possible solution
+for q1, which we get by getting the cosine and the sine.
+So in this case we end up, once again, with just one solution.
+What's going on here?
+Well, what's happening is that there is also an inner circle.
+And if the point that I'm trying to get to
+is on the boundary of this inner circle, then the arm,
+in order to get there, has to be fully bent in on itself.
+So the first link has to go out and then
+the second link has to come in all the way.
+So in this case q2 is going to be this.
+So q2 is equal to pi.
+And then that's the only way that
+can put the end effector on the boundary of this inner circle.
+So q2 has to be pi.
+And then q1 is uniquely determined.
+And then finally, we have Case 5.
+Let's write it right here.
+In which case, we have this is less than minus 1.
+And again, obviously, we have 0 solutions.
+OK.
+Now we are asking the robot to go inside this little circle,
+and there is no way for it to get there.
+It bends in all the way in itself,
+but there's no way that it can get even closer to the origin.
+So that's impossible to get to.
+So now, if we look at the entire picture, we see our five cases.
+Outside the big circle, no solutions.
+The robot cannot reach.
+On the big circle, a single solution.
+The only way for the robot to get there
+is fully stretched out.
+Between these circles, two solutions.
+There are two ways for the robot to get to every point.
+On the inner circle, again, a single solution.
+The only way for the robot to get there
+is if it's fully bent in on itself.
+Inside the inner circle, 0 solutions.
+There is no way for the robot to get there.
+So this robot has what we call a workspace.
+It's shaped as a donut.
+This is the workspace of the robot.
+Strictly inside the workspace, it
+will have two ways to get to every point.
+On the boundaries of the workspace, the outer circle
+and the inner circle, it'll have only a single way
+to get to each point.
+Outside the workspace, it has no way
+to get to where we're asking it to go.
+This is a very, very common behavior.
+Almost every robot essentially has a workspace.
+Inside the workspace, there will be one or more solutions
+to inverse kinematics.
+On the boundaries of your workspace,
+the number of solutions goes down.
+Outside the workspace, the number of solutions
+is exactly 0.
