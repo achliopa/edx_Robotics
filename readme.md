@@ -1327,9 +1327,67 @@ echo "project3_ws workspace was sourced"
 <p align="center"><img src="/tex/6e0047d76949136b987d2afcfdb6b279.svg?invert_in_darkmode&sanitize=true" align=middle width=229.2863232pt height=39.452455349999994pt/></p>
 
 * we can now calculate the jacobian
-<p align="center"><img src="/tex/25304d0f5a5285866187875915805e7e.svg?invert_in_darkmode&sanitize=true" align=middle width=450.56868614999996pt height=49.315569599999996pt/></p>
+<p align="center"><img src="/tex/139ac2cd43537d9b961dcf5475c1ea87.svg?invert_in_darkmode&sanitize=true" align=middle width=435.9569643pt height=49.315569599999996pt/></p>
 
 * in shortform Jacobian is
 <p align="center"><img src="/tex/3ede65ac6506447e7d9675a9607cb874.svg?invert_in_darkmode&sanitize=true" align=middle width=171.25570439999998pt height=39.452455349999994pt/></p>
 
-* we can now calculate the Jacobian for a particular spot <img src="/tex/f4f87732a74fd904b8ff29c9f2fb5e1a.svg?invert_in_darkmode&sanitize=true" align=middle width=106.39222604999999pt height=35.5436301pt/>
+* we can now calculate the Jacobian for a particular spot     <img src="/tex/f4f87732a74fd904b8ff29c9f2fb5e1a.svg?invert_in_darkmode&sanitize=true" align=middle width=106.39222604999999pt height=35.5436301pt/>
+* we draw the pose of the robot arm and calculate the Jacobian
+<p align="center"><img src="/tex/f000e8b38bca2a5077f56f63bda0929b.svg?invert_in_darkmode&sanitize=true" align=middle width=283.1469729pt height=39.452455349999994pt/></p>=<p align="center"><img src="/tex/e7392c45a9b382e458642272b00c8112.svg?invert_in_darkmode&sanitize=true" align=middle width=78.83126955pt height=49.315569599999996pt/></p>=\frac{\sqrt{2}}{2}<p align="center"><img src="/tex/b76c12fca5cc33d5816604e7c306bab0.svg?invert_in_darkmode&sanitize=true" align=middle width=50.2284453pt height=39.452455349999994pt/></p>
+
+* so we have the jacobian for this position... we can use the Δ equation and given the Δx calc the Δq needed <img src="/tex/df01ad8f7c411cbab4b6cb1803c84f97.svg?invert_in_darkmode&sanitize=true" align=middle width=106.85483984999999pt height=26.76175259999998pt/>
+* the jacobian inverse for this position is
+<p align="center"><img src="/tex/90d46ab5eec427853d5ff893bdbea34e.svg?invert_in_darkmode&sanitize=true" align=middle width=373.19239484999997pt height=40.993000949999995pt/></p>
+
+* it makes sense q1 became smaller and q2 larger. so its correct
+* be careful with signs
+* another example is if we want the end effector to move up
+<p align="center"><img src="/tex/c0a685ffc00c8be66360a0a67283013f.svg?invert_in_darkmode&sanitize=true" align=middle width=204.82963709999999pt height=40.993000949999995pt/></p>
+
+* this also makes sense. only q1 becames larger
+* remember that we need to recompute jacobian for every position
+
+### 5.4 Singularities
+
+* we will try to calculate the Jacobian for the previous example when q2 = π.  it will be
+<p align="center"><img src="/tex/d8248c8d28ca05b16ac7ba4e91a70ae9.svg?invert_in_darkmode&sanitize=true" align=middle width=101.89690829999999pt height=39.452455349999994pt/></p>
+
+* this is an important case. robot arm has fully folded onto itself
+* if i multiply the Jacobian with Δq=[Δq1,Δq2]T it doesnt matter what i change in q1. it wont have any effect in positon as 1st column of Jacobian is 0
+* in the sketch we can verify that. if the robot rotates around q1 end effector is in 0,0 position
+* in this situation q1 lost its ability to move the end effector
+* this is a problem. another problem is that the determinant of the Jacobian is 0. we cannot invert it and we cannot compute joint val move if position changes (but it cant)
+* if we try to compute Δq for an arbitrary Δx. the equation system that we have (see below) is unsolvable
+<p align="center"><img src="/tex/52c7d96bcaea498d92db1fcd45e90fb1.svg?invert_in_darkmode&sanitize=true" align=middle width=218.6170272pt height=39.452455349999994pt/></p>
+
+* movement is possible only if the derived equation holds. if not we cannot satisfy the equation
+* for the specific robot config in this position the only movement possible is along the tangent of the circle arount the second joint if q2 changes.
+* so we are locked. what happens if i am close to being locked. if q2 is not π but very close to it
+* in that case in the jacobian instead of 0 we would have 2 very small vals ε1 and ε2. also the determinant of the Jacobian will be non-zero
+* then we can attempt to solve the equation system and calculate the Jacobian inverse then calculate the Δq for a small Δx in this position
+<p align="center"><img src="/tex/c972e078976def439af525aff1991d2a.svg?invert_in_darkmode&sanitize=true" align=middle width=134.40586664999998pt height=44.00564025pt/></p>
+<p align="center"><img src="/tex/caebbeb299676eb811f92806dae03497.svg?invert_in_darkmode&sanitize=true" align=middle width=116.6034474pt height=36.09514755pt/></p>
+
+* remember that ε is very small. what if we write a piece of SW that takes in Δx calculates jacobian inverse and Δq and sents it to the robot given that the robot is close to the q2=π position
+* as we divide for ε Δq1 is huge and Δq is analogus to q dot aka speed. so robot will attempt to cover instanlty a huge distance
+* this will destroy the robot!!!!!!!!!!
+* so being close to a border position commanding the robot can cause instability
+* this kind of position is called a Singularity. these positions occur when the determinant of the Jacobian is 0
+<p align="center"><img src="/tex/88cc0c4ac5412dbf86e97f6af28099d9.svg?invert_in_darkmode&sanitize=true" align=middle width=142.79527019999998pt height=16.438356pt/></p> 
+* Being in a singularity means that a joint has lost its ability to move the robot
+* Also being in a singularity measn we are constrained to move only in a specific direction only
+* Being IN a singularity (locked) is better than being very close to a singularity. then asking for a finite movemtn can result in an infinite movement in joint space
+* In a robot control software we must avoid singularities and approaching them
+* this is done using a SW library that calculates the matrix condition (determinant). if its good then we are safe.
+* if q2=0 (arm fully extent the jacobian is
+<p align="center"><img src="/tex/0b892e88eec4c757909abb38bee3002c.svg?invert_in_darkmode&sanitize=true" align=middle width=130.35395505pt height=39.452455349999994pt/></p> 
+
+* what we see is that columns are not lineraly indipendent. the determinant is 0. the robot is fully extent.
+* if we move q1 the robot will move arount the max circle tangent at that position. same for q2. 
+* the only possible movement is along the tangent line regardless of the joint angle changing val
+* again we have the instability problem. so we lost the ability to move except on one line
+
+### 5.5 Differential Kinematics Example- Spherical Robot
+
+* 
