@@ -1296,16 +1296,16 @@ echo "project3_ws workspace was sourced"
 ### 5.2 Manipulator Jacobian
 
 * we need to differentiate the function f but it takes multidimensional input and output
-<p align="center"><img src="/tex/93095e5fa6965e8afd22186e3238083c.svg?invert_in_darkmode&sanitize=true" align=middle width=101.86249755pt height=14.937954899999998pt/></p>
-<p align="center"><img src="/tex/de9e0fb9cd6a13fe55d2bdd34beb8721.svg?invert_in_darkmode&sanitize=true" align=middle width=142.4930496pt height=14.611878599999999pt/></p>
-<p align="center"><img src="/tex/424f387a8c923b87d2b1de88ca025b8c.svg?invert_in_darkmode&sanitize=true" align=middle width=187.29154125pt height=14.611878599999999pt/></p>
+<p align="center"><img src="/tex/a1ba159f50276a1207067ffaea59ef80.svg?invert_in_darkmode&sanitize=true" align=middle width=109.16825534999998pt height=14.937954899999998pt/></p>
+<p align="center"><img src="/tex/86c45070c5fe573e621b1d54db4fd87d.svg?invert_in_darkmode&sanitize=true" align=middle width=149.7988074pt height=14.611878599999999pt/></p>
+<p align="center"><img src="/tex/28b22c2641cdbbf56cab275dd47aa956.svg?invert_in_darkmode&sanitize=true" align=middle width=194.59729905pt height=14.611878599999999pt/></p>
 
 * the differentiate functions can be expressed as a m by n matrix of partials
 <p align="center"><img src="/tex/bef127627b53d2fe8fe7a1044d704ae0.svg?invert_in_darkmode&sanitize=true" align=middle width=248.16740354999996pt height=64.9991991pt/></p>
 
 * this matrix is called the Jacobian of function f (n columns and m rows)
 * the jacobian is the differentiation of function f against q but its valid in aparticular location in input space so the jacobian is a function of q. J(q). as the values of q change so does the matrix
-$<img src="/tex/f7582f8ea51bbffdb0feeeb210d6be46.svg?invert_in_darkmode&sanitize=true" align=middle width=157.72397519999998pt height=22.465723500000017pt/>
+<p align="center"><img src="/tex/445d6dcd598d5f4f19d94a97e6bbe7b8.svg?invert_in_darkmode&sanitize=true" align=middle width=157.72397519999998pt height=14.42921205pt/></p>
 
 * the first equation with Δ is about displacement. the second with dot is about velocities. both are related with the Jacobian
 * the Jacobian relationship holds only for very small displacements d
@@ -1317,4 +1317,19 @@ $<img src="/tex/f7582f8ea51bbffdb0feeeb210d6be46.svg?invert_in_darkmode&sanitize
 
 ### 5.3 Jacobian Example: Planar 2-link Robot
 
-* 
+* we use again the 2-link planar robot as an example
+    * 2 revolute-joints q1 and q2 and 2 links of equal length  1m
+* the FW Kinematics analysis is:
+<p align="center"><img src="/tex/cba6ccfa0418550b1674e316ab7d7150.svg?invert_in_darkmode&sanitize=true" align=middle width=219.07084979999996pt height=59.1786591pt/></p>
+<p align="center"><img src="/tex/d54c10b08ab2addae271f2caf39738fa.svg?invert_in_darkmode&sanitize=true" align=middle width=89.02755674999999pt height=23.5253469pt/></p>
+<p align="center"><img src="/tex/d06ab10497a349344faf52538b8005ea.svg?invert_in_darkmode&sanitize=true" align=middle width=98.94198929999999pt height=23.5253469pt/></p>
+<p align="center"><img src="/tex/1f156eac0de2b7034fcf7e59b68294f8.svg?invert_in_darkmode&sanitize=true" align=middle width=61.84355265pt height=16.438356pt/></p>
+<p align="center"><img src="/tex/6e0047d76949136b987d2afcfdb6b279.svg?invert_in_darkmode&sanitize=true" align=middle width=229.2863232pt height=39.452455349999994pt/></p>
+
+* we can now calculate the jacobian
+<p align="center"><img src="/tex/25304d0f5a5285866187875915805e7e.svg?invert_in_darkmode&sanitize=true" align=middle width=450.56868614999996pt height=49.315569599999996pt/></p>
+
+* in shortform Jacobian is
+<p align="center"><img src="/tex/3ede65ac6506447e7d9675a9607cb874.svg?invert_in_darkmode&sanitize=true" align=middle width=171.25570439999998pt height=39.452455349999994pt/></p>
+
+* we can now calculate the Jacobian for a particular spot <img src="/tex/f4f87732a74fd904b8ff29c9f2fb5e1a.svg?invert_in_darkmode&sanitize=true" align=middle width=106.39222604999999pt height=35.5436301pt/>
