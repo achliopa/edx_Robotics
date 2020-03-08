@@ -1273,3 +1273,48 @@ echo "project3_ws workspace was sourced"
 <p align="center"><img src="/tex/34e0a277e6ed953f99dc2372e27774f5.svg?invert_in_darkmode&sanitize=true" align=middle width=198.14837294999998pt height=16.438356pt/></p>
 
 * Assume we require the end-effector to be at position  [a,b,c]T , and we do not care about end-effector orientation. Derive the values for the robot joints  q1 ,  q2  and  q3  such that the end-effector achieves the desired position. Be sure to consider all possible solutions.
+
+### 5.1 Differential Kinematics Introduction
+
+* we start again from FW Kinematics on a typical robot arm with 3 links and 3 joints
+* FW kinematics is the task of computing the Transform from base to end effector as a functions of the joint angles:
+<p align="center"><img src="/tex/c1fed967270fb580c6eddaa62a5997e6.svg?invert_in_darkmode&sanitize=true" align=middle width=320.13042105pt height=23.5253469pt/></p>
+
+* a very common problem when using robots is move the end effector in a specified direction that we know in cartesian space. say from point1 to point2, where we know the change Δx in cartesian space between point 1 and 2. Δx is the difference of 3D point vectors x=[x,y,z]T. if we care also about the orientation apart from position then x=[x,y,z,roll,pitch,yaw] or x=[x,y,z,rx,ry,rz]T. in that case we want to know how much to change the joint values Δq=?
+* say we have a welder robot and we need to weld a body so the welding robot has to follow the contour of the surface. we have the path specified in cartesian space. we need to decide how the joints move in order for the robot to follow this path we have specked in cartesian space....
+* What the FW Kinematics does for us is that it tells us that the position and orientation of the robot in cartesian space can be expressed as a function of q x=f(q)
+* we know that we can easily go from transform matrix to the relative position(and orientation) of end effector in relation to the base frame
+<p align="center"><img src="/tex/60e92aef56bbc770d0f754f46e170aed.svg?invert_in_darkmode&sanitize=true" align=middle width=478.58343225pt height=23.5253469pt/></p>
+<p align="center"><img src="/tex/1f156eac0de2b7034fcf7e59b68294f8.svg?invert_in_darkmode&sanitize=true" align=middle width=61.84355265pt height=16.438356pt/></p>
+
+* how to compute Δq. we know that x+Δx=f(q+Δq). we can linearize the function f around the point q
+<p align="center"><img src="/tex/4141bedb3f02af9b9ed327f9e006983d.svg?invert_in_darkmode&sanitize=true" align=middle width=264.31589909999997pt height=37.0084374pt/></p>
+<p align="center"><img src="/tex/59c6b164512cb4d164587ecbb536006d.svg?invert_in_darkmode&sanitize=true" align=middle width=183.13729665pt height=37.0084374pt/></p>
+
+* so our problem is now the parial derivative of the function on the joint values
+
+### 5.2 Manipulator Jacobian
+
+* we need to differentiate the function f but it takes multidimensional input and output
+<p align="center"><img src="/tex/93095e5fa6965e8afd22186e3238083c.svg?invert_in_darkmode&sanitize=true" align=middle width=101.86249755pt height=14.937954899999998pt/></p>
+<p align="center"><img src="/tex/de9e0fb9cd6a13fe55d2bdd34beb8721.svg?invert_in_darkmode&sanitize=true" align=middle width=142.4930496pt height=14.611878599999999pt/></p>
+<p align="center"><img src="/tex/424f387a8c923b87d2b1de88ca025b8c.svg?invert_in_darkmode&sanitize=true" align=middle width=187.29154125pt height=14.611878599999999pt/></p>
+
+* the differentiate functions can be expressed as a m by n matrix of partials
+<p align="center"><img src="/tex/bef127627b53d2fe8fe7a1044d704ae0.svg?invert_in_darkmode&sanitize=true" align=middle width=248.16740354999996pt height=64.9991991pt/></p>
+
+* this matrix is called the Jacobian of function f (n columns and m rows)
+* the jacobian is the differentiation of function f against q but its valid in aparticular location in input space so the jacobian is a function of q. J(q). as the values of q change so does the matrix
+$<img src="/tex/f7582f8ea51bbffdb0feeeb210d6be46.svg?invert_in_darkmode&sanitize=true" align=middle width=157.72397519999998pt height=22.465723500000017pt/>
+
+* the first equation with Δ is about displacement. the second with dot is about velocities. both are related with the Jacobian
+* the Jacobian relationship holds only for very small displacements d
+* we cannot expect to do long distance moves using this relationship
+* this is because to end up in the Jacobian we linearized the function f in the local point. in the small area around q. linearizations holds for small displacement dx
+* as robot moves q changes so the Jacobian does not hold (maybe we can calculate a new one in RT)
+* in practice this small delta
+* the dimensionality of Jacobian also validates the matrix multiplication: dimensions of Δq (1 column by n rows) and Δx (1 column by m rows)
+
+### 5.3 Jacobian Example: Planar 2-link Robot
+
+* 
