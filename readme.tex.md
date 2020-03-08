@@ -1419,9 +1419,9 @@ $$\Delta x = \frac{\partial f}{\partial q} \Delta q\:\:or\:\: \dot{x}=\frac{\par
 ### 5.2 Manipulator Jacobian
 
 * we need to differentiate the function f but it takes multidimensional input and output
-$$q\in \mathbb{R}^{n} x\in \mathbb{R}^{m}$$
-$$n: number of joints$$
-$$m: number of dimensions$$
+$$q\in \mathbb{R}^{n}\:\:x\in \mathbb{R}^{m}$$
+$$n: number\:of\:joints$$
+$$m: number\:of\:dimensions$$
 
 * the differentiate functions can be expressed as a m by n matrix of partials
 $$\frac{\partial f}{\partial q}=\begin{bmatrix}
@@ -1432,7 +1432,7 @@ $$\frac{\partial f}{\partial q}=\begin{bmatrix}
 
 * this matrix is called the Jacobian of function f (n columns and m rows)
 * the jacobian is the differentiation of function f against q but its valid in aparticular location in input space so the jacobian is a function of q. J(q). as the values of q change so does the matrix
-$$\Delta x = J\Delta q\:\:or\:\: \dot{x}=J\dot{q} $
+$$\Delta x = J\Delta q\:\:or\:\: \dot{x}=J\dot{q}$$
 
 * the first equation with Δ is about displacement. the second with dot is about velocities. both are related with the Jacobian
 * the Jacobian relationship holds only for very small displacements d
@@ -1444,4 +1444,35 @@ $$\Delta x = J\Delta q\:\:or\:\: \dot{x}=J\dot{q} $
 
 ### 5.3 Jacobian Example: Planar 2-link Robot
 
-* 
+* we use again the 2-link planar robot as an example
+    * 2 revolute-joints q1 and q2 and 2 links of equal length  1m
+* the FW Kinematics analysis is:
+$$^{b}T_{ee}=\begin{bmatrix}
+c_{12} & -s_{12} & c_{12}+c_1 \\
+s_{12} & c_{12} & s_{12}+s_1 \\
+0 & 0 & 1
+\end{bmatrix}$$
+$$x=\begin{bmatrix}x & y\end{bmatrix}^{T}$$
+$$q=\begin{bmatrix}q_1 & q_2\end{bmatrix}^{T}$$
+$$x=f(q)$$
+$$f=\left\{\begin{matrix}
+x=\cos(q_{1}+q_{2})+\cos(q_{1})\\ 
+y=\sin(q_{1}+q_{2})+sin(q_{1})
+\end{matrix}\right.$$
+
+* we can now calculate the jacobian
+$$J=\begin{bmatrix}
+\frac{\partial x}{\partial q_{1}} & \frac{\partial x}{\partial q_{2}} \\
+\frac{\partial y}{\partial q_{1}} & \frac{\partial y}{\partial q_{2}} 
+\end{bmatrix} = \begin{bmatrix}\end{bmatrix}=\begin{bmatrix}
+-\sin(q_{1}+q_{2})-\sin(q_{1}) & -\sin(q_{1}+q_{2}) \\
+\cos(q_{1}+q_{2})+\cos(q_{1}) & \cos(q_{1}+q_{2})
+\end{bmatrix}$$
+
+* in shortform Jacobian is
+$$J=\begin{bmatrix}
+-s_{12}-s{1} & -s_{12} \\
+c_{12}+c_{1} & c_{12}
+\end{bmatrix}$$
+
+* we can now calculate the Jacobian for a particular spot $q=\begin{bmatrix}\frac{\pi}{4} & -\frac{\pi}{2}\end{bmatrix}^{T}$
