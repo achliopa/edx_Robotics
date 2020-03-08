@@ -1148,7 +1148,7 @@ echo "project3_ws workspace was sourced"
 
 * so keep in mind. if only cos or sin is given there are multiple solutions. if both are given there is a unique solution for angle
 * CASE 3: fraction is between -1 and 1 so -1< c2 <1 then there are 2 possible solutions
-<p align="center"><img src="/tex/fd9ba4497c067302dc06c818fb1a5457.svg?invert_in_darkmode&sanitize=true" align=middle width=205.27369664999998pt height=45.046174799999996pt/></p>
+<p align="center"><img src="/tex/5130a3990092288538d0545739750ea8.svg?invert_in_darkmode&sanitize=true" align=middle width=218.51575845pt height=49.315569599999996pt/></p>
 
 * if we use these 2 possible solutions in the original equations we can solve for cos and sin of q1
 * this is a valid concept as fir every point inside the max reach circle there are 2 ways for the robot to reach it aka 2 posiible solutions
@@ -1212,3 +1212,64 @@ echo "project3_ws workspace was sourced"
 * second joint is rotating around new z and its next coordinate frame is rotated 90deg around x. so new z points up and new frame is at 0,0,0 position (no link)
 * third joint is prispatic so a variable length link of d=q3 on ze axis. new axis frame is translated but not rotated.
 * forth joint is rotating around z. nothing more
+* we qive the four joint values an non zero val to visualize the robot. starting with the base frame it looks like a vector of variable length in the space between the 3 positive axis x,y,z
+    * the angle of the vector (Link) to the +z axis will be q2
+    * the angle of the vector (link) projection on the x,y plane with the +x axis will be q1
+    * the length of the vector (link) or prismatic joint will be q3
+    * the rotation of end effector around the the vector (link) axis  will be q4
+* the workspace is a sphere (sperical robot)
+* so always when getting DH params scetch the robot
+* Then we go for Forward Kinematics Analysis (note we need a transform matrix for α rotations by calculating cos and sin for π)
+<p align="center"><img src="/tex/37a2962ae4e1304e4c7fc1d84d1bb197.svg?invert_in_darkmode&sanitize=true" align=middle width=810.4970246999999pt height=78.9048876pt/></p>
+
+* we do the matrix multiplications (rotation part gets very complicated)  so we assume we care only about the translation of the end effector and get to 
+<p align="center"><img src="/tex/b2ed7a7d49bcb205013c3d5bb09de7ed.svg?invert_in_darkmode&sanitize=true" align=middle width=218.0355012pt height=59.1786591pt/></p>
+
+* as we said this T matrix is all about the translation of end effector in space. has nothing to do with the rotation of end effector. thats why q4 is missing
+* Now we go to Inverse Kinematics taking into consideration only Position and not Orientation. Orientation is too much for doing an analysis on paper. let tools tackle it
+* we need to solve the equation system below for q1,q2,q3
+<p align="center"><img src="/tex/583b8874ff38ecf4b98f7b2b99433cec.svg?invert_in_darkmode&sanitize=true" align=middle width=89.3835723pt height=59.178683850000006pt/></p>
+
+* we do the trick of squaring them up and adding them
+<p align="center"><img src="/tex/5f3f8c0a79883106b13e53ffcde3594a.svg?invert_in_darkmode&sanitize=true" align=middle width=287.2256739pt height=18.312383099999998pt/></p>
+<p align="center"><img src="/tex/3a25c8f16c44e2dbce5846c0501ae08d.svg?invert_in_darkmode&sanitize=true" align=middle width=172.2335604pt height=17.399144399999997pt/></p>
+
+* the negative solution is more for clompleteness. its uncommon to have a prismatic joint extending in reverse direction
+* usually in practice we have our system limits. a manufactures always gives joint limits
+* so we have 2 SOLUTIONS for q3
+* we square x and y and add them to go for q1 q2
+<p align="center"><img src="/tex/1fd2dc22adee72ec6b1faded451a5b2f.svg?invert_in_darkmode&sanitize=true" align=middle width=167.62925024999998pt height=18.312383099999998pt/></p>
+
+* for s2 we again have 2 solutions
+<p align="center"><img src="/tex/c9e1b6a8aa686eb5c4a6311db1247f29.svg?invert_in_darkmode&sanitize=true" align=middle width=158.88411495pt height=49.315569599999996pt/></p>
+
+* but we have a solutuion for c2 sso we can use atan2
+<p align="center"><img src="/tex/1ed65cce7f85a539ddf1758cfef177a6.svg?invert_in_darkmode&sanitize=true" align=middle width=225.28059674999997pt height=32.6705313pt/></p>
+
+* as we have 2 solutions for sine we have also 2 SOLUTIONS for q2. also note that we divide by q3. what if q3 is 0. if q3 is 0 x,y,z is 0 so we end up qith a non realistic situation
+* now we calculate q1
+<p align="center"><img src="/tex/2eb0e6e8a8835571854353b272b2d728.svg?invert_in_darkmode&sanitize=true" align=middle width=268.26472529999995pt height=32.6705313pt/></p>
+
+* so for q1 we have 1 SOLUTION. so 4 solutions for the IK problem if we apply no joint value limits
+* if we accept only q3>0 the we end with 2 solutions => q1,q2,q3 equivalent to q1+π,-q2,q3
+
+### Assignment 1
+
+* Consider the robot described by the D-H table below:
+    * Joint1: θ1=0, d1=q1, a1=0, α1=0
+    * Joint2: θ2=q2, d2=0, a2=0, α2=-90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* Consider three possible robot sketches, one of which is a correct representation of the robot defined in this problem:
+**Sketch 1:**
+![sketch1](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1c.jpg)
+**Sketch 2:**
+![sketch2](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1a.jpg)
+**Sketch 3:**
+![sketch3](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1b.jpg)
+* Compute the translation part of the Forward Kinematics transform  <sup>b</sup>T<sub>ee</sub>  from the base of the robot to the end-effector. In other words, derive the expressions for  x ,  y  and  z  below:
+<p align="center"><img src="/tex/ba6c7b88763fd9cfd597521caf543faf.svg?invert_in_darkmode&sanitize=true" align=middle width=183.80800184999998pt height=79.5616338pt/></p>
+
+* We will use the notation from the lectures
+<p align="center"><img src="/tex/34e0a277e6ed953f99dc2372e27774f5.svg?invert_in_darkmode&sanitize=true" align=middle width=198.14837294999998pt height=16.438356pt/></p>
+
+* Assume we require the end-effector to be at position  [a,b,c]T , and we do not care about end-effector orientation. Derive the values for the robot joints  q1 ,  q2  and  q3  such that the end-effector achieves the desired position. Be sure to consider all possible solutions.
