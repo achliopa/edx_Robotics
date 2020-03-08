@@ -1234,7 +1234,7 @@ c_{1}=a\\ s_{1}=b
 
 * so keep in mind. if only cos or sin is given there are multiple solutions. if both are given there is a unique solution for angle
 * CASE 3: fraction is between -1 and 1 so -1< c2 <1 then there are 2 possible solutions
-$$q_{2}=\begin{matrix}
+$$q_{2}=\left\{\begin{matrix}
 \arccos(\frac{a^{2}+b^{2}-0.34}{0.3})\\ 2\pi-\arccos(\frac{a^{2}+b^{2}-0.34}{0.3})
 \end{matrix}\right.$$
 
@@ -1306,3 +1306,93 @@ s_{\gamma} & c_{\gamma} & \beta \\
 * second joint is rotating around new z and its next coordinate frame is rotated 90deg around x. so new z points up and new frame is at 0,0,0 position (no link)
 * third joint is prispatic so a variable length link of d=q3 on ze axis. new axis frame is translated but not rotated.
 * forth joint is rotating around z. nothing more
+* we qive the four joint values an non zero val to visualize the robot. starting with the base frame it looks like a vector of variable length in the space between the 3 positive axis x,y,z
+    * the angle of the vector (Link) to the +z axis will be q2
+    * the angle of the vector (link) projection on the x,y plane with the +x axis will be q1
+    * the length of the vector (link) or prismatic joint will be q3
+    * the rotation of end effector around the the vector (link) axis  will be q4
+* the workspace is a sphere (sperical robot)
+* so always when getting DH params scetch the robot
+* Then we go for Forward Kinematics Analysis (note we need a transform matrix for α rotations by calculating cos and sin for π)
+$$^{b}T_{ee}=\begin{bmatrix}
+c_{1} & -s_{1} & 0 & 0\\
+s_{1} & c_{1} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & -1 & 0 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} & 0 & 0\\
+s_{2} & c_{2} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & -1 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & q_{3}\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+c_{3} & -s_{3} & 0 & 0\\
+s_{3} & c_{3} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}$$
+
+* we do the matrix multiplications (rotation part gets very complicated)  so we assume we care only about the translation of the end effector and get to 
+$$^{b}T_{ee}=\begin{bmatrix}
+R & t\\
+0 & 1 \end{bmatrix} \:,\:t=\begin{bmatrix}
+c_{1}s_{2}q_{3} \\ s_{1}s_{2}q_{3} \\ c_{2}q_{3} \end{bmatrix}$$
+
+* as we said this T matrix is all about the translation of end effector in space. has nothing to do with the rotation of end effector. thats why q4 is missing
+* Now we go to Inverse Kinematics taking into consideration only Position and not Orientation. Orientation is too much for doing an analysis on paper. let tools tackle it
+* we need to solve the equation system below for q1,q2,q3
+$$\left\{\begin{matrix}
+x=c_{1}s_{2}q_{3}\\ y=s_{1}s_{2}q_{3} \\ z=c_{2}q_{3}
+\end{matrix}\right.$$
+
+* we do the trick of squaring them up and adding them
+$$x^{2}+y^{2}+z^{2}=q_{3}^{2}(c_{2}^{2}+s_{2}^{2}(c_{1}^{2}+s_{1}^{2}))=q_{3}^{2}$$
+$$q_{3}=\pm\ sqrt{x^{2}+y^{2}+z^{2}}$$
+
+* the negative solution is more for clompleteness. its uncommon to have a prismatic joint extending in reverse direction
+* usually in practice we have our system limits. a manufactures always gives joint limits
+* so we have 2 SOLUTIONS for q3
+* we square x and y and add them to go for q1 q2
+$$x^{2}+y^{2}=q_{3}^{2}s_{2}^{2}(c_{2}^{2}+s_{2}^{2})$$
+
+* for s2 we again have 2 solutions
+$$s_{2}=\pm \sqrt{\frac{x^{2}+y^{2}}{x^{2}+y^{2}+z^{2}}}$$
+
+* but we have a solutuion for c2 sso we can use atan2
+$$c_{2}=\frac{z}{q_{3}} \Rightarrow q_{2}=\arctan2(s2,c2)$$
+
+* as we have 2 solutions for sine we have also 2 SOLUTIONS for q2. also note that we divide by q3. what if q3 is 0. if q3 is 0 x,y,z is 0 so we end up qith a non realistic situation
+* now we calculate q1
+$$c_{1}=\frac{x}{s_{1}q_{3}}\:\:s_{1}=\frac{y}{s_{2}q_{3}} \Rightarrow q_{1}=\actan2(s_{1},c_{1})$$
+
+* so for q1 we have 1 SOLUTION. so 4 solutions for the IK problem if we apply no joint value limits
+* if we accept only q3>0 the we end with 2 solutions => q1,q2,q3 equivalent to q1+π,-q2,q3
+
+### Assignment 1
+
+* Consider the robot described by the D-H table below:
+    * Joint1: θ1=0, d1=q1, a1=0, α1=0
+    * Joint2: θ2=q2, d2=0, a2=0, α2=-90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* Consider three possible robot sketches, one of which is a correct representation of the robot defined in this problem:
+**Sketch 1:**
+![sketch1](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1c.jpg)
+**Sketch 2:**
+![sketch2](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1a.jpg)
+**Sketch 3:**
+![sketch3](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1b.jpg)
+* Compute the translation part of the Forward Kinematics transform  <sup>b</sup>T<sub>ee</sub>  from the base of the robot to the end-effector. In other words, derive the expressions for  x ,  y  and  z  below:
+$$^{b}\bf{T}_{ee}=\left[ \begin{array}{ccc|c} & & & x \\ & \bf{R} & & y \\ & & & z \\\hline 0 & 0 & 0 & 1 \end{array} \right]$$
+
+* We will use the notation from the lectures
+$$S_2=\texttt{sin}(q_2)\:\:\:C_2=\texttt{cos}(q_2)$$
+
+* Assume we require the end-effector to be at position  [a,b,c]T , and we do not care about end-effector orientation. Derive the values for the robot joints  q1 ,  q2  and  q3  such that the end-effector achieves the desired position. Be sure to consider all possible solutions.

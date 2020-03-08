@@ -1,0 +1,109 @@
+Today's lecture is about differential kinematics.
+And in order to define what that is,
+let's start from what we've studied so far,
+namely forward kinematics.
+So let's consider a typical kinematic chain,
+a typical robot arm.
+Let's say we have a couple of joints and an end-defector.
+So let's say we have three joints--
+q1, q2, q3.
+And forward kinematics, basically,
+is the task of computing the transform from the base
+to the end-effector.
+So this is our, let's say, our base coordinate frame
+to the end-effector as a function of the joint angles,
+where q is just a vector comprising
+all the joint angles.
+So this is what we've started in the past.
+A very common problem that you have when using robots
+is, what you'd like to do is move the end-effector
+in a specified direction.
+And you know what that direction is in Cartesian space.
+So basically what you'd like is for the end-effector
+to move from its current position to a new position
+here.
+And that means that you know this change in Cartesian space.
+And I'm going to use the vector x to denote the end-effector's
+position in Cartesian space.
+So then you know this delta x.
+So in the most general terms, x is
+going to be a vector denoting the end-effector's
+position in Cartesian space.
+If we only care about position and not orientation,
+then the vector x will contain just the position components.
+So then it'll be three-dimensional.
+If we care about orientation as well,
+then this vector will also contain
+three elementary rotations.
+So for example, those could be roll, pitch, and yaw.
+Or alternatively, it can be elementary rotations
+around the three axes.
+So it could be rotation around x, rotation around y,
+rotation around z.
+But in any case, the vector x denotes either the position
+or the position and orientation of the end-effector
+in Cartesian space.
+So let's say I know how I'd like the robot
+to move in Cartesian space.
+Then the question is, how should I
+change my joint angles in order to achieve this desired
+motion in Cartesian space?
+Where does that come about?
+Let's say, for example, you have a welding robot.
+So you have this robot.
+And the tool tip is a welder.
+And the path that it needs to weld is specified.
+You have the object right in front of the robot.
+So the robot needs to follow the contour of this object.
+So obviously, you have the path specified in Cartesian space.
+But now you need to decide, OK, how
+should the joints move in order for the robot
+to follow this path that I have specified in Cartesian space?
+So it's a very common problem.
+So how do we go about computing this?
+Well, let's recall, for example, our forward kinematics.
+Basically what forward kinematics does for us,
+it tells us that the position and orientation
+of the robot in Cartesian space can be
+expressed as a function of q.
+So this essentially says that x is a function of q.
+So far, we've expressed forward kinematics.
+We've computed this as a transform.
+So this is the transform matrix.
+But we can always go from a transform matrix
+to the position and orientation of the robot expressed
+as a 6-vector.
+The translation part of the matrix
+is just the position part of the Cartesian vector.
+And then from the rotation part of the transform matrix,
+we know that we can use our software libraries
+to just compute the same rotation expressed
+not as a matrix, but as three elementary rotations
+around the angles.
+So we can always go from this transform, from this 4X4 matrix
+to this 6-vector.
+So this, we know how to do.
+This is just forward kinematics.
+So how do we go about computing delta q?
+So we know that the robot is in this given pose.
+We know that this holds.
+So what we'd like to do is to achieve
+a small displacement delta x.
+So we want the robot to end up at x plus delta x.
+And we know that for that, we need a change in joint values.
+So we know delta x.
+What we'd like to do is compute delta q.
+And we know from calculus that if we linearize
+this function f around the point q, we can approximate f of q
+plus delta q as f of q plus df over dq delta q.
+So we are linearizing the function f around the point q.
+So at this point if we just use this equals to this,
+what we end up with is that delta x is going to be equal
+df over dq times delta q.
+And then, obviously, another way to write this also just
+from basic calculus is that x dot
+is going to be df over dq q dot.
+So far, so good.
+But then the problem is what about this thing?
+How do we go about computing that?
+And what is that item?
