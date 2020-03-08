@@ -1,0 +1,117 @@
+So what we need to do here is differentiate the function f
+with respect to q.
+And what makes things a little bit more interesting
+is that f takes in a multidimensional input,
+produces a multidimensional output, right?
+So let's say q is in rn, and then x is in rm.
+So in our case, n is the number of joints of the robot.
+M is 6, if we are in 3D space and we care
+about position and orientation.
+M is 3 if we only care about position.
+But this is a more general concept.
+We have a function that takes in a multidimensional input,
+produces multidimensional output,
+and we'd like to differentiate it with respect to the input.
+And, in general, not just in robotics but as
+a general concept, df with respect to dq
+is defined as a matrix, where you have--
+so, dx1, dq1, dx2, dq1, and--
+sorry, dx1, dq2, and then so on, dx1, dqn.
+So going along the columns, you are changing the q
+that you are differentiating with respect with.
+And then, going down the rows, you have the output.
+So you end up with dxm, dq1, dxm, dq2, all the way
+until dxm dqn.
+So this is in matrix form.
+And this matrix is called the Jacobian of the function f.
+So this is, again, a very general concept.
+So df to dq is defined as the Jacobian, and it is this.
+OK?
+So this is a very important identity to remember.
+It's easy to get confused about which variable changes as you
+go along columns, and, which one changes as you go along rows.
+Remember that the Jacobian has n columns, where
+n is the dimensionality of the input of the function.
+And it has m rows, where m is the dimensionality
+of the output.
+OK?
+So now that we have defined our Jacobian,
+we can replace it in here.
+One very important thing to note is that the Jacobian
+depends on q, right?
+The Jacobian is the differentiation of the function
+f against q, but it's only valid at one particular location
+in input space.
+So the Jacobian in general is a function of q.
+So as the values of q change, so do the values of this matrix.
+And we'll see in a second.
+But, very commonly in practice, this is omitted just
+for the simplified notation, and the Jacobian
+is referred to simply as J. But you
+have to remember that, as the robot moves in space,
+the contents of the Jacobian will change.
+We'll see that in practice in just a second.
+So using J, just J, for this big matrix,
+we can now rewrite the relationship
+that we have earlier.
+And what we have is that delta x is equal to J delta q.
+Or, another way to write it is that x dot is equal to J q dot.
+These are extremely important equalities to remember.
+The whole use of robot arms kind of revolves around these.
+What's a very important thing to note here?
+So this is-- you can think of this as velocities, right,
+the bottom identity here.
+So q dot is the vector of joined velocities.
+X dot is the velocity of the end effector in Cartesian space.
+This relationship relates displacements.
+So delta x is a displacement of the end
+effector in Cartesian space.
+Delta q is a displacement of the joints.
+But this relationship only holds for very small displacements.
+It is technically true only for infinitesimally small delta
+axes.
+So you cannot expect the robot to travel long distances with
+respect to the general workspace governed just by this
+relationship.
+Because think about what we did here, right?
+We derived this by linearizing the function f
+in the local point, around q.
+OK?
+So that linearization only holds for infinitesimally small
+displacements.
+As the robot moves, q changes, the Jacobian changes,
+so then this doesn't hold anymore.
+So remember this relationship in velocity domain,
+in small displacement domain, and remember
+that, if you write it in small displacement domain,
+it is technically true only for infinitesimally small delta
+axes.
+And in practice, you can use it for small delta axes.
+What's small enough?
+There is no general recipe for that.
+It varies from case to case.
+But that's something to always keep in the back of your minds.
+Also, if you remember these relationships,
+then you always immediately know the dimensionality
+of your Jacobian, which is easy to forget, right?
+The Jacobian gets multiplied by delta q.
+So the number of columns has to be
+equal to n, which is the dimensionality of q.
+And then the Jacobian, the result of that multiplication,
+is delta x.
+So the number of rows has to be equal to m, which is
+the dimensionality of x, right?
+So if I write this relationship again,
+so I have the Jacobian times delta q, right?
+Delta q has the same dimensionality as q,
+so it'll have one column and n rows,
+which means that the Jacobian has to have n columns.
+And then this produces delta x, right?
+Delta x is going to have, again, one column and m
+rows, which means that the Jacobian has to have m rows
+as well, right?
+So if you remember this, you can always immediately realize
+the size of the Jacobian.
+It needs to have n columns, m rows, which then tells you
+that the q changes as you go along the columns,
+and that the x changes as you go along the rows.

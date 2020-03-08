@@ -1396,3 +1396,52 @@ $$^{b}\bf{T}_{ee}=\left[ \begin{array}{ccc|c} & & & x \\ & \bf{R} & & y \\ & & &
 $$S_2=\texttt{sin}(q_2)\:\:\:C_2=\texttt{cos}(q_2)$$
 
 * Assume we require the end-effector to be at position  [a,b,c]T , and we do not care about end-effector orientation. Derive the values for the robot joints  q1 ,  q2  and  q3  such that the end-effector achieves the desired position. Be sure to consider all possible solutions.
+
+### 5.1 Differential Kinematics Introduction
+
+* we start again from FW Kinematics on a typical robot arm with 3 links and 3 joints
+* FW kinematics is the task of computing the Transform from base to end effector as a functions of the joint angles:
+$$^{b}T_{ee}=FWD(q)\:\:where:\:\:q=\begin{bmatrix}q_1 & q_2 & q_3 \end{bmatrix}^{T}$$
+
+* a very common problem when using robots is move the end effector in a specified direction that we know in cartesian space. say from point1 to point2, where we know the change Δx in cartesian space between point 1 and 2. Δx is the difference of 3D point vectors x=[x,y,z]T. if we care also about the orientation apart from position then x=[x,y,z,roll,pitch,yaw] or x=[x,y,z,rx,ry,rz]T. in that case we want to know how much to change the joint values Δq=?
+* say we have a welder robot and we need to weld a body so the welding robot has to follow the contour of the surface. we have the path specified in cartesian space. we need to decide how the joints move in order for the robot to follow this path we have specked in cartesian space....
+* What the FW Kinematics does for us is that it tells us that the position and orientation of the robot in cartesian space can be expressed as a function of q x=f(q)
+* we know that we can easily go from transform matrix to the relative position(and orientation) of end effector in relation to the base frame
+$$^{b}T_{ee}=FWD(q)\:\:q=\begin{bmatrix}q1 & q2 & q3\end{bmatrix}^{T}\:\:x=\begin{bmatrix}x & y & z & r_x & r_y & r_z\end{bmatrix}^{T}$$
+$$x=f(q)$$
+
+* how to compute Δq. we know that x+Δx=f(q+Δq). we can linearize the function f around the point q
+$$x+\Delta x = f(q + \Delta q) = f(q) + \frac{\partial f}{\partial q} \Delta q$$
+$$\Delta x = \frac{\partial f}{\partial q} \Delta q\:\:or\:\: \dot{x}=\frac{\partial f}{\partial q} \dot{q}$$
+
+* so our problem is now the parial derivative of the function on the joint values
+
+### 5.2 Manipulator Jacobian
+
+* we need to differentiate the function f but it takes multidimensional input and output
+$$q\in \mathbb{R}^{n} x\in \mathbb{R}^{m}$$
+$$n: number of joints$$
+$$m: number of dimensions$$
+
+* the differentiate functions can be expressed as a m by n matrix of partials
+$$\frac{\partial f}{\partial q}=\begin{bmatrix}
+\frac{\partial x_1}{\partial q_1} & \frac{\partial x_1}{\partial q_2} & ... & \frac{\partial x_1}{\partial q_n} \\
+... & ... & ... & ...  \\
+\frac{\partial x_m}{\partial q_1} & \frac{\partial x_n}{\partial q_2} & ... & \frac{\partial x_m}{\partial q_n}
+\end{bmatrix}=J$$
+
+* this matrix is called the Jacobian of function f (n columns and m rows)
+* the jacobian is the differentiation of function f against q but its valid in aparticular location in input space so the jacobian is a function of q. J(q). as the values of q change so does the matrix
+$$\Delta x = J\Delta q\:\:or\:\: \dot{x}=J\dot{q} $
+
+* the first equation with Δ is about displacement. the second with dot is about velocities. both are related with the Jacobian
+* the Jacobian relationship holds only for very small displacements d
+* we cannot expect to do long distance moves using this relationship
+* this is because to end up in the Jacobian we linearized the function f in the local point. in the small area around q. linearizations holds for small displacement dx
+* as robot moves q changes so the Jacobian does not hold (maybe we can calculate a new one in RT)
+* in practice this small delta
+* the dimensionality of Jacobian also validates the matrix multiplication: dimensions of Δq (1 column by n rows) and Δx (1 column by m rows)
+
+### 5.3 Jacobian Example: Planar 2-link Robot
+
+* 

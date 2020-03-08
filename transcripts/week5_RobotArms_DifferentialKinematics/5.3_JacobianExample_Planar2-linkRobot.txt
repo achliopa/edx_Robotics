@@ -1,0 +1,204 @@
+Let's make this concrete.
+Let's look at a simple robot, for example,
+the two link planar manipulator that we've
+looked at in the past.
+So if these are x and y-axes, then our robot
+just looks like this, OK?
+And we have the values of the joints.
+So this is q2.
+This is q2, OK?
+And to simplify the problem right here,
+I'm going to say that both links of the robot have equal length,
+equal to 1.
+So each of the links has length equal to 1.
+So then, the forward kinematics, which we recall
+from the previous lectures.
+So the transform from the base to the end effector,
+in transform form, is going to be this.
+OK, and then, we're going to have OK.
+Now, in this lecture, we are going to concern ourselves only
+with the position of the end effector and not
+its orientation.
+So then, I'm going to say that I'll
+define the vector x as being simply the end effector
+position.
+So x is just the position of the end effector.
+OK, the vector q is obviously the vector of joint angles,
+q1, q2.
+OK, and then, x is a function of q, obviously.
+And that's forward kinematics.
+So x is just a function of q.
+And more specifically, by looking just
+at the translation part of our forward kinematics,
+we immediately see that the way the function works
+is that the x-coordinate here, of the end effector,
+is c1 2 plus c1.
+And for clarity in this lecture, I'm
+actually going to expand and formally write
+cosine of q1 plus q2 plus cosine of q1.
+And then, the y-coordinate is going
+to be sine of q1 plus q2 plus sine of q1, OK?
+So this is essentially our function f, coming
+from the translation part.
+Because we decided we only care about the position
+of the end effector.
+Now, we can write our manipulator Jacobian
+using the definition from above.
+We know that it's going to be dx dq1 dx dq2 dy dq1 dy dq2.
+OK, so let's carry out the differentiation using
+these formulas for x and y.
+So what do we get?
+dx to dq1, so we're going to get a minus sine
+of q1 plus q2 minus sine of q1.
+Then, dx dq2, so we're going to get minus sine of q1 plus q2.
+OK, and then, on the bottom, dy to dq1,
+so we're going to get cosine of q1 plus q2 plus cosine q1.
+And then, dy dq2, so we're going to get cosine of q1 plus q2.
+OK, so let's write our Jacobian up here.
+So in this case, the Jacobian is going to be--
+and now, again, I'm going to use the shorthand notation, so--
+minus sine 1, 2 minus sine 1 minus sine 1,2,
+and then cosine 1, 2 plus cosine 1 cosine 1, 2.
+OK, notice how the Jacobian is a function of q1 and q2, right?
+As q1 and q2 change, the Jacobian
+on is going to change as well.
+So let's compute the Jacobian for one particular spot,
+for one particular robot pose.
+Let's say that q is equal to pi/4, and then negative pi/2.
+Transpose.
+What does the robot look like in that case?
+So let's draw our robot.
+q1 is pi/4, so the first link bisects this angle.
+And then the second joint, q2, is negative pi/2.
+Recall that positive q1 goes in this direction,
+so that negative q1 is just going to be perpendicular here.
+So this is the pose of the robot that we're looking at.
+This is x.
+And again, here we have this angle is q1,
+and then this angle is q2.
+And I guess it's negative, so more correctly, it's like this.
+So let's spell out the Jacobian.
+Let's compute it for this position.
+And again, nominally, the Jacobian is a function of q.
+So we might as well write that.
+We're going to have minus sine of q1 plus q2.
+So q1 plus q2 is negative pi/4.
+And then minus sine of q1, so that's pi/4.
+And again, minus sine of q1 plus q2, so that's negative pi/4.
+Cosine of q1 plus q2, so that is q1 plus q2, negative pi/4,
+plus cosine of pi/4.
+And then finally cosine of q1 plus q2, so cosine
+of negative pi/4.
+So let's go ahead and replace these values.
+So sine of negative pi/4 with a minus in front.
+So this is square root of 2 over 2.
+And this is minus the square root of 2 over 2,
+negative sine of negative pi/4, so again,
+square root of 2 over 2 cosine of negative pi/4
+plus cosine of pi/4, so that's 2 times square root of 2 over 2.
+And then cosine of negative pi/4,
+so that's going to be, again, square root of 2 over 2.
+So this all goes away.
+So here we have 0, and then here we just have over 2.
+Just square root of 2.
+Alternatively, to make this a little bit more compact,
+we can just take square root of 2 over 2 out,
+and what we're left with is this.
+So this is our Jacobian at that particular position
+for that particular position of the robot.
+So now what we can do is use it in practice the way
+we've seen that the Jacobian can be used.
+So as we know, Jacobian times small displacements
+of joint angles gives us small displacements
+in Cartesian space, which means that if somebody gives
+us gives us delta x and we want to compute delta q,
+then delta q is the Jacobian inverse times delta x.
+So the first question here, now I've done.
+I've taken a big, big step, inverting the Jacobian.
+And essentially, inverting the Jacobian
+is going to be the topic of the next half-lecture,
+and it's a very important topic in robot arms.
+So what's the situation here?
+Well, we can check that the determinant of this Jacobian
+is, in our case, square root of 2 over 2 times minus 2.
+It's non-zero, so this Jacobian is actually invertible.
+Excellent.
+So we can write a relationship like this.
+So if you just carry out the matrix inversion,
+then what you end up with is that the Jacobian inverse is
+going to be, and I don't know this by heart,
+but this can easily be computed.
+So it'll look like this.
+Now that we have the Jacobian inverse,
+we can plug in some delta x's and get some delta q's.
+So how do we want our end effector to move?
+Let's say the first thing we want to do
+is have the end effector move along the x-axis.
+So purely along the x-axis.
+Let's say our desired delta x is just
+a movement along the x-axis.
+Then delta q is going to be Jacobian inverse times delta x.
+So what we end up with is, so this is how delta q needs
+to move, how q needs to move, how
+joints need to change, such that the end effector moves along x.
+Let's see.
+Does that actually make sense?
+We want the end effector to move in this direction.
+So now we have a result. This tells us
+how the joint values need to change
+in order for the end effector to move along the x direction.
+Does that make sense?
+Well, let's take a look at it.
+Let's first get a better drawing of this robot.
+So this is the robot in our starting position.
+q1 is equal to pi/4, q2 is equal to negative pi/2.
+Now, we want the end effector to move purely along the x-axis.
+So this is the new position of the robot,
+and you can see that q1 has gotten smaller.
+So there has been a negative change in q2,
+whereas q2 has gotten less negative, if you wish.
+So there has been a positive change in q2.
+And roughly, q2 has changed by about twice the change in q1.
+So it makes sense that if we want the robot to travel purely
+along the x-axis, we'd have a negative change in q1
+and a positive change in q2.
+And it's generally a good idea to try and check
+these results intuitively.
+And you can generally get an intuition,
+if you change a robot joint, what
+happens to the end effector.
+But you always have to be careful and remember
+what positive joint values mean and what negative values mean.
+OK let's look at a different exercise.
+Let's see that now, instead of a change purely along x,
+we'd like our end effector to travel purely along y.
+So then the x is going to be 0, 1.
+We want the end effector starting from this point
+right here to go straight up.
+So in that case delta q, the change in joint values,
+is going to be the Jacobian inverse multiplied by delta x.
+And in this case, what we're going to get is 1 and 0.
+So we want the end effector to go straight up.
+This is what we want happening.
+And you notice an interesting thing.
+We have a positive change in q1, and you
+can imagine that if Q1 grows, then
+the blue point will move straight up,
+and we have no change in q2.
+So if we want to move straight up,
+then q2 doesn't have to change at all.
+And that makes sense, because if you imagine a change in q1,
+then the end effector is going to move straight up.
+But you realize, now, that that's only true
+for infinitesimally small delta x's.
+In this exact pose, and only in this exact pose,
+then obviously, if you only change q1,
+the end effector is going to describe a circle.
+And the tangent to that circle at this point in space
+moves you straight up.
+But that's only true at this particular location.
+So again, these relationships hold, but only for very,
+very small delta x's.
+As soon as the robot has moved, you
+need to recompute the Jacobian and recompute the change in q,
+so delta q, that gives you the desired end effector movement.
