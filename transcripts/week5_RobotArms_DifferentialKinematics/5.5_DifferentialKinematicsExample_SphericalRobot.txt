@@ -1,0 +1,130 @@
+Let's look at another example--
+this time three-dimensional-- and that
+will be the spherical robot that we've
+discussed at the end of the previous lecture.
+So this robot has three joints.
+And in this case, we'll worry about the position of the end
+effector in 3D space.
+So here, the vector, x, will be three-dimensional
+and will contain the position of the end effector
+along the x, y, and z axes.
+The q vector, since we have three joints,
+will also be three-dimensional.
+We'll have q1, q2, and q3.
+And we recall from the previous lecture,
+the-- from forward kinematics--
+the relationship between the position of the end
+effector and the joined values.
+So here, we're taking just the translation
+part of the forward kinematics.
+And what we had was this.
+OK?
+We recall the general formula for the Jacobian in this case.
+This is worth repeating because we have to just, in general,
+remember it.
+So what we're going to end up with is dx, d q1 , dx, d q2,
+dx, d q3, dy, d q1, dy, d q2, dy, d q3, and then finally, dz,
+d q1, dz, d q2, dz, d q3.
+So this is the Jacobian.
+OK, so let's go ahead and compute this.
+So the Jacobian is going to be dx, d q1, so we're going
+to get minus sine 1 sine 2 q3.
+Dx d q2-- so cosine 1 cosine 2, q3.
+Dx d q3, so cosine 1 sine 2.
+Dy to d q1, so cosine 1 sine 2 q3.
+Dy to d q2, so sine 1 cosine 2 q3.
+Dy d q3, so sine 1 sine 2.
+And then finally, dz d q1, so we notice
+that z doesn't depend on q1, so this is going to be 0.
+Dz d q2, so minus sine 2 q3 and cosine 2.
+OK.
+Then we can take the determinant of the Jacobian.
+And we really have no choice but to go ahead and carry out
+the multiplication.
+We can take advantage of this 0 right here.
+So we use the last row when computing the determinant.
+In any case, after finishing the computation,
+as long as everything is correct,
+what we should end up with is something that looks like this.
+So you'll have minus s2 squared q3 squared
+minus c2 squared s2 q3 squared.
+So then when you add those up together--
+so actually, this is cubed.
+When you add those together, you will end
+up with minus s2 q3 squared.
+So let's write that up.
+So the determinant of the Jacobian
+is minus s2 q3 squared.
+So when is this determinant 0?
+That tells us when we are in a singular configuration.
+So determinant of the Jacobian is 0.
+Well, first of all, it's 0 if s2 is 0.
+So that means that q2 is 0 or pi.
+What does that robot look like in that configuration?
+It's this particular case.
+So this is for q2 equals 0.
+q2 equals pi, The robot points straight down.
+So intuitively, why is this a singular configuration?
+Well, you can immediately see, for example,
+that changing q1 here has no effect on end effector
+position, right?
+So changing q1 essentially rotates in place,
+but the position of the end effector doesn't change.
+The same thing happens if the robot is pointing straight
+down.
+And this also tells us that from this configuration,
+we can change--
+we can move the robot in the xz plane.
+But in this particular configuration,
+there is nothing we can do to move the robot, for example,
+along the y-axis, right?
+If we change q2, the robot will come towards x,
+but will stay in the xz plane.
+If we change q3, the robot just moves up and down along z.
+If we change q1, the end effector rotates in place.
+There is nothing we can do to move
+the robot along the y-axis.
+So those are two intuitions why this
+is a singular configuration.
+So this is one of them.
+The other singular configuration that we have from the Jacobian,
+q3 equals 0, is also a singular configuration.
+And this is what the robot looks like.
+And again here, you can see that both q1 and q2 stop mattering.
+If q3 is 0, then there is--
+change in q2, change in q1 also has
+no effect on the pose of the end effector.
+And the only direction that we can move the end effector in
+is have it translate in or out by changing q3,
+because change in q1 and q2, in this particular pose,
+does absolutely nothing.
+So that's the intuition why both of these
+are singular configurations for the spherical robot.
+And in general, a very common type
+of exercise that we'll do in the rest of the class is,
+say, here's a robot.
+Compute forward kinematics.
+Once you've computed the forward kinematics,
+do the differential kinematics, which
+means computing the Jacobian, computing
+the determinant of the Jacobian, finding out where
+the determinant is 0--
+so those are the singular configurations--
+the singularities for the robot--
+and then trying to obtain some intuition why
+that's a singularity, which is also a good sanity check,
+right?
+Because doing the Jacobian, then computing
+the determinant-- which we've actually
+skipped in this lecture.
+I've let you carry out these computations on your own.
+It's kind of a long chain.
+It's easy to make a mistake.
+So it's always good to double check and say, hey,
+for these singular configurations,
+do I have an intuitive explanation for what
+makes it a singularity?
+And what to look for is either a joint that stops mattering,
+a joint that has no effect on the end effector pose,
+or the fact that you've lost the ability
+to move in some direction in space.

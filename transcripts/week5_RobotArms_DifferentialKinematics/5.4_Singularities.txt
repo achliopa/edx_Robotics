@@ -1,0 +1,234 @@
+Now, let's try a different exercise.
+Let's try to compute the Jacobian for the case
+where Q2 equals to pi.
+OK?
+So then, what we're going to have here is
+negative sine of Q1 plus pi, which gives us sine of Q1,
+so this bit cancels out.
+We're going to get here, negative cosine of Q1
+plus cosine of Q1, so this will also cancel out.
+So the Jacobian is going to be 0 0.
+And then, here we're going to have sine of Q1
+and finally, negative cosine of Q1.
+So what's happened here?
+This is an important case.
+First of all, what does the robot look like?
+If Q2 equals pi, it means that the robot is just completely
+folded on itself, right?
+So Q2, this is where the join 2 is,
+so that means that Q2 is just completely folded over itself.
+Now, we notice a couple of problems.
+So first of all, we see that the first column of the Jacobian
+is all zeros, right?
+So if you remember this relationship, right?
+It means that whatever Q1 does, the end defector
+doesn't move, right?
+So if I take this Jacobian and I multiply it
+by delta Q1, delta Q2, since this column is all zeros,
+it doesn't matter what I do here,
+it's not going to have any change on end defector
+position.
+And, you see, this makes sense.
+In this particular post, even if the robot rotates around Q1,
+the position of the end effector doesn't change.
+It remains at the origin.
+So this column is all zeros, it means
+that Q1 has, in this configuration,
+lost the ability to move the end defector.
+That's problematic.
+More problematic, however, is that right now, the determinant
+of this Jacobian is 0.
+Which means that now, I can no longer invert it.
+So I can no longer compute this relationship.
+Right?
+So now, it's impossible for me to compute delta q
+for any given delta x.
+Let's see what happens if we actually
+try to compute delta q for any given delta x.
+So if I try my overall relationship,
+if I write this down it's going to be this.
+So delta Q1, delta Q2.
+It's going to be equal to delta x, delta y.
+OK.
+So let's say I try to solve this system of equations.
+So I get sine 1 delta q 2 equals delta x.
+And then, minus cosine 1 delta Q2 equals delta y.
+OK?
+So from this, I get that delta x divided by delta y
+equals minus sine 1 over cosine 1.
+So really, this tells me that movement here is only possible
+if this relationship holds.
+If this relationship doesn't hold,
+then it's impossible for me to satisfy both of these equations
+at the same time.
+Right?
+So in practice, what does this mean?
+Look at the configuration of the robot.
+We've already established that moving Q1 makes no difference.
+Doesn't move the end effector.
+So the only thing you can do is change Q2.
+If you change Q2, the robot end effector moves along a circle.
+Right?
+You see the circle shown here.
+And then, in this particular point in space, if I change Q2,
+the robot will move along the tangent to the circle.
+So the only movement that's possible for me
+in this particular configuration is to move along this tangent
+to the circle.
+So the only movement that I can execute
+is the one that obeys this relationship, which actually
+describes this line in space.
+So the only infinitesimally small movement for me
+that is possible with the robot in this configuration
+is to move along this tangent line.
+I am constrained.
+Interestingly enough, though, this is not the worst of it.
+Right?
+I am in this particular configuration,
+the Jacobian has determinant 0.
+I can only move in some direction in space,
+I'm constrained.
+What happens if I'm close to being in this configuration?
+Right?
+If Q2 is not pi, but it's just very close to pi.
+And in that case, what happens is, instead of zeros here,
+let's say I'm going to get two very small values,
+let's say epsilon 1, and epsilon 2.
+OK?
+So then, what happens is I can still
+go ahead and try to solve this system of equations.
+Nominally, this Jacobian is not singular.
+Its determinant is going to be not 0, as
+long as epsilon 1 and epsilon 2 are not 0,
+even though they're very small.
+So then, I can go ahead and attempt
+to solve the system of equations, which nominally
+means I can attempt to use the inverse of the Jacobian.
+And if you try to solve this system of equations,
+you can run through the equations.
+What you end up with, as a result is delta
+Q2 is going to be this.
+OK?
+And then, delta Q1, you will end up with this.
+And what is as here, what's particularly problematic
+is this relationship down here.
+And in particular, the fact that we are dividing by epsilon 2.
+Remember, epsilon 2 is very, very small.
+So what happens if I write a piece of software that
+takes in delta x as an argument, attempts to multiply
+by the inverse Jacobian, gets a delta q,
+and sends that command to the robot?
+Let's say that the robot is close to this position.
+Close to Q2 equals pi.
+I have this Jacobian.
+Nominally, this is not, the determinant
+is not 0, even though epsilon 1 and epsilon 2 are very small.
+I go ahead and compute this.
+Well, once I divide by epsilon 2, which is very, very small,
+then what I'm going to get is a huge value for delta Q1, right?
+Delta y, delta Q2, these are all reasonable values.
+And then I divide by something very, very small.
+I get a huge delta Q1.
+The smaller epsilon 2, the larger delta Q1.
+So then, if I take that delta Q1 and I send it to the robot
+and I ask the robot, execute this delta Q1.
+Then, all of a sudden the robot is
+going to try to execute a huge motion along Q2.
+Right?
+So Q2, the robot will essentially
+command infinite velocity to Q2 in order
+to execute this-- sorry, to Q1, in order
+to execute this very, very large motion that I have requested.
+And this is how the robot gets damaged,
+or something in the environment gets damaged,
+or somebody gets hit because I've computed a very, very
+large delta Q1 and without checking, I've
+commanded it to the robot.
+So as you are close to this position,
+then, asking for a movement in end effector space,
+can result in huge changes in joint space
+and if you just ask the robot to execute that,
+then the robot just blindly tries to go ahead and do that.
+Then, bad things will happen.
+This type of position is called a singularity, right?
+So nominally, a singularity is what
+happens when the determinant of the Jacobian is 0.
+So this is nominally the singularity.
+Being in a singularity generally means
+that some joint has lost the position to move the robot.
+It doesn't really matter what the joint value is,
+the end effector won't change.
+And we see that here, if we are exactly in this location, then
+Q1 loses the ability to move the robot.
+Another thing that happens in a singularity
+is that now, all of a sudden you are constrained.
+You can only move in some directions.
+And you can see that if you are exactly in this position,
+then the only movement that's possible
+is the one along the tangent to the circle.
+However, being in a singularity is sometimes not
+as bad as being very, very close to a singularity.
+Because when you are very close to a singularity,
+then asking for some finite movement in end effector space
+can result in very, very large, potentially infinite movement,
+in joint space.
+Which can have very unpredictable results.
+So in practice, when you are controlling a robot,
+you have to be careful not to enter singularities.
+And even more important, you have
+to be careful not to approach singularities.
+So this is what your software needs to check for.
+How do you do that in practice?
+Instead of just checking if the determinant is 0 or not,
+you check the condition number of the matrix.
+And many, many linear algebra libraries will have that.
+So as long as the condition number is good,
+then you can go ahead and compute the Jacobian inverse
+and use it.
+If the condition number approaches 0,
+that's the point when you should stop
+trusting this Jacobian inverse.
+Because even if the Jacobian is close to being singular
+but it's not, a linear algebra library will compute j inverse,
+but then, when you try to use it,
+you'll just get huge results in joint space.
+So the condition number is a way to check that you are
+being close to a singularity.
+But not exactly at a singularity.
+Let's look at another example.
+Let's look at the case where Q2 equals 0.
+If we compute the Jacobian for this case, what we end up with
+is minus 2 s1 2 c1 s1 c1.
+OK.
+And this is what the robot looks like in this post.
+Now, we notice that the two columns of the Jacobian
+are not linearly independent.
+Right?
+This column is just the second column multiplied by 2.
+So, again, in this case, the determinant of the Jacobian,
+if we go ahead and compute it, we're going to get 0.
+So what's happened Here?
+Again, some of the same intuitions that we
+have for singularities hold.
+Right?
+In this configuration, the robot is fully extended out.
+So basically, what happens is, if you move Q1,
+then the robot is going to move along this tangent line.
+If you move Q2, the robot is also
+going to move along this same tangent line.
+So regardless which joint you move,
+you get the exact same movement of the end effector.
+So at this point, the only possible movement
+of the end effector is along this tangent line,
+regardless of which joint you move.
+And if you go ahead and try to compute,
+if you try to solve this system of equations,
+you will end up with a similar relationship.
+You'll end up width delta x divided by delta y
+equal to c1 over s1.
+Which will tell you that you can only
+move if delta x and delta y obey this relationship, which is
+this particular tangent line.
+So again, here, we've lost the ability
+to move in any direction except 1,
+because the robot is precisely at a singularity.

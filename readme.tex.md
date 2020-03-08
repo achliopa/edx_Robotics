@@ -1464,7 +1464,7 @@ y=\sin(q_{1}+q_{2})+sin(q_{1})
 $$J=\begin{bmatrix}
 \frac{\partial x}{\partial q_{1}} & \frac{\partial x}{\partial q_{2}} \\
 \frac{\partial y}{\partial q_{1}} & \frac{\partial y}{\partial q_{2}} 
-\end{bmatrix} = \begin{bmatrix}\end{bmatrix}=\begin{bmatrix}
+\end{bmatrix} =\begin{bmatrix}
 -\sin(q_{1}+q_{2})-\sin(q_{1}) & -\sin(q_{1}+q_{2}) \\
 \cos(q_{1}+q_{2})+\cos(q_{1}) & \cos(q_{1}+q_{2})
 \end{bmatrix}$$
@@ -1475,4 +1475,86 @@ $$J=\begin{bmatrix}
 c_{12}+c_{1} & c_{12}
 \end{bmatrix}$$
 
-* we can now calculate the Jacobian for a particular spot $q=\begin{bmatrix}\frac{\pi}{4} & -\frac{\pi}{2}\end{bmatrix}^{T}$
+* we can now calculate the Jacobian for a particular spot     $q=\begin{bmatrix}\frac{\pi}{4} & -\frac{\pi}{2}\end{bmatrix}^{T}$
+* we draw the pose of the robot arm and calculate the Jacobian
+$$J(\frac{\pi}{4},\frac{\pi}{2})=\begin{bmatrix}
+-s(-\frac{\pi}{4})-s(\frac{\pi}{4}) & -s(-\frac{\pi}{4}) \\
+c(-\frac{\pi}{4})+c(\frac{\pi}{4}) & c(-\frac{\pi}{4})
+\end{bmatrix}$$=\begin{bmatrix}
+0 & \frac{\sqrt{2}}{2} \\
+\sqrt{2} & \frac{\sqrt{2}}{2}
+\end{bmatrix}=\frac{\sqrt{2}}{2}\begin{bmatrix}
+0 & 1 \\
+2 & 1
+\end{bmatrix}
+
+* so we have the jacobian for this position... we can use the Δ equation and given the Δx calc the Δq needed $\Delta q= J^{-1}\cdot \Delta x$
+* the jacobian inverse for this position is
+$$J^{-1}=\frac{\sqrt{2}}{2}\begin{bmatrix}
+-1 & 1 \\
+2 & 0
+\end{bmatrix}\:\:\:\Delta x =\begin{bmatrix} 1 \\ 0 \end{bmatrix} \Rightarrow \Delta q = \frac{\sqrt{2}}{2}\begin{bmatrix}
+-1  \\ 2 
+\end{bmatrix}\$$
+
+* it makes sense q1 became smaller and q2 larger. so its correct
+* be careful with signs
+* another example is if we want the end effector to move up
+$$\Delta x =\begin{bmatrix} 0 \\ 1 \end{bmatrix} \Rightarrow \Delta q = \frac{\sqrt{2}}{2}\begin{bmatrix}
+1  \\ 0 
+\end{bmatrix}\$$
+
+* this also makes sense. only q1 becames larger
+* remember that we need to recompute jacobian for every position
+
+### 5.4 Singularities
+
+* we will try to calculate the Jacobian for the previous example when q2 = π.  it will be
+$$J=\begin{bmatrix}
+0 & s_1 \\ 0 & -c_1
+\end{bmatrix}$$
+
+* this is an important case. robot arm has fully folded onto itself
+* if i multiply the Jacobian with Δq=[Δq1,Δq2]T it doesnt matter what i change in q1. it wont have any effect in positon as 1st column of Jacobian is 0
+* in the sketch we can verify that. if the robot rotates around q1 end effector is in 0,0 position
+* in this situation q1 lost its ability to move the end effector
+* this is a problem. another problem is that the determinant of the Jacobian is 0. we cannot invert it and we cannot compute joint val move if position changes (but it cant)
+* if we try to compute Δq for an arbitrary Δx. the equation system that we have (see below) is unsolvable
+$$\left\{\begin{matrix}
+s_{1}\Delta q_{2}=\Delta x\\ 
+-c_{1}\Delta q_{2}=\Delta y
+\end{matrix}\right. \Rightarrow \frac{\Delta x}{\Delta y} = -\frac{s_1}{c_1}$$
+
+* movement is possible only if the derived equation holds. if not we cannot satisfy the equation
+* for the specific robot config in this position the only movement possible is along the tangent of the circle arount the second joint if q2 changes.
+* so we are locked. what happens if i am close to being locked. if q2 is not π but very close to it
+* in that case in the jacobian instead of 0 we would have 2 very small vals ε1 and ε2. also the determinant of the Jacobian will be non-zero
+* then we can attempt to solve the equation system and calculate the Jacobian inverse then calculate the Δq for a small Δx in this position
+$$\Delta q_{2}=\frac{\Delta x -\frac{\varepsilon_{1}}{\varepsilon_{2}}\Delta y}{\frac{\varepsilon_{1}}{\varepsilon_{2}}c_{1}+s_{1}}$$
+$$\Delta q_{2}=\frac{\Delta y+c_{1}\Deltaq_{2}}{\varepsilon_{2}}$$
+
+* remember that ε is very small. what if we write a piece of SW that takes in Δx calculates jacobian inverse and Δq and sents it to the robot given that the robot is close to the q2=π position
+* as we divide for ε Δq1 is huge and Δq is analogus to q dot aka speed. so robot will attempt to cover instanlty a huge distance
+* this will destroy the robot!!!!!!!!!!
+* so being close to a border position commanding the robot can cause instability
+* this kind of position is called a Singularity. these positions occur when the determinant of the Jacobian is 0
+$$Singularity\:\left | J \right |=0$$ 
+* Being in a singularity means that a joint has lost its ability to move the robot
+* Also being in a singularity measn we are constrained to move only in a specific direction only
+* Being IN a singularity (locked) is better than being very close to a singularity. then asking for a finite movemtn can result in an infinite movement in joint space
+* In a robot control software we must avoid singularities and approaching them
+* this is done using a SW library that calculates the matrix condition (determinant). if its good then we are safe.
+* if q2=0 (arm fully extent the jacobian is
+$$J=\begin{bmatrix}
+-2s_1 & -s_1 \\
+2c_1 & c1
+\end{bmatrix}$$ 
+
+* what we see is that columns are not lineraly indipendent. the determinant is 0. the robot is fully extent.
+* if we move q1 the robot will move arount the max circle tangent at that position. same for q2. 
+* the only possible movement is along the tangent line regardless of the joint angle changing val
+* again we have the instability problem. so we lost the ability to move except on one line
+
+### 5.5 Differential Kinematics Example- Spherical Robot
+
+* 
