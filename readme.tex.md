@@ -1628,5 +1628,62 @@ $$J\dot{q}=\dot{x}$$
 
 ### 5.7 Differential Kinematics Example
 
-* 
+* 1 more full example of Differential Kinematics
+* The DH params of the robot are
+    * Joint1: θ1=q1, d1=0, a1=l1, α1=90deg
+    * Joint2: θ2=q2, d2=0, a2=0, α2=90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* We will draw the robot, do FW kinematic analisys, differential kinematic analysis, detect the singular configurations
+* we sketch the robot:
+    * start from base frame (x to viewer, z up, y right)
+    * first joint is rotating around z by θ1. link translated on x by l1 a fixed system param (not a degree of freedom). at the end of the link fram rotates on x by 90deg so z will point left and y up
+    * second joint is a rotation around new z by θ2 and frame is rotated on x axis by 90deg. so new frame z point down and y left
+    * last joint is prismatic so there is a variable translation on new z axis (pointing down) by q3
+* robot is like a 2link planar robot rotating around base z axis with a variable length second link also first q on base is fixed (rotating around z on x,y plane)
+* we go through joints doing forward kinemativc analysis to get the base to end effector transform matrix
+$$^{b}T_{ee}=\begin{bmatrix}
+c_{1} & -s_{1} & 0 & 0\\
+s_{1} & c_{1} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & e_1\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & -1 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} & 0 & 0\\
+s_{2} & c_{2} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & -1 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & q_3\\
+0 & 0 & 0 & 1 \end{bmatrix}$$
 
+* remember teh multiplication and trick (trnaslate+rotation) and get the final transform matrix
+* also if we say we care only for the translation part of forward kinematics our equations are simplified. we keep only the transaltion part of last matrix replacing it with a [0 0 3 1]T vector
+$$^{b}T{ee}=\begin{bmatrix}
+c_1(s_2q_3+l_1) \\
+s_1(s_2q_3+l_1) \\
+-c_2q_3 \\
+1
+\end{bmatrix}$$
+
+* we do a sanity check projecting the end effector point from the sketch along the 3 axis
+* we care only about position so x will be x=[x y z]T
+* we calculate the Jacobian
+$$J=\begin{bmatrix}
+\frac{\partial x}{\partial q_{1}} & \frac{\partial x}{\partial q_{2}} &  \frac{\partial x}{\partial q_{3}} \\
+\frac{\partial y}{\partial q_{1}} & \frac{\partial y}{\partial q_{2}} &  \frac{\partial y}{\partial q_{3}} \\
+\frac{\partial z}{\partial q_{1}} & \frac{\partial z}{\partial q_{2}} &  \frac{\partial z}{\partial q_{3}}
+\end{bmatrix}=\begin{bmatrix}
+-s_1(s_2q_3+l_1) & c_1c_2q_3 & c_1s_2 \\
+c_1(s_2q_3+l_1) & s_1c_2q_3 & s_1s_2 \\
+0 & s_2q_3 & -c_2 \end{bmatrix}$$
