@@ -1687,3 +1687,73 @@ $$J=\begin{bmatrix}
 -s_1(s_2q_3+l_1) & c_1c_2q_3 & c_1s_2 \\
 c_1(s_2q_3+l_1) & s_1c_2q_3 & s_1s_2 \\
 0 & s_2q_3 & -c_2 \end{bmatrix}$$
+
+* we calculate its determinant (choose the easiest row to expand, add signs to heve the sign, multiply) remember s2+c2=1
+$$\left | J \right |=+s_2q_3[-s_1^2s_2(s_2q_3+l_1)-c_1^2s_2(s_2q_3+l_1)]+c_2[-s_1^2c_2q_3(s_2q_3+l_1)-c_1^2c_2q_3(s_2q_3+l_1)]=q_3s_2^2(s_2q_3+l_1)+q_3c_2^2(s_2q_3+l_1)=q_3(s_2q_3+l_1)$$
+
+* this robot is in singular position when |J|=0 so a) q3=0 because q2 becomes irrelevant b) when s2q3+l1=0 when end effector touches the z axis so q1 becomes irrelevant
+
+### 5.8 Complete Kinematic Analysis Example
+
+* we consider another robot to showcase full kinematic analysis complete (with position and orientation)
+* The DH params of the robot are
+    * Joint1: θ1=0, d1=q1, a1=0, α1=0
+    * Joint2: θ2=q2, d2=0, a2=0, α2=-90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* we draw the robot with base frame z->up, x->viewer, y-> right
+* joint1 is prismatic so it translates the base frame by q1 on the z axis. the new frame after translated is not rotated
+* joint2 is revolute it rotates around z by θ2. no translation but new frame is rotated on x by -90deg so new z points right and y down
+* joint3 is prismatic extending on the new horizontal z axis by q3. new coordinate frame in nd efector is unchanged
+* robot resembles a gamma of extensible links rotating on z
+* we do the FK analysis (in the last 2 matrices rotation is multiplied with identity so stays unchanged, translation gets rotated by rotation matrix)
+$$^{b}T_{ee}=\begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & q_1\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+c_{2} & -s_{2} & 0 & 0\\
+s_{2} & c_{2} & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & -1 & 0 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 1 & q_3\\
+0 & 0 & 0 & 1 \end{bmatrix}=\begin{bmatrix}
+c_{2} & -s_{2} & 0 & 0\\
+s_{2} & c_{2} & 0 & 0 \\
+0 & 0 & 1 & q_1 \\
+0 & 0 & 0 & 1 \end{bmatrix}\cdot \begin{bmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & q_3\\
+0 & -1 & 0 & 0\\
+0 & 0 & 0 & 1 \end{bmatrix}=\begin{bmatrix}
+c_{2} & 0 & -s_{2} & -s_{2}q_3\\
+s_{2} & 0 & c_{2} & c_{2}q_3 \\
+0 & -1 & 0 & q_1 \\
+0 & 0 & 0 & 1 \end{bmatrix}$$
+
+* we do the IK analysis for position only assuming we want our end effector to end up in position [a,b,c]T
+* the translation part of the Transform matrix has to put the end effector in the position we want so we have our equation system
+$$\left\{\begin{matrix}
+-s_{2}q_3=a \\ c_{2}q_3=b \\ q_1=c \end{matrix}\right.$$
+
+* c we have. its q1 for the other two we square them up and add them το get $q_3=\pm \sqrt{a^2+b^2}$
+* we start investigating solutions:
+* if $a^2+b^2=0$ we have one solution for q3=0
+* if $a^2+b^2\neq 0$ we have 2 solutions for q3 so we use atan2 so for q2
+$$s_2=-\frac{a}{q_3}\:\:c_2=\frac{b}{q_3}\:\Rightarrow\:q_2=\arctan2(s_2,c_2)$$
+
+* we do differential kinematics analysis calculating the Jacobian
+$$J=\begin{bmatrix}
+0 & -c_2q_3 & -s_2 \\
+0 & -s_2q_3 & c_2 \\
+1 & 0 & 0 \end{bmatrix}$$
+
+* the determinant of the Jacobian is
+$$\left | J \right |=-c_2^2q_3-s_2^2q_3=-q_3$$
+
+* so robot is in singular posisiton when q3=0 which is logical as rotation q2 has no effect

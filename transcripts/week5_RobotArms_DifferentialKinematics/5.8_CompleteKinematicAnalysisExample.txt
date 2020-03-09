@@ -1,0 +1,176 @@
+the end.
+OK, let's wrap things up with a full kinematics example.
+Here's yet another robot, yet another DH table.
+And this time, we want to do forward
+kinematics, inverse kinematics, and differential kinematics,
+so the full analysis for this robot.
+Like always, we start with the sketch,
+based on the DH parameters.
+So let's give ourselves our base coordinate frame.
+X0, z0.
+The first thing we have is a translation by q1 along z.
+That's our first degree of freedom.
+So let's say that puts us up here.
+So we're going to have z1 pointing still up,
+x1 still parallel to x0.
+We haven't really done any changes of axis orientations.
+And then, this distance, all the way down here,
+is going to be q1, OK?
+So this is the first part of our robot.
+Then, we have a rotation around z.
+So q2 is going to be a rotation right here.
+We have no translation along z, no translation along x.
+But then, we have negative 90 rotation around x.
+So that means that x2 is going to be pointing
+in the same direction as x1.
+But then, z2 is going to be pointing to the side like this.
+And then, our third row, where we have no rotation around z,
+q3 translation along z.
+So then, we're going to go, let's say, up to here.
+And no rotation, no rotation, so our final coordinate frame
+is going to be z3 pointing like that, x3 pointing like this.
+And then, this is going to be the degree of freedom, q3.
+Now, we get a sense for what this robot looks like.
+So the whole robot can translate up and down right here.
+Then, it can rotate around the z-axis.
+So this arm can rotate around the z-axis.
+And then, finally, the end effector,
+it can translate back and forth along this leg of the room.
+OK, so we have a sense for what the robot looks like.
+Let's go ahead with the forward kinematics.
+So the transform from the base to the end effector is--
+let's start spelling them out.
+The first thing we do have is an identity rotation and just
+the translation along z.
+So 0, 0, q1, and then 0 and 1.
+OK, the next thing we do have is the rotation around z.
+So this is q2.
+OK, then we have a rotation 90 degrees around x, negative 90
+around x.
+So that means that the x-axis stays unchanged.
+y points down now, right here, right?
+So y will be pointing down.
+So it means in the opposite of where z used to be.
+And then, z now points in the direction where y used to be.
+So this is our rotation matrix.
+And we have no translation component.
+And then, finally, our last matrix,
+again, nothing but a translation along z.
+So we have the identity, and then 0, 0, q3, 0, and 1.
+OK, let's carry out these multiplications.
+This one is actually the easiest one.
+We have translation followed by rotation.
+So really, the only thing that happens
+is we can take the translation bit
+and superimpose it right here.
+So what we'll have is this.
+OK, here, we have rotation followed by translation.
+So the rotation part stays the same.
+Because it gets multiplied by the identity.
+But we have to be careful.
+Because the translation gets rotated
+by this rotation matrix.
+So what we end up with is this.
+OK, so now, let's multiply these two together
+and see what we end up with.
+OK, let's do inverse kinematics for position only.
+Let's say that we want the end effector to end up
+at position ABC in space.
+So that basically means that these, the translation
+part of forward kinematics, has to put the end effector where
+we want.
+So what we will end up with is this.
+OK, immediately, we get for free, essentially, one
+of our degrees of freedom.
+We get q1 equals c.
+So that's it, just one solution.
+And it makes sense, right?
+The only robot degree of freedom that
+can affect the z-coordinate of the end effector is q1.
+And it's immediately obvious that q1
+is going to be equal to c.
+Then, with these two, let's play the usual trick,
+square them up, add them together,
+and what we end up with is q3 squared
+times s2 squared plus c2 squared equals
+a squared plus b squared.
+So this goes away.
+And then, we have q3 equals square root of a squared
+plus b squared.
+And don't forget that means two solutions for Q3.
+And again, the robot can reach this point either
+by pointing towards it and extending by a positive q3.
+Or the robot can choose to point in the opposite direction,
+and then extend by a negative q3 to reach the same point.
+Again, we assume here that there are no joint limits.
+q3 can be infinitely positive, infinitely negative.
+So then, this gives us two solutions for q3.
+OK, now, we actually need to be a little bit careful.
+Because we're going get s3 and c2.
+Obviously, we have to divide by q3.
+So now, we have options.
+So if a squared plus b squared equals zero, right?
+Well, in this case, we're going to have obviously q3 equals
+zero.
+So this really only gives us one solution.
+So we have one solution for q3.
+But then, q2 doesn't matter, right?
+If a squared plus b squared equals 0, so essentially
+the place where we want to put the end effector
+is right on the z-axis.
+q3 equals zero will give us that q2 doesn't matter.
+So then, we have infinity solutions for q2.
+OK, but in the other case, if a squared plus b squared
+is not zero, then we're going to have two solutions for q3,
+right?
+And then, for each value of q3, what
+we're going to end up with is s2 is going to be minus a
+divided by q3.
+c2 is going to be b divided by q3.
+And then, q2 is a tan 2 of s2 c2.
+So for each solution for q3, we get one solution for q2.
+So a total of two solutions for the complete system.
+And that's it.
+That's the inverse kinematics.
+We're done with the inverse kinematics part.
+Let's go ahead with the differential kinematics.
+Let's write the Jacobian.
+By this point, I trust that the general formula
+for the Jacobian is known.
+So I'm not going to repeat it one more time.
+So I'm just going to go right at it.
+So the dx dq1, that 0x doesn't depend in q1.
+dx dq2, so we're going to end up with minus c2 q3 dx dq3,
+so minus s2.
+dy dq1 0-- y doesn't depend on q1--
+minus s2 q3, and then, finally, c2.
+And then, dz dq1 is going to be 1.
+And then, dz dq2 dz dq3, this is our Jacobian.
+Piece of cake to take the determinant
+for such a simple case.
+So the determinant of the Jacobian
+is going to be minus c2 squared q3 minus s2 squared q3,
+so just q3, OK?
+When is this robot in a singular configuration?
+When the determinant of the Jacobian is 0.
+So that can only happen when q3 is 0.
+Intuitively, what does that mean?
+Well, it means that this leg has length 0.
+The end effector is right on the z-axis.
+On one hand, it means that q2 cannot move the robot in any
+way.
+And then, also what it means is that really the only two
+movements that are available to the robot
+are up and down, or along q3, whatever direction q3 happens
+to be pointing in.
+So the robot can really only move infinitesimally
+two directions, not in the three directions of translation
+in x, y, and z.
+So this is the only singular configuration
+for this particular robot.
+So this is a very simple robot, not all that much to it.
+But this is a very typical example
+for the kind of exercises that we do based on what we have.
+We start with nothing but the DH table.
+And then, from the DH table, forward kinematics,
+inverse kinematics, differential kinematics.
