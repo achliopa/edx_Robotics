@@ -1601,11 +1601,11 @@ $$\left | J \right |=-s_{2}q_{3}^{2}$$
 $$q=\begin{bmatrix}q_1 & q_2 & q_3 \end{bmatrix}^{t}\in \mathbb{R}^{n}$$
 
 * In Cartesian Space
-    * we talk about relative position and orientation  of ee regarding base frame (translation and rotation along each axis) 
+    * we talk about relative position and orientation  of ee regarding base frame (translation and rotation along each axis)
+        * so we work in 6dimensional space if we care about position and orientation. if we care only about position in 3d space we work in 3d. if we cae about position&orientation in 2D plane we work in 3D
+        * we call this space task space because it represents target position where the endeffector has to go
 $$q=\begin{bmatrix}x & y & z & r_x & r_y & r_z\end{bmatrix}^{t}\in \mathbb{R}^{6}$$
 
-    * so we work in 6dimensional space if we care about position and orientation. if we care only about position in 3d space we work in 3d. if we cae about position&orientation in 2D plane we work in 3D
-    * we call this space task space because it represents target position where the endeffector has to go
 * Everything we do about the analysis of robot arms has to do with moving between these 2 spaces.
 * going from Joint Space => Cartesian Space is Forward Kinematics (FK)
 * going from Cartesian Space => Joint Space is Inverse Kinematics (IK)
@@ -1621,8 +1621,9 @@ $$x=f(q)\:\Rightarrow\:J=\begin{bmatrix}
 ... & ... & ... \\
 \frac{\partial x_m}{\partialq_1} & ... & \frac{\partial x_m}{\partialq_n}
 \end{bmatrix}$$
+
 * also:
-$$J\Deltaq=\Deltax$$
+$$J\Delta q=\Delta x$$
 $$J\dot{q}=\dot{x}$$
 
 ### 5.7 Differential Kinematics Example
