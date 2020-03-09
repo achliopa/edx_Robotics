@@ -1423,10 +1423,12 @@ echo "project3_ws workspace was sourced"
 * We formalize the notion of Joint Space (the space of possible joint values) and Cartesial(aka EndEffector aka Task) Space
 * In Joint Space
     * we talk about joint values 
-    $$q=\begin{bmatrix}q_1 & q_2 & q_3 \end{bmatrix}^{t}\in \mathbb{R}^{n}$$
+<p align="center"><img src="/tex/da0d1ff53357cedf33a54cb408332a3c.svg?invert_in_darkmode&sanitize=true" align=middle width=166.43640585pt height=22.7399535pt/></p>
+
 * In Cartesian Space
     * we talk about relative position and orientation  of ee regarding base frame (translation and rotation along each axis) 
-    $$q=\begin{bmatrix}x & y & z & r_x & r_y & r_z\end{bmatrix}^{t}\in \mathbb{R}^{6}$$
+<p align="center"><img src="/tex/d32fcb0a2ae4eefc920017df9539f835.svg?invert_in_darkmode&sanitize=true" align=middle width=242.45246684999998pt height=22.7399535pt/></p>
+
     * so we work in 6dimensional space if we care about position and orientation. if we care only about position in 3d space we work in 3d. if we cae about position&orientation in 2D plane we work in 3D
     * we call this space task space because it represents target position where the endeffector has to go
 * Everything we do about the analysis of robot arms has to do with moving between these 2 spaces.
@@ -1441,8 +1443,8 @@ echo "project3_ws workspace was sourced"
 * in mathematical terms
 <p align="center"><img src="/tex/087c11bc59045406deba4bd8dab62ff4.svg?invert_in_darkmode&sanitize=true" align=middle width=255.91228575pt height=63.81200265pt/></p>
 * also:
-    * $J\Deltaq=\Deltax$
-    * $J\dot{q}=\dot{x}$
+<p align="center"><img src="/tex/0d7fa0920d464be5c7603b6c0b752b22.svg?invert_in_darkmode&sanitize=true" align=middle width=28.047883049999996pt height=11.232861749999998pt/></p>
+<p align="center"><img src="/tex/edbbaa273a225a0c940bcdd4a8aa469d.svg?invert_in_darkmode&sanitize=true" align=middle width=49.93703385pt height=14.42921205pt/></p>
 
 ### 5.7 Differential Kinematics Example
 
