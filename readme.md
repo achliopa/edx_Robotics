@@ -1449,5 +1449,26 @@ echo "project3_ws workspace was sourced"
 
 ### 5.7 Differential Kinematics Example
 
-* 
+* 1 more full example of Differential Kinematics
+* The DH params of the robot are
+    * Joint1: θ1=q1, d1=0, a1=l1, α1=90deg
+    * Joint2: θ2=q2, d2=0, a2=0, α2=90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* We will draw the robot, do FW kinematic analisys, differential kinematic analysis, detect the singular configurations
+* we sketch the robot:
+    * start from base frame (x to viewer, z up, y right)
+    * first joint is rotating around z by θ1. link translated on x by l1 a fixed system param (not a degree of freedom). at the end of the link fram rotates on x by 90deg so z will point left and y up
+    * second joint is a rotation around new z by θ2 and frame is rotated on x axis by 90deg. so new frame z point down and y left
+    * last joint is prismatic so there is a variable translation on new z axis (pointing down) by q3
+* robot is like a 2link planar robot rotating around base z axis with a variable length second link also first q on base is fixed (rotating around z on x,y plane)
+* we go through joints doing forward kinemativc analysis to get the base to end effector transform matrix
+<p align="center"><img src="/tex/2d40c90df8ba361ff4f11ce1d999a838.svg?invert_in_darkmode&sanitize=true" align=middle width=790.7995160999999pt height=78.9048876pt/></p>
 
+* remember teh multiplication and trick (trnaslate+rotation) and get the final transform matrix
+* also if we say we care only for the translation part of forward kinematics our equations are simplified. we keep only the transaltion part of last matrix replacing it with a [0 0 3 1]T vector
+<p align="center"><img src="/tex/24e79a36e6d5e7e14e56b34fa6c1335b.svg?invert_in_darkmode&sanitize=true" align=middle width=167.66439195pt height=78.9048876pt/></p>
+
+* we do a sanity check projecting the end effector point from the sketch along the 3 axis
+* we care only about position so x will be x=[x y z]T
+* we calculate the Jacobian
+<p align="center"><img src="/tex/66ca001a3411eedb771febcf259a9217.svg?invert_in_darkmode&sanitize=true" align=middle width=413.71606814999996pt height=69.04177335pt/></p>
