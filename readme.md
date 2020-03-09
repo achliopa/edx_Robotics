@@ -1472,3 +1472,41 @@ echo "project3_ws workspace was sourced"
 * we care only about position so x will be x=[x y z]T
 * we calculate the Jacobian
 <p align="center"><img src="/tex/66ca001a3411eedb771febcf259a9217.svg?invert_in_darkmode&sanitize=true" align=middle width=413.71606814999996pt height=69.04177335pt/></p>
+
+* we calculate its determinant (choose the easiest row to expand, add signs to heve the sign, multiply) remember s2+c2=1
+<p align="center"><img src="/tex/c36ef00417bc05b472e3e1381aca0702.svg?invert_in_darkmode&sanitize=true" align=middle width=932.5308597pt height=18.312383099999998pt/></p>
+
+* this robot is in singular position when |J|=0 so a) q3=0 because q2 becomes irrelevant b) when s2q3+l1=0 when end effector touches the z axis so q1 becomes irrelevant
+
+### 5.8 Complete Kinematic Analysis Example
+
+* we consider another robot to showcase full kinematic analysis complete (with position and orientation)
+* The DH params of the robot are
+    * Joint1: θ1=0, d1=q1, a1=0, α1=0
+    * Joint2: θ2=q2, d2=0, a2=0, α2=-90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* we draw the robot with base frame z->up, x->viewer, y-> right
+* joint1 is prismatic so it translates the base frame by q1 on the z axis. the new frame after translated is not rotated
+* joint2 is revolute it rotates around z by θ2. no translation but new frame is rotated on x by -90deg so new z points right and y down
+* joint3 is prismatic extending on the new horizontal z axis by q3. new coordinate frame in nd efector is unchanged
+* robot resembles a gamma of extensible links rotating on z
+* we do the FK analysis (in the last 2 matrices rotation is multiplied with identity so stays unchanged, translation gets rotated by rotation matrix)
+<p align="center"><img src="/tex/4c6999ad53d58e4bc37d6034a5289238.svg?invert_in_darkmode&sanitize=true" align=middle width=1020.5007994499999pt height=78.9048876pt/></p>
+
+* we do the IK analysis for position only assuming we want our end effector to end up in position [a,b,c]T
+* the translation part of the Transform matrix has to put the end effector in the position we want so we have our equation system
+<p align="center"><img src="/tex/a5f4bb873ae7bdd458559608c0316a2c.svg?invert_in_darkmode&sanitize=true" align=middle width=87.79682174999999pt height=59.178683850000006pt/></p>
+
+* c we have. its q1 for the other two we square them up and add them το get <img src="/tex/a8d0105699db1153770489d226fd930d.svg?invert_in_darkmode&sanitize=true" align=middle width=113.69852339999997pt height=28.712280299999996pt/>
+* we start investigating solutions:
+* if <img src="/tex/1a965ecd3cc084459ec719dc7e1c03e3.svg?invert_in_darkmode&sanitize=true" align=middle width=80.72090234999999pt height=26.76175259999998pt/> we have one solution for q3=0
+* if <img src="/tex/f8565040d2ca6e3f96659e2935269e67.svg?invert_in_darkmode&sanitize=true" align=middle width=80.72090234999999pt height=26.76175259999998pt/> we have 2 solutions for q3 so we use atan2 so for q2
+<p align="center"><img src="/tex/15fda88944475815aab7207fbf8b9cb1.svg?invert_in_darkmode&sanitize=true" align=middle width=306.64356195pt height=37.0084374pt/></p>
+
+* we do differential kinematics analysis calculating the Jacobian
+<p align="center"><img src="/tex/b5a24738d02bd95c166869c0ada93df3.svg?invert_in_darkmode&sanitize=true" align=middle width=166.07125754999998pt height=59.1786591pt/></p>
+
+* the determinant of the Jacobian is
+<p align="center"><img src="/tex/e2b8b4cb28cf7e4e2159787033af4f6b.svg?invert_in_darkmode&sanitize=true" align=middle width=182.2107177pt height=18.312383099999998pt/></p>
+
+* so robot is in singular posisiton when q3=0 which is logical as rotation q2 has no effect
