@@ -1,0 +1,165 @@
+So let's recap the most important aspects
+of differential kinematics.
+But before we do that, there's something
+I want to stress, because it's a very, very important concept
+in the study of robot arms.
+Throughout this lecture, we've kept
+talking about joint space versus Cartesian space.
+And those are two concepts that we need to formalize,
+because we're going to be coming back to them again and again.
+So let's again, draw our simple kinematic chain.
+Let's say that it's one with three joints.
+So Q1, Q2, Q3, and an end effector position.
+The end effector position is x in Cartesian space.
+And then there is a change.
+An end effector position is delta x.
+So if this is x, this is delta x.
+And then a small change in one of the joint angles
+is referred to as delta q.
+So let's formalize these notions of joint space
+versus Cartesian space.
+And then there are alternative names for this.
+And we people sometimes also refer to it
+as end effector space, or maybe task space.
+So joint space means the space of possible joint values.
+So here we are talking about joint values, which
+for revolute joints, means joint angles, for prismatic joints,
+means lengths, translations.
+But these are joint values, right?
+So here, we have the vector q.
+A point in joint space means you have decided
+some value for all of your joints,
+let's say the robot has n joints.
+So this is our n, what n is the number of joints of your robot.
+Always remember that these are column vectors.
+So when you are operating in joint space,
+you are talking about joint values.
+When you are operating in task space,
+you're talking about where your end effector is in your task
+coordinate frame, which, let's say you have a base coordinate
+frame right here.
+Let's say this is x, y, and this is z.
+So now you're talking the pose, the position,
+and the orientation of your end effector in Cartesian space.
+So here in the most general case,
+if you add in three dimensions and you
+care about the position and the orientation of your end
+effector, then a point in Cartesian space
+or in end effector space will define
+the translation of your end effector along each axis.
+But also if you have an end effector whose orientation
+matters, then you have also the pose,
+the rotation expressed as elementary rotations
+around the three axes, so rx, ry, rz.
+Again, transpose.
+And then this is in R6.
+If you only care about the position of your end
+effector and not its orientation,
+then you only care about this bit of the vector,
+and you're in R3.
+If you are in two dimensional space
+and you care about position and orientation then again,
+you are in R3.
+But in the most general space, in the more general case,
+this is R6.
+And now you can see why it's called Cartesian space,
+because it's really the pose of the end
+effector relative to a Cartesian coordinate frame.
+It's called end effector space because we're
+talking about the end effector.
+It's called task space because really,
+what matters for your robot, for example, let's
+say you need to be picking up this object from here
+and moving it to here.
+There's a table here that these objects are sitting on,
+and this is the pick and place task that your robot needs
+to execute.
+Where these objects are located will be defined
+in this coordinate frame.
+So this is the space of your task.
+In the task space, you say I need
+the end effector to get to here, and then I
+need it to move over here.
+So again, that's why this is also referred to as task space.
+And in a way, everything that we do
+for the analysis of robot arms has
+to do with moving between these two spaces.
+So if I only think about pose.
+If I am given q and I want to ask what
+x that q corresponds to, right?
+So somebody is giving me the joint angles.
+And I need to decide where that places the end effector.
+So doing this computation, this is forward kinematics.
+If I'm given x, and I'm asking hey,
+what are the q's that place the end effector there?
+Then this is inverse kinematics.
+Then if I'm doing differential kinematics.
+So if I'm talking about a small displacement,
+I have a small delta q.
+So some small change in joint values.
+And I want to know hey, what change in end effector position
+will that create?
+Then this is the Jacobian.
+And going back the other way, if somebody gives me delta x
+and I want to compute the delta q that produces it,
+this is the Jacobian inverse.
+And then similarly, that works for velocities.
+So if I have a velocity in joint space,
+and I'm asking what velocity in Cartesian space
+it represents, then going in this direction
+is going to be the Jacobian.
+Going in the other direction is going
+to be the Jacobian inverse.
+So this is a good picture to always keep in mind.
+We're moving between joint space and task
+space and effector space.
+These are both high dimensional spaces.
+This one is n-dimensional.
+This one, in the most general case, is six-dimensional.
+I can do forward kinematics, inverse kinematics,
+to convert between poses.
+I can use my differential kinematics, namely
+the Jacobian, to convert small displacements
+or to convert velocities.
+Velocities and small displacements,
+I can always convert from joint space to Cartesian space.
+So regardless what pose the robot is in,
+if my joints move a little bit, that
+will produce some movement in the end effector space.
+However, going the other way is only possible
+if the Jacobian is invertible.
+So only if I'm not in a singular configuration.
+If I am in a singular configuration,
+the Jacobian is not invertible.
+And there will be some delta x for which I cannot compute any
+delta q's.
+Or conversely, that will be an x dot for which I cannot compute
+q dot.
+So singularities mean that you lose some ability to move.
+Even worse, being close to a singularity
+means that a delta x can result in r potentially very, very
+large of delta q.
+An x dot, a bounded, finite, reasonable x dot
+could result in a very, very large q dot,
+if the Jacobian is very close to being singular.
+So that's something to avoid.
+And then finally, the more general way
+to remember the Jacobian if you have q and x,
+and you remember that forward kinematics
+means that x is a function of q.
+So if I write x as a function of q,
+and this is really nothing other than forward kinematics.
+Then my Jacobian is defined as dx1,
+dq1, all the way until dx1, dqn.
+And then going down all the way until dxm, dq1.
+And then keep going until dxmdqn.
+So this is the Jacobian.
+Another way to remember this is that the Jacobian
+relates small joint displacements to small end
+effector displacements.
+Or alternatively, the Jacobian relates joint velocities
+to end effector velocity.
+These you have to memorize.
+And then joint space, Cartesian space,
+moving between these two spaces will hopefully
+become second nature by the time we're finished with this class.

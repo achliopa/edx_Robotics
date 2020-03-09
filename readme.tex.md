@@ -1557,4 +1557,71 @@ $$J=\begin{bmatrix}
 
 ### 5.5 Differential Kinematics Example- Spherical Robot
 
+* we look at a 3D example the spherical robot.
+* the position of the end effector in space is $x=\begin{bmatrix}x y z\end{bmatrix}^{T}$ as we dont care about the orientation
+* the spherical robo has 3 DOF (3 Joints) so the q vecor is $\begin{bmatrix}q_{1} q_{2} q_{3}\end{bmatrix}^{T}$
+* we recall the relationship of endeffector position with joint values
+$$\begin{bmatrix} x \\ y \\ z \end{bmatrix}=\begin{bmatrix}
+c_{1}s_{2}q_{3} \\ s_{1}s_{2}q_{3} \\ c_{2}q_{3} \end{bmatrix}$$
+
+* the general formula for the Jacobian is:
+$$J=\begin{bmatrix}
+\frac{\partial x}{\partial q_{1}} & \frac{\partial x}{\partial q_{2}} &  \frac{\partial x}{\partial q_{3}} \\
+\frac{\partial y}{\partial q_{1}} & \frac{\partial y}{\partial q_{2}} &  \frac{\partial y}{\partial q_{3}} \\
+\frac{\partial z}{\partial q_{1}} & \frac{\partial z}{\partial q_{2}} &  \frac{\partial z}{\partial q_{3}}
+\end{bmatrix}$$
+* we compute the Jacobian for the general x case
+$$J=\begin{bmatrix}
+-s_{1}s_{2}q_{3} $ c_{1}c_{2}q_{3} $ c_{1}s_{2} \\ 
+c_{1}s_{2}q_{3} & s_{1}c_{2}q_{3} & s_{1}s_{2} \\ 
+0 & -s_{2}q_{3} & c_{2} \end{bmatrix}$$
+
+* we will now calculate the determinant of the Jacobian to be able to avoid the Singularities
+$$\left | J \right |=-s_{2}q_{3}^{2}$$
+
+* we solve for 0 to detect the singular positions to avoid $\left | J \right |=0 \:\Rightarrow\:s_{2}=0\:\Rightarrow\:q_{2}=0,\pi\:\:q_{3}=0$
+
+* so its then the robot points up or down? why? because moving on q1 has no efect...(recall giant hops???)
+
+* a common exercise when designing a robot is:
+    * design the robot mech
+    * get DH params
+    * compute Forward kinematics
+    * compute differential kinematics (Jacobian)
+    * compute jacobian determinant to rule out singularities
+
+### 5.6 Recap - Joint Space vs. Cartesian Space
+
+* We need to understand the difference of Joint space vs Cartesian Space
+* we drow the kinematic chain of a 3 joint robot arm (q1,q2,q3) with end effector in x position
+* if there is a difference in the position o the effector by Δx. the resulting change in Joint angles is represented as Δq
+* We formalize the notion of Joint Space (the space of possible joint values) and Cartesial(aka EndEffector aka Task) Space
+* In Joint Space
+    * we talk about joint values $q=\begin{bmatrix}q_1 & q_2 & q_3 \end{bmatrix}^{t}\in \mathbb{R}^{n}$
+* In Cartesian Space
+    * we talk about relative position and orientation  of ee regarding base frame (translation and rotation along each axis) $q=\begin{bmatrix}x & y & z & r_x & r_y & r_z\end{bmatrix}^{t}\in \mathbb{R}^{6}$
+    * so we work in 6dimensional space if we care about position and orientation. if we care only about position in 3d space we work in 3d. if we cae about position&orientation in 2D plane we work in 3D
+    * we call this space task space because it represents target position where the endeffector has to go
+* Everything we do about the analysis of robot arms has to do with moving between these 2 spaces.
+* going from Joint Space => Cartesian Space is Forward Kinematics (FK)
+* going from Cartesian Space => Joint Space is Inverse Kinematics (IK)
+* when we do Differential Kinematics
+    * $\Delta q \overset{J}{\rightarrow} \Delta x$
+    * $\Delta x \overset{J^{-1}}{\rightarrow} \Delta q$
+    * $\dot{q} \overset{J}{\rightarrow} \dot{x}$
+    * $\dot{x} \overset{J^{-1}}{\rightarrow} \dot{q}$
+* For singular points there will be some Δx for which i cannot compute any Δq as J-1 is not possible
+* in mathematical terms
+$$x=f(q)\:\Rightarrow\:J=\begin{bmatrix}
+\frac{\partial x_1}{\partialq_1} & ... & \frac{\partial x_1}{\partialq_n} \\
+... & ... & ... \\
+\frac{\partial x_m}{\partialq_1} & ... & \frac{\partial x_m}{\partialq_n}
+\end{bmatrix}$$
+* also:
+    * $J\Deltaq=\Deltax$
+    * $J\dot{q}=\dot{x}$
+
+### 5.7 Differential Kinematics Example
+
 * 
+

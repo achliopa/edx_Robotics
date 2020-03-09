@@ -1,0 +1,298 @@
+All right, let's do one more full example of differential
+kinematics--
+new robot.
+As usual, we are given the robot in DH notation.
+That's our only starting point.
+The goal is to compute the differential kinematics
+to say where does this robot have singular configurations,
+and explain intuitively what makes
+those configurations singular.
+So let's get started.
+And like always, from the DH table, the first thing we do
+is we sketch the robot to give ourselves a sense of what's
+going on here.
+So let's have our base coordinate frame.
+We're going to have an x0 and a z0.
+And I'm not going to draw y0 like usual for clarity.
+And right off the bat the first degree of freedom-- q1.
+So we have the rotation right here around z.
+So this is our first degree of freedom, q1.
+No translation along z.
+A translation by l1 along x.
+Right?
+Note that in this particular case
+l1 is not given to us as an exact number, 0.2 meters
+or something.
+But still l1 is not a variable.
+l1 want is not a degree of freedom.
+When you ever see something like this in the DH table,
+even if something here is a variable,
+it doesn't mean it's a degree of freedom.
+It just means it's a fixed length.
+It's just given to us as a variable, not as
+a specific number.
+But still the degrees of freedom the actual joints,
+like always in the DH table, can only
+go in one of the first two columns--
+in the theta column or the d column.
+So that means we're going to have a translation along x
+by a distance l1.
+So that takes us, let's say, keep going up to here.
+And then we're going to have a rotation
+by 90 degrees around x.
+So our next coordinate frame, x1,
+is going to be pointing in the same direction as x0.
+But z1, since we've rotated by 90 degrees around x,
+z1 is going to be pointing like this.
+OK.
+So then we get to the next row of our DH table.
+Then we get to the next degree of freedom, q2,
+which is a rotation around z in the theta column.
+So then we have the rotation around z.
+So this is going to be q2, this rotation right here.
+And then we have no translation along z,
+no translation along x, another 90 degrees around x.
+So we rotate one more time.
+So that means x2 is in the same direction as x1.
+But then if we do another rotation
+around x by another 90 degrees, then we
+end up with z2 pointing straight down.
+So z2 is pointing straight down.
+And then finally our last row in the DH table
+we have no rotation around z, but we have a translation
+by q3 along z.
+So we go down here.
+Let's say this is our end effector.
+This is the z2 axis.
+And then this distance right here, this is q3.
+So now we know what our robot looks like.
+Let's drop the robot.
+So it's basically like this and then going down here.
+And this is where the end effector is, right?
+The first degree of freedom is rotation
+around this access, z0.
+The second degree of freedom-- rotation around z1.
+q3 is the last degree of freedom them of translation.
+Another thing we can do is sketch the robot,
+but this time with some non-zero values for all those degrees
+of freedom.
+So if this is our base coordinate frame,
+this is x0, z0, y0, then the robot basically
+looks like this.
+So it comes out right here, and then this angle is q1.
+Then it goes down, let's say like this,
+and then this angle right here, this is q2.
+And then finally, you have the end effector right here,
+and this distance is q3.
+The distance from here to here is going to be q3.
+So now we have a sense for what this robot does,
+is it pivots out here and then in the initial configuration.
+So if you want, it sort of looks like this, right?
+This degree of freedom means that it can do this.
+And then here, it can do this, and this is
+the second degree of freedom.
+And then of course, it can translate up and down
+this axis, and that's the third degree of freedom.
+OK.
+So now that we have the robot sketch,
+let's go ahead and compute forward kinematics.
+So what we're going to have is the transform
+from the base to the end effector.
+And now, we have no choice but to start listing
+all of these transforms.
+So we're going to start with the first degree of freedom,
+which is a rotation around z.
+OK.
+We're going to have a translation along x.
+So we're going to have an identity rotation,
+and then we're going to have a translation by l1 along x.
+Then we're going to have a rotation around x
+by 90 degrees.
+So since we are rotating around x by 90 degrees--
+it's this rotation, right?
+The x-axis stays the same.
+The y-axis now points in the direction
+that the z-axis used to point to.
+So y here points now straight up, and then
+z points in the opposite direction
+than y used to point to.
+So this is the rotation part, and we have no translation.
+And we're done with the first row.
+The second row, we again have a rotation around z,
+and this is by q2 with no translation.
+OK.
+Then we have another rotation around x by 90 degrees.
+So then it's essentially this matrix once again.
+OK, and then finally we have a translation along z by q3.
+So we're going to have the identity rotation and then
+0, 0, q3, 0, 1.
+And then if you carry out all of these multiplications,
+you get the full transform from the base to the end effector
+Let's say that in this case, we only care about the translation
+part.
+So we only care about the pose of the end effector and not
+its orientation.
+And in some of the exercises that we'll do in class,
+you will very explicitly say when you only
+care about the pose, the translation part, and not
+the rotation part.
+So let's say that here we explicitly say
+we only care about the translation
+part of forward kinematics.
+So if that's the case, then you can make life a little easier
+on yourself by just keeping just the translation
+part of this last matrix.
+And then here you just put yourselves
+a vector, so q3, 0, 0, 1.
+And that makes it easier to do all of these multiplications,
+one by one.
+And I'm not going to do them live here.
+I'm just going to go straight to the result.
+But if all goes well what we should end up with
+is the following.
+OK.
+Let's do a quick sanity check and think about
+whether this makes sense or not.
+So first of all, we have this point right here,
+and we care about its x-coordinate.
+So first we have to project this point, which
+is under the xy plane, at least for this small q2.
+So we have to take this point and project it
+onto the xy plane, right?
+So this length is q3.
+And then to project this onto the xy plane,
+it gets multiplied by sine theta 2, which makes sense.
+Then we add l1, which is this bit right here.
+So l1 gives us the length from the origin
+to this point, projected onto the xy plane.
+And then finally we project everything on the x-axis,
+so we multiply by cosine q1, so this makes sense.
+The y-coordinates of the end effector-- similar thing.
+We have to project on the xy plane, which
+looks exactly the same, and then from the xy plane
+we project onto the y-axis.
+So it gets multiplied by sine of q1.
+So that also makes sense.
+And then finally, the z-coordinate is just
+this length, which is q3.
+So this length projected back onto the z-axis, so multiplied
+by cosine of q2.
+And you see that the way we've defined it here,
+the robot for a q2 of zero goes down,
+so we have the minus sign in front.
+OK, excellent.
+This actually makes sense, so we can proceed
+to differential kinematics.
+OK.
+So I've kept only the translation
+part of the forward kinematics.
+So the translation from the base to the end effector is that.
+Now, in this case, we only care about position, and not
+orientation of the end effector.
+So then our vector in pose space will just
+contain the x, y and z-coordinates
+of the end effector.
+We know that in this case, the Jacobian,
+and it's worth writing again the general formula just so that we
+recall it one more time.
+So what we'll have is dx dQ1, dx dQ2, dx dQ3, and then dy dQ1,
+dy dQ2, dy dQ3, and finally dz dQ1, dz dQ2, dz dQ3.
+All of this in matrix form.
+This is the Jacobian.
+Let's start computing it and see what we get.
+So dx, this is our x, dQ1, dx dQ2, and then dx dQ3.
+We're done with the first row.
+Now we start with dy.
+These are all Q's.
+So dy dQ1, dy dQ2, dy dQ3.
+Let's make ourselves some space.
+And then dz dQ1, we notice that the z coordinate does not
+actually depend on Q1 in any way, so here we just have a 0
+Then we have dz dQ2, dz dQ3.
+This is our Jacobian.
+Now that we have the Jacobian, let's go ahead
+and compute its determinant.
+The easiest way to do it is probably
+to take advantage of this 0.
+So then we will use the last row to expand.
+So then we'll have plus, minus, plus, minus, plus, minus,
+plus, minus.
+So we'll have minus S2 Q3 times minus S1 squared,
+s2, s2 Q3 plus L1 minus C1 squared, S2 times
+S2 Q3 plus L1.
+And then we're going to have another minus, so minus C2
+times minus S1 squared, C2, Q3 times S2 Q3 plus L1.
+Minus C1 squared, C2 Q3 times S2 Q3 plus L1.
+Now we can take out some of the minuses, just
+to simplify things for ourselves a little bit.
+Then what we quickly notice is that the S1 and the C1
+here will go away.
+We'll have this times S1 squared plus C1 squared,
+and then S1 squared plus C1 squared just goes away.
+So we're going to get rid of this,
+and we're going to get rid of this.
+So from the top, what we'll end up
+with is Q3 S2 squared, times S2 Q3 plus L1, and from the bottom
+we're going to have the same story.
+These will go away.
+So then what we'll have is C2 squared,
+so Q3 C2 squared times S2 Q3 plus L1.
+And then once again, the S2 squared
+and the C2 squared will go away.
+So then finally, what are going to end up here
+is Q3 times S2 Q3 plus L1.
+So this is the determinant of our Jacobian.
+Let's circle it up, and everything else
+we can get rid of.
+When is this robot in a singular configuration?
+Well, if the determinant of the Jacobian is equal to 0.
+So when is this equal to 0?
+The first case is Q3 equals 0.
+If Q3 equals 0, so this length is 0, then first of all,
+Q2 immediately loses the ability to move the robot.
+If this length is 0, it doesn't really
+matter what you set this angle to.
+You won't get any movement.
+Also, if this length is 0, that means, for example,
+the robot loses the ability to move out of the xy plane
+infinitesimally.
+So you'll lose a degree of freedom.
+You lose the ability to move in some direction.
+So that's one singularity.
+What about the second one?
+So the second singular configuration
+is if S2 Q3 plus L1 equals 0.
+This one is a little bit more interesting.
+What's happening here?
+Why is that intuitively a singularity?
+And then it takes a little bit more inspection to look at it,
+but then we realize that in this case, the robot, for example,
+looks like this.
+So x, y, and z.
+And I'm just going to extend the z-axis down.
+So in this configuration, the robot is extended out
+and then goes back in like this.
+And the end effector is either right
+underneath on the negative z-axis,
+or maybe it's somewhere up here on the positive z-axis.
+But in both cases, the angles are such that all of this
+is Q1.
+And it doesn't really matter what Q1 is.
+This is Q2.
+This length is Q3.
+And then finally, this bit is length L1.
+So basically, if this condition is met,
+it means that sign 2 Q3 plus L1 equals 0.
+So the end effector is going to be exactly along the z-axis,
+either below the origin or maybe above the origin.
+And instinctively, why is it a singular configuration?
+If the end effector is exactly along the z-axis,
+you can imagine that when that's the case,
+Q1 loses the ability to move the end effector.
+Even if you change Q1, the end effector
+will still be positioned exactly in the same spot
+along the z-axis.
+So that gives you an intuitive explanation
+of why this is a singular configuration.
+But formally, the answer of what are the singular configurations
+of this robot, there are two of them, and these are it.
