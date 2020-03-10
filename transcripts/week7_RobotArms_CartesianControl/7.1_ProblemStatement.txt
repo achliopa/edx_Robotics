@@ -1,0 +1,133 @@
+Today, we put some of the things that we've
+learned about, differential kinematics, to good use.
+And we will apply a lot of that theory
+to the problem of Cartesian control, which
+is a very commonly encountered problem in robotics.
+So what exactly is Cartesian control?
+Let's say that we have a robot, a kinematic chain.
+There is a particular position of the end effector in space.
+We've done forward kinematics.
+So we know the coordinate frames for all the links.
+We know the coordinate frame for the end effector.
+We know the transform from the base to the end effector.
+But then somebody, the user of the robot, the operator,
+comes and says, "You know what?
+I'd really like the end effector to move
+to this new location, where I have a new desired
+transform from the base to the end effector.
+And furthermore, I'd like the end effector
+to go there in a straight line."
+So really, what's happening there,
+there is a change in the Cartesian pose of the end
+effector.
+There is the delta x of the end effector.
+And I'd like the robot to go ahead and execute it.
+That is essentially the problem of Cartesian control.
+And what happens, very often, is you
+will have a robot that accepts velocity commands.
+So then what you need to do is compute a set of velocities
+that you're sending, that you're commanding to the joints.
+So then really if this delta x is given to you by the user,
+by the operator, then you're going to say,
+I'm going to convert that to a velocity.
+I'm going to say that the velocity of the end effector
+should be in the direction of the delta x.
+And p is just a proportional gain that you can tweak.
+I mean, you can just think of this very simply
+as a proportional controller.
+So now, I know that I want my end effector
+to have a velocity in the direction
+that the user has specified that the end effector needs to go.
+So then, really, from this velocity,
+from the velocity of the end effector in Cartesian space,
+I need to compute the joint velocities
+that I can send to the robot.
+And we assume that the robot simply accepts joint velocity
+commands, right?
+So then, based on what we know from the previous lectures,
+we know that the joint velocities
+are related to end effector velocities by the Jacobian.
+So if I can use this relationship
+to compute a q-dot, then I can take my q-dot
+and directly commanded to the robot.
+And I'm going to assume that my robot accepts
+commands for joint velocities.
+So this is what this looks like in a simulator, for example.
+So here we have our simulated robot.
+And then what I'm going to do is start my code
+for Cartesian control.
+So now, here I am telling the robot
+what direction it needs to go to by dragging this marker.
+As I'm dragging this marker, I'm specifying
+a delta x in 3D space.
+And as you can see, the robot is executing
+that, what's happening behind the scenes,
+I have the code for Cartesian control running.
+And it's commanding joint velocities to the robot,
+such as the robot goes to the polls that I request.
+And you can see that that works in position, but also
+in orientation.
+I can command changes in the orientation of the robot,
+as well.
+And then the robot goes ahead and executes those.
+This is an incredibly useful tool in practice.
+It's used a lot for issuing commands,
+for having the robot follow a specific and effective
+trajectory.
+Let's say you have a welding robot that
+needs to follow a welded path.
+So then you command that path by issuing such commands.
+And then the robot has to execute that
+in and effect your space.
+So this is what this looks like.
+Implementing this will be your assignment after this lecture.
+And in this lecture, we're going to go
+through the nuts and bolts of how you make that happen.
+So it seems like we already have everything we need, right?
+This completely categorizes our problem.
+We formulate this equation.
+We solve it.
+Done.
+Well, there are things that we need
+to concern ourselves about, which,
+and in particular, the big question
+that we're going to think about first
+is, where does the Jacobian matrix come from?
+In previous lectures, what we've done to compute
+the Jacobian is we have very explicitly
+computed the forward kinematics as an analytical function.
+So we said that x is a function of q.
+And really, that function is forward kinematics.
+And if we have an analytical expression
+for forward kinematics, which is what we've been learning
+to do in previous classes, then really the Jacobian
+is we can just take the derivative of f with respect
+to q.
+And of course, one thing to remember,
+x, right, is, in our case here, a six dimensional
+vector, right?
+Because x will contain the position and the orientation
+of the end effector, right?
+So it'll will have the position of the end effector, so
+the translation component and then the rotation component
+around each axis, right?
+So this is a multidimensional function.
+The Jacobian is the derivative of that.
+That's what we've been doing in the previous lectures.
+Well, what happens if you don't actually
+have forward kinematics as an analytical function?
+The robot that we're just looking at here, this robot,
+for example, right?
+It has seven degrees of freedom.
+So computing forward kinematics as an analytical function
+is incredibly complicated.
+And then you have to take a derivative of that, which
+makes it even more complicated.
+And in general, you know, what do you
+do for a generic robot, where you don't necessarily have
+this as an analytical function?
+Well, what it turns out that you don't necessarily
+need to compute the Jacobian by differentiating the four
+kinematics function. forward you can
+do is you can compute the Jacobian numerically, which
+is what we're going to do next.

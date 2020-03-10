@@ -1,0 +1,363 @@
+For numerical Jacobian computation,
+let's start by looking at a single joint
+of the robot, joint j.
+We don't have forward kinematics expressed
+as an analytical function, but we
+do have forward kinematics solved in the sense
+that we know the transforms, the positions and orientations
+for all the coordinate frames, including the coordinate frame
+associated with joint j.
+So remember one of your early assignments
+in the class where you started with the URDF of a robot
+and you had to compute forward kinematics.
+You were successfully computing forward kinematics
+and publishing all of those frames to TF,
+but you never actually derived an analytical expression
+for forward kinematics.
+So it is possible to have all of these coordinate frames
+computed.
+So you know the transform from the base to coordinate frame j,
+you know the transform from the base
+to coordinate frame of the end effector, so all of these you
+have then.
+You've computed forward kinematics.
+But you don't have analytical expressions for them.
+So if you know these, that's actually
+enough to compute the Jacobian.
+So what happens when joint j moves?
+And usually, by convention, let's say
+j is a revolute joint that moves around the z-axis.
+In DH parameters, we know that that's
+always the case, that any rotation has to be around z,
+any translation has to be along the local z.
+When you have a robot specified as URDF, that's not mandatory,
+but that's still a convention that many people follow.
+We're going to use it here to simplify
+a little of the presentation, but all the tools
+are general enough that they apply, regardless
+of how the joint moves.
+So let's say that this joint, what it does
+is it turns around its local z-axis.
+So then the question is really as this joint j moves,
+what happens to the end effector?
+How does the end effector move?
+And specifically, if joint j rotates around its z-axis
+by a given velocity, then what's going
+to be the velocity of the end effector?
+And the trick here is that it's not just
+enough to compute the velocity of the end effector
+in the joint coordinate frame.
+What we want to do is compute the velocity
+of the end effector in its own coordinate frame.
+So basically here, we're saying we have a velocity at the joint
+that we know.
+So if, let's say, vj is the velocity of the joint,
+and that is given, then what's going
+to be the velocity of the end effector?
+This is what we're trying to compute.
+And again, if you look at the example here,
+let's look at our robot, but this time I'm
+going to stop the Cartesian control
+and bring up my little interface that allows me to issue
+commands to specific joints.
+So let's say that in this configuration,
+for example, I move joint one.
+You can see that as joint one changes,
+the end effector moves.
+So a change of 0.1 radians for joint one
+creates a specific movement of the end effector.
+And that's true regardless of the pose
+that the robot is in, or in many cases.
+So let's say I put a robot in a specific pose.
+Still, if I change joint one, I get a specific movement
+of the end effector.
+And the same is true for all the other joints.
+I move joint three, I get some movement of the end effector.
+So what we're trying to do here is essentially characterize
+that relationship, and say if joint j moves
+with a certain velocity, what's the result in movement
+of the end effector?
+The trick that allows us to do that
+is that if we're looking strictly at one joint,
+we can safely assume that the rest of the robot
+is just rigid.
+Because here, we're going to have more joints.
+The robot has many other joints between j
+and the end effector in the general case.
+But when we're just computing this relationship, what we do
+is we just assume the rest of the robot is rigid.
+So let's say it looks like this.
+And this is the more general problem.
+I have a rigid body.
+At some place on that rigid body,
+I have coordinate frame A defined
+and I have a velocity of point A in its local coordinate frame.
+At a different point on that same rigid body,
+I have point B with coordinate frame B defined.
+So then, if somebody is telling me,
+this is the velocity of point A expressed in coordinate frame
+A.
+And again, this is a six-dimensional velocity.
+So this is actually going, again,
+to comprise both a translational velocity and an angular
+velocity.
+So I'm just going to denote the velocity
+around each axis by omega, omega y, omega z.
+So the velocity of point A expressed in coordinate frame A
+is this.
+And what I want to know is what's
+the velocity of point B expressed in coordinate frame
+B?
+And I also know the transform from coordinate frame A
+to coordinate frame B. And just your very typical transform
+will have the rotation component, a translation
+component, 0 and 1.
+So here's the general formula for computing
+the velocity of B expressed in coordinate frame
+B. I don't know it by heart.
+You don't necessarily have to remember it by heart.
+It actually makes a lot of sense,
+as you'll see in a second, but you can always
+reference back to the notes.
+So then the velocity of B expressed
+in coordinate frame B, there is a 6 by 6 matrix here
+that looks like this.
+So look.
+Let's look a little bit closer at this.
+And what happens is that it helps if we actually
+think about these velocities as having translational
+and angular components.
+So this is vB expressed in coordinate frame B,
+and it'll have the translational component and the angular
+component.
+And then the same is true for vA expressed in coordinate frame
+A, which is going to have the translational component
+and the angular component.
+So what's happening here?
+The first thing we see is that the angular velocity of B
+is just going to be the angular velocity of A rotated.
+And the rotation from B to A is just
+the transpose of the rotation from A to B.
+And it makes sense.
+The angular velocity of B is only
+decided by the angular velocity of A. Notice
+that we have a 0 here, which means
+that the translational part of A's velocity
+plays no role in determining the angular part of B's velocity.
+So this part is relatively simple.
+What about the translation part of B's velocity?
+Well, we can take the translation
+part of A's velocity and we just rotate it once again,
+so that gives us part of what contributes
+to B's translational velocity.
+But then you can imagine that if A
+is rotating, that will induce some translational velocity
+for B, and that, and how much translational velocity
+it induces here will depend on this moment arm, essentially.
+So this is what this term is.
+It says that the rotational component of A's velocity
+induces a translational component in B, which obviously
+has to be rotated from one coordinate frame to another.
+But then it also has to do with the moment arm,
+and the moment arm is given by the translation from A to B.
+The matrix S is what's called a skew symmetric matrix.
+It has a very simple formulation.
+So if you take the skew symmetric matrix of a vector
+xyz, it will look like this.
+And this is, again, not something
+that you have to memorize.
+It's something that you can easily find online
+whenever you need it.
+And S has the nice property that if you just
+multiply the S matrix of a given vector by another vector,
+that's the same as doing the cross product between the two
+vectors.
+So the skew symmetric matrix is just a convenient way
+to take the cross-product and express it
+as matrix multiplication.
+So then when we multiply this by this, what this is saying
+is that look, the rotational component, the angular
+component of A's velocity, it produces a translation at B.
+So what I need to do is take that angular velocity
+and do a cross-product with the moment arm.
+And then the whole result needs to be
+rotated in the appropriate coordinate frame.
+So that's my conversion.
+And overall, let me circle this matrix because we're
+going to be to be using it.
+This matrix is important.
+So this matrix relates the velocity here
+with the velocity here, as long as you know
+the transform between the two.
+So if we go back to our original problem, joint j is moving.
+How does the end effector move?
+Well, then this is the velocity at joint j expressed
+in its own coordinate frame.
+This is the velocity of the end effector, also expressed
+in its own coordinate frame.
+Then you will need to know the transform from joint j
+to the end effector.
+And this is essentially given to you through forward kinematics.
+And then, of course, A and B here will change.
+So this is going to be j.
+This is end effector.
+Same thing here.
+j, end effector.
+j, end effector.
+And finally j, and end effector.
+So if I take this whole matrix and name this capital Vj--
+let's say that this is lowercase v. Then what I have is
+that the velocity of the end effector
+is going to be this matrix times the velocity of joint j.
+And we can even take it a step further.
+What is the velocity of joint j?
+So in the general case, the velocity of joint j
+is again six-dimensional.
+There can be a translational component,
+there can be a rotational component,
+but we started off with the assumption
+that really j is a revolute joint that rotates
+around its local z-axis.
+So really, the only velocity that's possible here
+is a rotation around z.
+So then I'm going to have zeros here.
+I'm going to have zeros here.
+And then the velocity, what's the velocity around here,
+around z?
+Well, it's qj dot.
+So this is what vj looks like, which
+really simplifies everything.
+Because then if these are, of course, exactly the other way
+around.
+This is end effector and this is joint.
+There you go.
+If vj looks like this, if it has 0, 0, 0, 0, 0, qj
+dot, then really, this whole matrix doesn't really matter.
+The only thing that matters is the last column.
+Now in the general case, it's good to know the general case
+of building this matrix, because maybe you will encounter robots
+where this isn't true, where somebody has decided
+that this joint rotates around x, or maybe it's
+a prismatic joint and it translates.
+So it's good to know the general case.
+But now let's simplify.
+Assuming that the joint is rotational joint
+and that it's around the z-axis, the only thing that matters now
+is the last column of this matrix.
+So under that assumption--
+so here, this is a six vector.
+This is a six vector.
+This is a 6 by 6 matrix.
+But if we make this simplifying assumption, then really,
+we only care about the last column of vj.
+And I'm going to use Python notation to denote that.
+So this says I take the last column.
+In Python, indices start from 0 so this is
+the last column of matrix vj.
+And then this gets multiplied by qj dot.
+So now this is still a six vector.
+This is also a six vector.
+This is a scalar.
+So this is going to be 6 by 1.
+This is also going to be 6 by 1.
+And this is just a scalar.
+So now I know how qj dot influences the velocity
+of my end effector.
+And again, it's good to remember,
+to know how to build this entire matrix, but then,
+for our case here, we're just selecting the last column,
+because we know that qj dot is just a velocity around z.
+But so far, we've only looked at a single joint
+of the robot in isolation.
+But what happens is the robot has many joints,
+and they are all moving simultaneously.
+So then what happens?
+Well, what happens is that the effect
+of the movement of all the joints simply gets added up.
+So then what happens is that the velocity of the end effector--
+I'm going to first have the effect of joint zero
+and I'm going to start my joint indices from zero
+this time to make it a little easier to do the homework
+assignment, because in the code that you'll be using,
+the convention is that joint numbers start from zero.
+And I'm going to take the last column of that
+and multiply that by q0 dot.
+Then I'm going to have to add the effect from joint one.
+So I'm going to have v1, and again the last column times q1
+dot, and so on and so forth until I reach v n minus 1,
+last column, times q n minus 1 dot.
+The robot has n joints.
+So now if all the joints are moving,
+this is the velocity of my end effector.
+You can write that as a summation,
+but really, the better way to write this
+is not as a summation but in matrix form.
+So if we say that v end effector is and then
+as the first column of my matrix, I'm going to put this,
+so this is going to be v0.
+So this is the first column of my matrix.
+The second column of my matrix, v1, and so on
+and so forth until v n minus 1.
+So I've just taken all of these columns
+and assembled them in block column form,
+and then this gets multiplied by a column vector.
+What I'm going to have q0 dot, all the way until q n minus 1
+dot.
+And now this is starting to look very familiar.
+Really, the velocity of the end effector
+is this is obviously just q dot, the vector q
+dot, and this whole matrix, we are going to name it J.
+So that's your Jacobian.
+So now we have computed a numerical Jacobian.
+So knowing only the relative transforms
+from joint coordinate frames to end effector coordinate frames,
+we've built all of these transmission matrices
+that transmit velocity from each joint to the end effector.
+Then since all the joint velocities we know
+are rotations around z, we've taken just the last column
+of those matrices.
+We've assembled all of those columns in block column form.
+And what we ended up with is essentially a Jacobian.
+So going back to the original problem statement, what we have
+is that the velocity of the end effector
+is this numerical Jacobian that we've computed times q dot.
+The only trick that's left is that this
+is the velocity of the end effector expressed in the end
+effector coordinate frame.
+Remember that throughout these relationships,
+throughout this derivation, we've
+always talked about converting from joint velocity expressed
+in the j coordinate frame to end effector velocity expressed
+in the end effector coordinate frame.
+So really the velocity of the end effector
+is expressed in its own coordinate frame,
+whereas the delta x that we've been given, and we have
+that the x dot that we want is some proportional gain
+times delta x.
+So we know the velocity of the end effector,
+but this is in the base coordinate frame.
+So really all we need to do is to convert from the base
+coordinate frame to the end effector coordinate frame.
+And if we are being given the transform
+from the base to the end effector, which really, again,
+has a rotational and a translational component,
+then converting from the velocity from one
+coordinate frame to another is very simple.
+So what we have is that the velocity of the end effector
+expressed in its own coordinate frame,
+there's going to be a 6 by 6 matrix that looks like this.
+So notice that really, all that we're doing
+is we're rotating x dot into the new coordinate frame.
+So what does that mean?
+Somebody gives you delta x.
+From delta x, you can compute an x dot.
+From an x dot, which is the velocity of the end
+effector in your base coordinate frame,
+you can compute the desired velocity of the end effector
+in its own coordinate frame.
+And then we've just talked about how
+you can go ahead and assemble a Jacobian that relates
+those components for you.
+So ultimately, you know the v ee that you want,
+so you're trying to compute q dot,
+and now we have the Jacobian that relates those two.

@@ -1757,3 +1757,79 @@ $$J=\begin{bmatrix}
 $$\left | J \right |=-c_2^2q_3-s_2^2q_3=-q_3$$
 
 * so robot is in singular posisiton when q3=0 which is logical as rotation q2 has no effect
+
+### Assignment 2
+
+* Consider the robot described by the D-H table below:
+    * Joint1: θ1=q1, d1=0, a1=2, α1=90deg
+    * Joint2: θ2=q2, d2=0, a2=0, α2=90deg
+    * Joint3: θ3=0, d3=q3, a3=0, α3=0
+* Consider three possible robot sketches, one of which is a correct representation of the robot defined in this problem:
+**Sketch 1:**
+
+![sketch1](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1c.jpg)
+
+**Sketch 2:**
+
+![sketch2](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1a.jpg)
+
+**Sketch 3:**
+
+![sketch 3:](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103x_h1_r1b.jpg)
+
+* Compute the translation part of the Forward Kinematics transform $^{b}\bf{T}_{ee}$ from the base of the robot to the end-effector. In other words, derive the expressions for the components of the  $3 \times 1$ vector  $\bf{t}$  below:
+$$^{b}\bf{T}_{ee}=\left[ \begin{array}{ccc|c} & & &  \\ & \bf{R} & & \bf{t} \\ & & &  \\\hline 0 & 0 & 0 & 1 \end{array} \right]$$
+
+* We will use the notation from the lectures, i.e. 
+$$S_2=\texttt{sin}(q_2)$$
+$$S_{23}=\texttt{sin}(q_2+q_3)$$
+
+* Compute the manipulator Jacobian with respect to end-effector position (and ignoring end-effector orientation). Find all the joint configurations where the Jacobian becomes singular.
+
+## Week 6: Study Week
+
+### Review and Practice Questions
+
+* Welcome to Study Week. Please use this week to complete (or at least make significant progress on) currently released Projects. In the second half of the class we will be releasing two new Projects which will be of increased difficulty, so you will want to dedicate all available time to those.
+* You can also review and recap the material from the first half of the class. Here are some example questions that can guide your review effort. These are also example questions you can use to prepare for the Final Exam, which will contain questions similar to (or selected from) these:
+    * What are the conditions for a 3x3 matrix to represent a valid rotation in 3D space?
+    * What are the conditions for a 4x4 matrix to represent a valid rigid body transform (expressed using homogenous coordinates) in 3D space?
+    * In Denavit-Hartenberg notation, what are the four parameters that define a joint, and what does each of them mean?
+    * If a robot arm is operating in 3D space, what is the smallest number of joints it must have in order to arbitrarily control both the end-effector position and orientation?
+    * If a robot arm is operating in 3D space, and must arbitrarily control both the end-effector position and orientation, what is the smallest number of joints it must have in order to have a redundancy in any configuration? 
+    * How do you define the joint space of a robot? What is the dimensionality of a robot's joint space?
+    * Given a point in a robot's joint space, how do you find its corresponding end-effector position, expressed in Cartesian space?
+    * Given a set of joint velocities, expressed in joint space, how do you find its corresponding end-effector velocity, expressed in Cartesian space?
+    * Given an end-effector velocity expressed in Cartesian space, how do you find its corresponding set of joint velocities, expressed in joint space?
+    * What are the matrix dimensions of a robot's Jacobian, assuming the robot operates in 3D space and controls both end-effector position and orientation?
+    * How can we tell that a robot arm is in a singular configuration?
+    * What are the practical implications of a robot arm being in a singular configuration?
+    * How can we tell that a robot arm is approaching (but is not yet exactly in) a singular configuration?
+
+## Week 7: Robot Arms - Cartesian Control
+
+### 7.1 Problem Statement
+
+* we will apply differential control and apply the theory to the problem of Cartesian Control a common problem in robotics
+* We assume we have a robot with a known kinematic chain and that we have done forward kinematics.
+    * we have the base->endeffector transform bTee_current
+    * we have the intermendiate joints cooerdinate frames
+* We want the end effector to move to a new position for which we know the bTee_desired
+* We also want the end effector to move in a straight line
+* What happens is a change in the cartesian pose of the end effector Δx
+* If the Δx is given to us by the user, the operator of the we want the robot to execute it
+* Usually we will have a robot that accepts velocity commands. in that case we need to compute a set of velocities that we send to the joints
+* If we get Δx by the user we have to convert it to velocity in the direction of the Δx $\dot{x}=\rho \Delta x$ where ρ is the proportional gain. the equation is a proportional controller. from this cartesian velocity we will compute the velocity to send to the joints using the differential analysis equation and the jacobian $J\dot{q}=\dot{x}$ this q dot is what we send to the robot
+* this works in posiiton and orientation
+* in our case where the Jacobian comes from. in our lectures we started with forward kinematic analysis. we had $x=f(q)$ as result of FWD Kinematics. If we have the analytical function of FW kinematics we just have to calculate partial derivatives and build the Jacobian matrix $J=\frac{\partial f}{\partial q}$
+* x is a 6D vector (position,orientation)
+* this is complex.
+* what we do for a robot where we dont have the analytical function. then we can compute the Jacobian numerically
+
+### 7.2 Numerical Jacobian Computation
+
+* we start by looking at a single robot joint. we dont have the analytical functions but we have solved the FWD Kinematics as we know the Transorms for all the coordinate frames including the one we have under investigation in joint j
+* When we worked with URDF and computed FWD Kin publishing to the TF without having solved the analytical methods. we have bTj for joints up to bTee
+* what havens when j moves say turns around the local z-axis. what happens then to the end effector??
+* say if the joint rotates what a given velocity what is the velocity to the end effector. we dont want to compute the velocity of ee to the joint  coordinate frame but in its own coordinate frame. so if Vj whats the Vee ? 
+* the trick is to consider the rest of the robot rigid
