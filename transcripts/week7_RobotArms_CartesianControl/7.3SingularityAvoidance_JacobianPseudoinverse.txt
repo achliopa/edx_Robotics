@@ -1,0 +1,139 @@
+Start of transcript. Skip to the end.
+So let's write this again, just that we always
+keep track of it.
+So what we have is that the Jacobian and times
+q dot is the velocity of n vector
+which is being asked of us, which we know.
+OK.
+And then the Jacobian, as we well know, is an n by n matrix.
+N is the number of joints of the robot,
+m is the number of variables that we are controlling
+for the [? end ?] vector, since let's say if we are in 3D space
+and we are controlling both position and orientation,
+as we well know by now, n is equal to 6.
+So in the general case, operating in 3D space carrying
+about position and orientation, n is 6,
+n is the number of joints of the robot.
+So it looks like we're done, right?
+We can just go ahead and compute q dot as J
+minus 1 v ee, where J minus 1 is the inverse of J. OK.
+But you already know where I'm going with this.
+That's a problem, right.
+The inverse really only exists if m equals n
+and the Jacobian is full rank.
+OK.
+And that's not always the case.
+Maybe what we can do is realize, wait a second,
+we can relax the problem a little bit if we
+take this relationship and we left multiply by J,
+we get this, which is the same as what we started from as long
+as this is the identity.
+So we realized that J minus 1 needs
+to be the right inverse of J. So if we say that J minus 1
+is a right inverse then we don't necessarily
+need m be equal to n.
+We can relax this constraint.
+But what do we do about this?
+The Jacobian still has to be full rank in order
+for the right inverse to exist.
+And what's making things worse again, like we talked about,
+let's say the Jacobian is not singular,
+but it approaches a singularity.
+So as the Jacobian is approaching a singularity then
+what happens is if we compute the right inverse like this,
+then what will end up is a q dot that's approaching infinity.
+So q dot will be growing and growing.
+And remember, these q dots are the velocities
+that we actually sent to the robot.
+So we'll be asking the robot to execute infinite velocities
+as J approaches the singularity.
+So how do we deal with that?
+Linear algebra to the rescue.
+So what we're going to use is something
+that you've probably learned about.
+But now is an occasion to use it in practice,
+which is the singular value decomposition of a matrix.
+And using singular value decomposition then
+our Jacobian J can be written as the product of three matrices,
+U, Sigma, and V transpose.
+Remember that our Jacobian is n by n.
+So then what we have here is that U
+is a square m by m matrix that is also orthogonal.
+Sigma is an m by n matrix that's diagonal.
+V, same as U is square but n by n and also orthogonal.
+Let's draw this out for the case where m is less than n.
+Then we're going to have our Jacobian, which let's
+say maybe looks like this.
+This is the Jacobian which is n by n.
+And we're going to have one square matrix here, which is U.
+Then we're going to have our diagonal
+and rectangular matrix, Sigma.
+And then we're going to have V. OK.
+So this is m by m.
+This is and m by n.
+And this is n by n.
+And we said that Sigma is diagonal.
+In our case, m is less than n.
+So sigma will have at most m entries on the diagonal.
+And the nice property of singular value decomposition
+is that these values, which are called the singular
+values of your original matrix J,
+have some very important properties.
+So first of all they are always in descending order.
+So the largest one is at the top.
+The smallest one is at the bottom.
+They are all positive.
+And then the other very important property
+is that if R is the rank of your original matrix,
+then you know that each singular value past
+R is going to be zero.
+OK.
+This is very, very important.
+So if the rank of your Jacobian is m
+if the Jacobian is full rank for this case,
+then you will have m nonzero singular
+values on this diagonal.
+If the Jacobian is rank defective, let's
+say the rank of the Jacobean is m minus 1, then
+this last singular value, you will end up with a 0 here.
+OK.
+This is one way to tell the rank of the matrix,
+but what's more important is that this is numerically
+a very robust way to know when a matrix is approaching
+the singularity, when it's close to losing rank, but not quite.
+So if this singular value is very, very small,
+what does very small mean?
+Usually you take the ratio of the smallest singular value
+to the largest singular value.
+So if the ratio of these two is very, very small,
+you know that the Jacobian is about to lose rank.
+So one thing you could do, for example,
+is you do the singular value decomposition.
+You do that check, if this ratio is lower than some epsilon
+threshold that you decide.
+And then you know that the Jacobian is about to lose rank.
+So to protect yourself from issuing infinite velocities
+to the robot, you just say, hey you know what, I'm
+too close to the singularity.
+I'm not going to move.
+I'm not going to issue any commands, which
+is fine in that it does protect you
+against asking for infinite velocities
+and having unexpected consequences.
+But it's still not a solution.
+Because it means that if somebody is controlling
+the robot via Cartesian control, and somehow they
+manage to get near a singularity, you detect that,
+and then you stop.
+Then the robot is stuck.
+It's impossible for the operator to get out of that situation.
+So ideally what we'd like is if the operator gets
+near a singularity with the robot,
+we don't want to let them get any nearer.
+But we should let them move away from the singularity.
+So simply checking if the Jacobian is
+about to lose rank by looking at the singular values,
+and then stop, saying I'm done.
+I'm going to stop.
+That is obviously not good enough.
+But thankfully, there are other things we can do.

@@ -1831,5 +1831,69 @@ $$S_{23}=\texttt{sin}(q_2+q_3)$$
 * we start by looking at a single robot joint. we dont have the analytical functions but we have solved the FWD Kinematics as we know the Transorms for all the coordinate frames including the one we have under investigation in joint j
 * When we worked with URDF and computed FWD Kin publishing to the TF without having solved the analytical methods. we have bTj for joints up to bTee
 * what havens when j moves say turns around the local z-axis. what happens then to the end effector??
-* say if the joint rotates what a given velocity what is the velocity to the end effector. we dont want to compute the velocity of ee to the joint  coordinate frame but in its own coordinate frame. so if Vj whats the Vee ? 
+* say if the joint rotates what a given velocity what is the velocity to the end effector?
+* we dont want to compute the velocity of ee to the joint coordinate frame but in its own coordinate frame. 
+* so if Vj whats the Vee ? 
 * the trick is to consider the rest of the robot rigid
+* The simplified problem is:
+* Assume a rigid robot body except from the joint A with coordinate frame A
+* end effector B has its own coordinate frame B
+* The velocity of joint A expressed in coordinate frame A is: 
+$$^{A}V_{A} \in \mathbb{R}^6 = \begin{bmatrix} \dot{x} \\ \dot{y} \\ \dot{z} \\ \omega_x \\ \omega_y \\ \omega_z \end{bmatrix}$$
+
+* ω is the angular speed of joints
+* we want to know what is the resulting velocity of B in coordinate frame B: $^{B}V_{B}=?$
+* We know the transform from A to B is:
+$$^{A}T_{B}=\begin{bmatrix} ^{A}R_B & ^{A}t_B \\ 0 & 1\end{bmatrix}$$
+
+* The velocity of B is a 6by6 matrix:
+$$^{B}V_{B}=\begin{bmatrix}
+^{B}R_{A} & -^{B}R_{A}\cdot S(^{A}T_{B}) \\
+0 & ^{B}R_A \end{bmatrix}\cdot ^{A}V_A$$
+
+* what we understand is that the angular velociity of B will be the angular velocity of A rotated by $^{B}R_A$ which is the transpose of $^{A}R_B$
+* posiional (translation) part of velocities plays no part in angular velocity
+* the translation part of the velocity conversion has a rotation part of the translational velocity
+* also the translational velocity has to do with the rigid body which is as well rotated..
+* matrix S is a skeyw-symmetrix matrix: 
+$$S(\begin{bmatrix}x & y & z\end{bmatrix})=\begin{bmatrix}
+0 & -z & y \\
+z & 0 & -x \\
+-y & x 0 \end{bmatrix}$$
+
+* S matrix has the nice property of $S(a)\cdot b = a \times b$ so an easy way to express a cross product as matrix multiplication
+* so  the upper right element is the cross product of the model arm with the rotation of frame from joint to end effector which sets the translational velocity conversion with the pure rotation
+* the trransform matrix producing the rotation matrix and translation matrix we use for the velocity conversion we get from FWD Kinematic analysis
+* for conversion from joint j to end effector ee
+$$V_{j}=\begin{bmatrix}
+^{ee}R_{j} & -^{ee}R_{j}\cdot S(^{j}T_{ee}) \\
+0 & ^{ee}R_j \end{bmatrix}$$
+$$v_{ee}=V_{j}\cdot v_{j}$$
+
+* the velocity of joint j can be of anytype. but assuming its a revolute joint we say th ony possible velocity is a rotation around z so
+$$v_j=|begin{bmatrix} 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ \dot{q}_{j}\end{bmatrix}$$
+
+* in this case only the last 6th column of Vj matters [:,5]in calculating ee velocity which will be 6by1 vector
+* robot have many joints. what if multiple joints move simultaneously. assuming all arrre revolute around z::
+$$v_{ee}=V_{0}[:,5]\cdot \dot{q_0} + V_{1}[:,5]\cdot \dot{q_1} + ... + V_{n-1}[:,5]\cdot \dot{q_{n-1}} $$
+$$v_{ee}=\sum_{i=0}^{n-1}V_i[:,5]q_i$$ 
+
+* this can be presented in matrix multiplication form wher V[:,5] is a 1xn vector multiplined with dotq a nx1 vector 
+* we express the relation witht the jacobian notion where
+$$V_{ee}=\begin{bmatrix} V_0[:,5] & V_1[:,5] & ... & V_{n-1}[:,5]\end{bmatrix}\cdot \begin{bmatrix} 0 \\ ... \\ 0 \\ \dot{q_{n-1}} \end{bmatrix}$$
+$$V_{ee}=J\cdot \dot{q}$$
+
+* this is the Numerical Jacobian. 
+* Knowing only the relative transforms from joint coordinate frames to end-effector coordinate frame we build the transmission matrices V
+* Vee is expressed in end effector coordinate frame
+* Δx we were given is  in relation to base coordinate frame
+* if we have the $^{b}T_{ee}=\begin{bmatrix} ^{b}R_{ee} & ^{b}t_{ee}\\ 0 & 1\end{bmatrix}$
+* then what we have as Velocity of the end effector exrpessed in its own coordinate frame related to the speed of x relted to the base frame $\dot{x}=\rho \cdot \Delta x$is
+$$V_{ee}=\begin{bmatrix} ^{ee}R_{b} & 0\\ 0 & ^{ee}R_{b}\end{bmatrix}\cdot \dot{x}$$
+
+* where the see that the speed on the base frame isthe end effecrtor frame velocity rotated
+* so the way to work is we are given Δx => xdot => Vee => calculate the Jacobian => get qdot
+
+### 7.3 Singularity Avoidance: Jacobian Pseudoinverse
+
+* 
