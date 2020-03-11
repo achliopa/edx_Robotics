@@ -1,4 +1,3 @@
-Start of transcript. Skip to the end.
 So let's write this again, just that we always
 keep track of it.
 So what we have is that the Jacobian and times
@@ -136,4 +135,108 @@ about to lose rank by looking at the singular values,
 and then stop, saying I'm done.
 I'm going to stop.
 That is obviously not good enough.
-But thankfully, there are other things we can do.
+But thankfully, there are other things we can do
+Let's look at an interesting matrix
+that you obtain by inverting sigma.
+So we're going to transpose and invert all the singular values.
+So we will define this matrix.
+It's easy to check that sigma minus 1
+is the inverse of sigma.
+And then what's even better than the matrix v sigma minus 1 u
+transpose is the right inverse of the Jacobian, right?
+So this is how you compute the right inverse in this case.
+But again, right?
+This is fine as long as the Jacobian is full rank.
+Now, you really see what happens as the Jacobian is
+starting to lose rank, right?
+Sigma m gets smaller and smaller and smaller,
+so this gets larger and larger and larger.
+This gets larger and larger and larger.
+And that's how eventually, once the smallest singular value
+reaches 0, then you cannot even do this inversion anymore,
+right?
+This is no longer well-defined, or it gives you infinity.
+So yes, we can compute sigma minus 1,
+what do we do when the Jacobian is close to losing rank?
+Well, the trick that we do there is we say,
+hey, look, if any of these singular values is too small--
+and by too small, we say if I find
+that some singular value divided by the largest one
+is smaller than some threshold epsilon that I've determined,
+then instead of inverting it here,
+I'm just going to put a 0.
+All the other singular values that are large enough,
+I will happily invert them and carry on the computation.
+But those that are too small, I'm
+just going to replace them by 0s, right?
+So then this is no longer sigma minus 1.
+Let's call it sigma plus and this gives us j plus.
+And the j plus computed like this
+is a very important matrix.
+It's the Jacobian pseudo inverse, the [INAUDIBLE] pseudo
+inverse, which you can read about at length.
+But it has some very useful properties for us.
+So for a full rank Jacobian-- so if the Jacobian one
+is full rank, then j plus is the right inverse.
+If the Jacobian is low rank, then this
+isn't necessarily true.
+But if I use the pseudo inverse to compute my q dot-- so
+if I compute q dot as j plus v double e,
+this has some wonderful properties.
+If the Jacobian is full rank, obviously, then this
+is an exact solution to this equation.
+If the Jacobian is low rank, the velocities
+that I compute like this won't allow any additional movement
+towards the singularity, but will
+allow any movement that doesn't get us
+any closer to the singularity.
+And that's the magic of replacing just the singular
+values that are too small with 0s.
+We're no longer allowing q dot to take us
+closer to the singularity.
+But all the other movement, which
+is determined by all the other singular values,
+is still possible.
+So this gives us the best of all worlds, right?
+If we use this, then we're doing the right thing
+when the Jacobian is full rank.
+We're doing the right thing when the Jacobian is low rank.
+Now, in practice, how do you do that?
+You don't have to compute the singular value decomposition
+by hand.
+So if you want, you can forget everything
+you've learned in the last couple of minutes.
+So in practice, right?
+Since the pseudo inverse is a very commonly used concept
+in linear algebra, almost any linear algebra library
+will have a function for you to compute it.
+So really, all you have to do is--
+the j plus is the pseudo inverse.
+And all you have to do is use the function of your library
+that computes it.
+In practice-- for example, in Python, right?
+We can say that the pseudo inverse is--
+or, well, j plus is going to be numpy.linalg.
+So this is the Python library for linear algebra.
+And it has the function pinv--
+stands for pseudo inverse.
+And you pass in the Jacobian.
+And the nice thing is that you can also pass it this epsilon,
+right?
+So this epsilon right here is this one here.
+So you are telling the pseudo inverse function
+when to start disregarding singular values.
+So it will disregard any singular values
+whose ratio to the largest singular value
+is smaller than the epsilon you pass in.
+So it will replace those with 0 when
+computing the pseudo inverse.
+It will leave all of those unaffected.
+So if you use this function, then you're safe,
+and you are doing the right thing close to singularities
+and you don't have to worry about what
+happens behind the scenes.
+You know now what happens behind the scenes--
+the singular value decomposition and this
+happens behind the scenes.
+But the use of this function does the right thing for you.

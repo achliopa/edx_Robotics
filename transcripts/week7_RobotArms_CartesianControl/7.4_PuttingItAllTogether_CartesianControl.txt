@@ -1,0 +1,100 @@
+So let's recap, and put it all together.
+How do you do Cartesian control?
+Technically, the problem is as follows.
+You are given all the coordinate frames for all the joints,
+and you are given the transform from the base
+to the end effector right now.
+And you are also given a transform
+from the base to the end effector desired.
+So the end effector needs to get from here to here.
+We are going to assume that all the joints are revolute
+and rotate around z, around a local z.
+OK.
+And the output that's being requested
+is q dot, which can be then sent directly to the robot.
+So what do we do?
+The first step from these two--
+so the transform from the base to the end effector
+current and the transform from the base to the end effector
+desired--
+from these two, you compute a delta
+x, which is a change in Cartesian position of the end
+effector expressed in the base coordinate frame.
+Then from delta x, you compute an x dot
+by multiplying with a gain, which you set trial and error.
+And, again, this is just a simple instance
+of proportional control.
+Then using the transform from the base to the end effector,
+you convert x dot into a desired velocity of the end
+effector expressed in its own coordinate frame.
+Then, for each joint j, you compute the matrix, capital VJ,
+that relates velocity at that joint expressed
+in the coordinate frame of the joint
+to velocity of the end effector expressed
+in its own coordinate frame.
+So then using this assumption, you
+take just the last column of that joint of that matrix,
+and you know that VJ, last column, multiplied by qj dot
+gives you this joint's contribution to the velocity
+of the end effector.
+Then the next step, you assemble all
+of these columns in block column form, and you get the Jacobian.
+So this is just this joint's contribution.
+Now you know that if you add all the joints together,
+you don't get the [INAUDIBLE] velocity just from one joint,
+you get essentially jq dot equals the velocity of the end
+effector.
+Then you compute the pseudoinverse.
+And then you use some threshold epsilon
+to make sure you protect against two small singular values.
+And then finally you compute q dot
+equals j plus v end effector.
+And then you take the q dot that you've computed like this,
+and you send it to the robot.
+In practice, what you do is you put a couple of safeguards
+as well in a couple of places.
+So here, for example, just to make sure your robots--
+again, in robotics, something goes wrong,
+it means a robot punches through a wall.
+That's what you want to avoid.
+So here, for example, you might want
+to scale x dot such that its norm is
+less than some threshold that you set.
+This is a safeguard against somebody commanding too
+large a movement to the robot.
+You might want to do the same here.
+You might want to scale q dot such
+that its norm is less than some other threshold.
+Or maybe you scale q dot such that all the entries are
+less than some threshold, which makes
+it a little more intuitive.
+I don't want any joint to move let's say faster
+than one radian per second, so I'm
+going to scale q dot until all of its entries
+are less than 1 radian per second.
+So that's a very important thing to do in practice.
+And then, when all of this is said and done,
+you commend those velocities to the robot,
+and the robot should hopefully move in the direction
+that you've asked for.
+Let's look at this again in practice.
+Here I have my implementation of Cartesian control running,
+and then you get a sense for how the robot moves
+in response to the commands.
+The overall velocity of the robot
+obviously has a lot to do with the gains that you set.
+For example, the p that converts delta x to x
+dot, and the safety thresholds.
+And now I'm going to stretch the robot all the way out, which
+is a singular configuration.
+So you notice there's no jerk, no sudden movement.
+The robot doesn't jump around.
+And I can still move around, just not further
+in the singular configuration, I can still do rotations.
+If I've taken the robot out of the singular configuration,
+I can then move in any direction that I want.
+But if I go close to the singularity,
+I just get a nice, smooth movement.
+So this is the kind of behavior that we're
+looking to see from the implementation
+of Cartesian control.

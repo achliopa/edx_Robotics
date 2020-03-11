@@ -1896,4 +1896,61 @@ $$V_{ee}=\begin{bmatrix} ^{ee}R_{b} & 0\\ 0 & ^{ee}R_{b}\end{bmatrix}\cdot \dot{
 
 ### 7.3 Singularity Avoidance: Jacobian Pseudoinverse
 
+* we recap:
+$$J\cdot \dot{q}=V_ee$$
+$$J \in \mathbb{R}^{m\times n}$$
+
+* n is the number of robot joints and m is the number of variables we are controlling in end effector
+* we compute qdot
+$$\dot{q}=J^{-1}V_{ee}$$
+
+* To have an inverse of a Jacobian matrix it must have equal dimensions m=n and Jacobian must be a full rank
+$$J\dot{q}=JJ^{-1}V_ee$$ 
+
+* the above shows that J-1 must be at least the Right side Inverse of J so the constraint is m<=n but Jacobian still has to be full rank
+* The problem is that as Jacobian approaches the singularity $\dot{q} \rightarrow \infty$ so again we send infinite velocities to the robot
+* We will use linear algrbra and the Singular Value Decomposition of a Matrix
+* we write the jacobian as the product of 3 matrices $J=U\SigmaV^T$ where J is m x n
+* $U \in \mathbb{R}^{m \times m}\:\: UU^T=i$ so U is square and orthogonal
+* $\Sigma \in \mathbb{R}^{m \times n}$ Σ is diagonal matrix
+* $V\in \mathbb{R}^{n \times n}\:\: VV^T=i$ so V is square and orthogonal
+* if m<=n:
+$$\Sigma = \begin{bmatrix}
+\sigma_1 $ ... $ 0 $ 0 \\
+... & ... & ... & 0 \\
+0 & ... & \sigma_m & 0 \end{bmatrix}$$
+
+* the sigma values on the diagonal ara on descending order so σ1 >= σ2 >= ... >= σm >= 0
+* also if n = RANK(J) all values past it will be 0 $\sigma_i = 0 \forall i \geq n $
+* if the Jacobian is Rank defective so its rank is m-1 σm = 0. 
+* this is a way to tell by eye the rank of a matrix 
+* a robust way to tell numerically that a matrix is approaching the singularity, being close to lose rank iswhen: $\frac{\sigma_m}{\sigma_1} = \epsilon \rightarrow 0 $
+* the program might decide when seeing is close to lose rank aka approaching singularity to stop moving to avoid issuing infinite command for protection. this is not optimal as the robot is stuck.
+* the correct apporach is to allow to go back but not towards the singularity
+* we will see another better way..
+* we ll see the matrix we get when we invert Σ
+$$\Sigma^{-1}=\begin{bmatrix}
+\frac{1}{\sigma_1} & ... & 0 \\
+... & ... & ... \\
+0 & ... & \frac{1}{\sigma_m} \\
+0 & ... & 0 \end{bmatrix}$$
+$$\Sigma\cdot Sigma^{-1}=i$$
+$$V\cdot\Sigma^{-1}U^{T}=J^{-1}$$
+
+* the last equation is fine when Jacobian holds rank. as it starts to lose rank the 1/σm gets bigger so the inverse Jacobian gets bigger. when σm is 0 we cannot even invert the Jacobian as we get infinity
+* the cheap trick is when we see that $\frac{\sigma_m}{\sigma_1}<\epsilon\$ then in the position of $\frac{1}{\sigma_m}$ we put 0 in the Σ-1. all the οhter diagonal vals we invert normally and continue computation. but values that go to infinity we replace them with 0
+* then we call the matrix
+$$\Sigma^{+}$$
+$$V\cdot\Sigma^{+}U^{T}=J^{+}$$
+
+* J+ is a very importan matrix. its called the Jacobian pseudo inverse. it has some very important properties for us
+* If J is a full rank Jacobian $JJ^{+}=i$
+* If J is a low rank Jacobian $JJ^{+} \neq i$
+* If we compute qdot with J+ $\dot{q}=J^{+}V_ee$ we get some excellent properties:
+    * if J is full rank it is an exact solution of $$\dot{q}=V_ee$
+    * if J is low rank the angular velocities computed wont allow any additional movement towards the singularity but will allow any movement that does not get us closer to the singularity. SWEETT!! we get the best of both worlds
+* In Practice any linear algebra lib has methods to compute the pseudo inverse `numpy.linalg.pinv(J,epsilon)`
+
+### 7.4 Putting It All Together: Cartesian Control
+
 * 
