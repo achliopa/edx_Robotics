@@ -1,0 +1,248 @@
+end.
+For the extra credit part of this assignment,
+we are going to look at redundant robots.
+Redundant robots are used a lot in research,
+as we've talked about at the beginning of the class.
+And we know that a redundant robot
+is one that has more than the smallest number of degrees
+of freedom technically needed to achieve
+any combination of position and orientation
+for the end effector.
+So, in 3-D space, if I want to achieve any position
+and orientation for the end effector,
+I know that's six variables.
+And I need six joints.
+A redundant robot is going to have seven joints or more
+and will give me many ways of achieving the same position
+and orientation of the end effector.
+It will actually give me infinite ways
+in many configurations.
+So it will allow me to reach somewhere but also give me
+the additional freedom that I need to keep my end
+effector in the same pose but change
+the rest of the poses of the arm,
+maybe to avoid an obstacle or maybe for who knows what
+other reason.
+So let's take a look at that from
+a mathematical perspective.
+Let's write, again, our [INAUDIBLE]
+fundamental relationship here, the one that we keep using,
+j q dot, is the velocity of the end effector.
+And the question that we ask, here, is there a q dot--
+I'm going to call it q dot n, and you'll
+see why in a second--
+such that the Jacobian--
+and I want this q dot n to be not zero, obviously--
+such that the Jacobian times q dot n is zero.
+So if this was all zeros, that's a trivial solution.
+But we want to avoid it.
+That's what we're basically asking is
+are there velocities of the joints
+that produce no velocity at the end effector.
+This is why this relationship is important.
+And, as you know from linear algebra,
+this means that q dot n is in the null space of the Jacobian
+matrix, hence the subscript n.
+And then, of course, again, linear algebra,
+now, tells us that if m, so I'm asking does this exist,
+if m is greater than or equal to n.
+So if I have the number of joints is just barely enough,
+or the number of joints isn't really enough to achieve
+any position and orientation, then the answer is this
+happens only at singularities.
+And this case is not as interesting for us.
+Basically, what we're asking here
+is what's the dimensionality of the null space of the Jacobian?
+Does the Jacobian have null space
+of dimensionality at least one?
+So if m is greater than or equal to n,
+that happens only at singularities.
+But in the interesting case where I
+have more joints than I need--
+so n is strictly greater than m--
+then, linear algebra the rank-nullity theorem,
+which you can check out and refresh your memory on,
+tells us that that's always the case.
+And this is the interesting case that we're
+going to look at, here.
+I have more joints than I need, which
+means that, at any moment, I can choose
+to move my joints in such a way that I produce no movement
+whatsoever of the end effector.
+So, in practice, the way you compute this q dot
+in the null space of the Jacobian
+is by projecting any input into the null space.
+And the way that's done is, let's say, I
+have any joint velocity q dot.
+If I left multiply this by the following matrix, i minus
+j plus j, then the result is guaranteed
+to always be in the null space of the Jacobian.
+Why is that?
+Well, if we left multiply this by the Jacobian, what
+we get is that j q and dot is equal to j minus j,
+j plus j q dot.
+Why is this the case?
+Because the pseudo inverse has the property that j,
+j plus j is equal to j.
+This is always the case, regardless of
+whether the Jacobian is full rank or not.
+We've already said that if the Jacobian is full rank,
+is full column rank in particular, j j plus
+is the identity.
+So you can see that, obviously, if the Jacobian is full column
+rank, if this holds, then this holds trivially.
+If the Jacobian is full row rank, then we have j plus j
+is the identity.
+And this also holds trivially.
+But, again, this one only holds if the Jacobian is full column
+rank.
+This one only if it's full row rank,
+whereas this property of the pseudo inverse always holds.
+So then, by this property, you see that this cancels out.
+And you get here a zero.
+And the nice thing is that--
+notice that we don't even care what q dot is.
+So if we take any q dot and we multiply by this matrix,
+we are projecting q dot into the null space of the Jacobian.
+If we are in this case, then that non-space
+will have non-zero dimensionality.
+And then for most q dots, we will end up
+with a q dot n that's not zero.
+And we are guaranteed that this q
+dot n won't have any effect on the end effector.
+So why is that important in practice?
+Well, the importance is that, then, let's
+say I solve this equation.
+I use the pseudo inverse.
+And then I compute my solution.
+Q dot solution is equal to j plus the double e.
+I can just go ahead and send that to the robot.
+But, now, I say wait a second.
+I have some other goal that I'd like the robot to meet.
+And for that other goal, that's completely independent of where
+the end effector is, I would like to have these velocities.
+I'm going to take these velocities,
+project them into the null space.
+That will give me a component that's in the null space.
+And I can just add that to my solution.
+And I am guaranteed that what I'm adding here
+in the null space has no effect on what I'm originally
+trying to achieve, my primary goal of achieving
+this particular end effector position.
+Right?
+So then, I'm guaranteed that I'm not messing up
+with my primary goal.
+But I can maybe even achieve a secondary goal,
+if I choose my q dot here wisely.
+Then I project it into the null space.
+Once it's projected into the null space,
+I add it to my solution.
+And then q s is the one that's being sent to the robot.
+I'm still achieving my goal of the end effector having
+v double e.
+But I'm also trying to do something else.
+And what I'm doing, here, has no effect on the end effector.
+Let's take a look at how this works in practice, again,
+going to [INAUDIBLE].
+And we have our robot.
+And you notice now that is another marker
+at the base of the robot, which we haven't really used yet.
+So I am controlling the end effector,
+just as we've done so far.
+This robot has seven joints.
+So I have one extra joint than I would technically need.
+So what I'm going to do is use that additional degree
+of freedom to say, you know what?
+I'd really like the base joints, or the first joint
+of the robot, the one down right here,
+I'd like this joint to have a specific value.
+So without changing the end effector pose and orientation,
+that's my primary goal.
+I always want the end effector to be
+at the pose and orientation that I'm specifying.
+As a secondary goal, I would also
+like the base, the first joint, to turn as I wish.
+So then what I'm going to do is turn this marker.
+And turning this marker changes my desired position
+for the very first turn of the robot.
+So, then, the robot, it's doing its best
+to achieve my secondary goal without affecting
+my primary goal.
+And you can see that all the movement
+from the secondary goal has no effect
+on my primary goal, which is the end effector position.
+So I can still go ahead and control the end effector.
+And this is my primary goal.
+But then I'm also specifying a secondary goal.
+And the robot is achieving the secondary goal
+without changing [INAUDIBLE].
+So we see that the end effector really looks
+like it's bolted to the scene.
+So when you're doing correct null space projection,
+then you really get no effect whatsoever
+on your primary task.
+So what's happening here is I have a secondary q
+dot desired that tries to achieve the position
+that I want for this joint.
+Then that secondary q dot gets projected
+into the null space of the Jacobian
+to make sure that it doesn't affect the end
+effector in any way.
+And then that gets added to the solution to the equation
+that I'm solving.
+And that, in turn, gets sent to the robot.
+So the robot is achieving both goals, the primary one,
+always the secondary one as much as possible.
+And then the neat thing is you can use this, for example,
+to avoid obstacles.
+You can say, you know, I need the elbow of the robot
+to be on the other side, because there is an obstacle here.
+But I still need the end effector to be right there.
+So then I'm going to use my secondary goal to say,
+you know what?
+The elbow should move to the other side.
+So notice how there are an infinity
+of solutions to the inverse kinematics problem.
+So now these are all solutions to the inverse kinematics
+problem that put the end effector
+to that particular position and orientation.
+And all of these are valid joint configurations
+that achieve that force.
+One last note, before we conclude.
+In general, one thing to remember from Cartesian control
+is that you are sending commands in Cartesian space of the end
+effector.
+Using the Jacobian for the robot to go there directly,
+you are defending against singularities.
+What's really happening is you have the end effector
+at a given point in space.
+Let's not care about the rest of the robot.
+And you'd like the end effector to be somewhere else.
+Cartesian control, by doing the Jacobian inverse,
+really tries to take the end effector there
+on the shortest possible path.
+There are, of course, many other ways
+that the end effector could take from to get from here to there.
+It could do some complicated thing and end up like this.
+This type of Cartesian control, Jacobian inverse control,
+tries to take this straight path.
+It really, what it does, again, you
+are linearizing the forward kinematics function
+around this location and then trying to take a straight line
+in Cartesian space.
+If there is an obstacle in the way,
+then obviously the straight line doesn't work.
+So this type of Cartesian control isn't going to cut it.
+So later in the course, we're going
+to look at other options that can take
+who knows what other paths.
+But, in general, Cartesian control,
+using the Jacobian inverse, always defend
+against singularities, treat singularities appropriately.
+You can compute the Jacobian numerically.
+You don't need an analytical expression
+for forward kinematics.
+And then once you do, you get the best effort from the robot
+to go in a straight line in Cartesian space with the end
+effector from its current position to its desired
+position.

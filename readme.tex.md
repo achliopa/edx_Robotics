@@ -1953,4 +1953,32 @@ $$V\cdot\Sigma^{+}U^{T}=J^{+}$$
 
 ### 7.4 Putting It All Together: Cartesian Control
 
-* 
+* How we do Cartesian Control?
+**Given:**
+* the coordinate frames for all the joints: $\left \{  j \right \}$
+* the transform matrix from the base to the current position of the end effector $^{b}T_{ee_current}$
+* the transform matrix from the base to the desired position of the end effector $^{b}T_{ee_desired}$
+**Assume:**
+* all joints are revolute
+**Output**
+* Joint angle velocity $\dot{q}$
+**Steps**
+* from the 2 base to end-effector Transform matrices we compute a Δx: $^{b}T_{ee_cur},^{b}T_{ee_des}\rightarrow \Delta x$
+* from the Δx we get xdot multiplying with the gain, the gain is set by trial and error (proportional control) $\dot{x}=\rho \Delta x$
+* using the transform matrix we transform xdot to desired velocity of end effector in its own coordinate frame  $^{b}T_{ee}, \dot{x} \rightarrow V_{ee}$
+* for each joint j we compute matrix Vj relating velocity of joint at the joint coordinate frame to velocity of the ee expressed in its own coordinate frame. we keep only the last coolumn of this matrix (as we care for angular velocity in z) $FOR\:EACH\:JOINT\:j \rightarrow V_j\:,\:V_j[:,5]\cdot \dot{q_j}=V_{ee}$
+* We assemble these columns in block column form and get the jacobian $ASSEMBLE\:V_j[:,5]\:INTO\:J\:,\:J\dot{q}=V_{ee}$
+* we  compute the pseudoinverse of J $J^{+}$ with ε
+* we compute $\dot{q}=J^{+}V_{ee}$
+* we send $\dot{q}$ to the robot
+* In practice we also put some safeguards along the computations. in robotics.. if something goes wrong the robot might cause an accident
+**Safeguards**
+* Scale $\dot{x}$ such that $\left \| \dot{x} \right \| \leg t_1$  less than a threshold, to prevent sending too much movement to the robot
+* Scale $\dot{q}$ such that $\left \| \dot{q} \right \| \leg t_2$  less than a threshold, to prevent sending too much movement to the robot
+* Alternatively  scale $\dot{q}$ such that $ \dot{q_i}  \leg t_3 \forall i$  less than a threshold, to prevent sending too much movement to the robot
+
+### 7.5 Redundant Robots: Null Space Control
+
+* Redundant robots are used mostly in research. Is one that has more than the smallest number of DOF needed to achieve any combination of position and orientation for end effector
+* In 3D with position and orientation this means >6 DOF. it will give me more ways to achieve the same orientation and position (infinite in some configs)
+* we write our main equation $J\dot{q}=V_ee$
