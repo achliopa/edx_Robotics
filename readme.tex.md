@@ -1982,3 +1982,12 @@ $$V\cdot\Sigma^{+}U^{T}=J^{+}$$
 * Redundant robots are used mostly in research. Is one that has more than the smallest number of DOF needed to achieve any combination of position and orientation for end effector
 * In 3D with position and orientation this means >6 DOF. it will give me more ways to achieve the same orientation and position (infinite in some configs)
 * we write our main equation $J\dot{q}=V_ee$
+* we want to know if thre are angular velocities different than 0 so that when multiplied with J they are 0 $\exists \dot{q_n} \neq 0\:such\:that\:J\dot{q_n}=0$
+* what we are really asking is if there are joint velocities that produce no velocity to the end effector $J\dot{q_n}=0$ means that dotqn is in the null space of the Jacobian
+* if m >= n the above happens only at singularities
+* what is the dimensionality of the null space of the Jacobian: at least 1
+* if m < n (if we have more joints than we need) the lin algebra rank-nullity theorem tells us that thats always the case. it means that at any moment we can move the joints in a way that does not produce movement to end effector
+* the way to compute the qdot in the null space of the Jacobian is by projecting the  input into the null space. to do it if we have any joint velocity q dot we left multiply it with 1-J+J then its guaranteed to always be in the null space of the Jacobian
+$$\dot{q_n}=(i-J^{+}J)\dot{q} \Rightarrow \dot{q_n}=(J-JJ^{+}J)\dot{q}$$
+
+* this is because $JJ^{+}J=J$ which holds whether J is 
