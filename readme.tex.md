@@ -1990,4 +1990,9 @@ $$V\cdot\Sigma^{+}U^{T}=J^{+}$$
 * the way to compute the qdot in the null space of the Jacobian is by projecting the  input into the null space. to do it if we have any joint velocity q dot we left multiply it with 1-J+J then its guaranteed to always be in the null space of the Jacobian
 $$\dot{q_n}=(i-J^{+}J)\dot{q} \Rightarrow \dot{q_n}=(J-JJ^{+}J)\dot{q}$$
 
-* this is because $JJ^{+}J=J$ which holds whether J is 
+* this is because $JJ^{+}J=J$ which holds whether J is full rank or not. 
+* if its full column rank $JJ^{+}=i$. 
+* if J is full row rank $J^{+}J=i$
+* if i  calculate the Jacobian pseudoinverse and the the solution for dotq $\dot{q_s}=J^{+}V_ee$
+* before sending it to robot we can have another goal for the end effector with some other joint velocities dotq. we take these velocities project them into null space to get a component thats in the null space and add that to the solution $\dot{q_s}=J^{+}V_ee+\dot{q_n}$ we are guaranteed that what we add in the null space has no effect on our goal Vee. so we dont affect our first goal we can achieve a secondary goal of moving a joint without affecting the end effector
+* we can use it to avoid obstacles
