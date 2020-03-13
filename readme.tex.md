@@ -1987,12 +1987,104 @@ $$V\cdot\Sigma^{+}U^{T}=J^{+}$$
 * if m >= n the above happens only at singularities
 * what is the dimensionality of the null space of the Jacobian: at least 1
 * if m < n (if we have more joints than we need) the lin algebra rank-nullity theorem tells us that thats always the case. it means that at any moment we can move the joints in a way that does not produce movement to end effector
-* the way to compute the qdot in the null space of the Jacobian is by projecting the  input into the null space. to do it if we have any joint velocity q dot we left multiply it with 1-J+J then its guaranteed to always be in the null space of the Jacobian
-$$\dot{q_n}=(i-J^{+}J)\dot{q} \Rightarrow \dot{q_n}=(J-JJ^{+}J)\dot{q}$$
+* the way to compute the qdot in the null space of the Jacobian is by projecting the  input into the null space. 
+* to do it if we have any joint velocity q dot we left multiply it with 1-J+J then its guaranteed to always be in the null space of the Jacobian
+$$\dot{q_n}=(i-J^{+}J)\dot{q} \Rightarrow J\dot{q_n}=(J-JJ^{+}J)\dot{q}$$
 
-* this is because $JJ^{+}J=J$ which holds whether J is full rank or not. 
-* if its full column rank $JJ^{+}=i$. 
-* if J is full row rank $J^{+}J=i$
+* this is because $JJ^{+}J=J$ which holds always: whether J is full rank or not. 
+* if J is full column rank: $JJ^{+}=i$. 
+* if J is full row rank: $J^{+}J=i$
 * if i  calculate the Jacobian pseudoinverse and the the solution for dotq $\dot{q_s}=J^{+}V_ee$
-* before sending it to robot we can have another goal for the end effector with some other joint velocities dotq. we take these velocities project them into null space to get a component thats in the null space and add that to the solution $\dot{q_s}=J^{+}V_ee+\dot{q_n}$ we are guaranteed that what we add in the null space has no effect on our goal Vee. so we dont affect our first goal we can achieve a secondary goal of moving a joint without affecting the end effector
+* before sending it to robot we can have another goal for the end effector. to move the joints without moving the end effector 
+* then what I will send to the robot will be $\dot{q_S}=J^{+}V_ee+\dot{q_n}
+* in that case we dont mess up with out primary goal but get the second goal by choosing $\dot{q}$ so that i can get the $\dot{q_n}$ 
 * we can use it to avoid obstacles
+* In Cartesian control 
+    * we send commands in Cartesian Space of the end effector using the Jacobian
+    * we defend against singularities
+* Cartesian control is all about moving the end effector between two points by the shortest possible path
+
+### Project 4
+
+**Project 4 Description**
+
+* In this project you will apply what you have learned about differential kinematics, the numerical computation of the Jacobian and singularity avoidance. You will write a Cartesian controller for the same 7-joint robot arm that you already know from the last project. This controller will allow you to interactively move the end-effector by dragging around an interactive marker.
+* As the robot has 7 joints, it has a redundancy and you can also implement the null-space control. In this assignment, the goal of null-space control is to change the value of the first joint (thus turning the "elbow" of the robot) without affecting the pose of the end-effector (specified above as a primary goal). However, null-space control implementation is optional and will not be part of the grade. We still encourage you to test your understanding of the concepts by implementing it, without having to hit specific targets for the grade.
+
+*The cartesian_control(...) function*
+
+* You are given starter code that includes a `cartesian_control` package, which in turn contains the `cartesian_control.py` file you must edit. Specifically you must complete the `cartesian_control` function. The arguments to this function are all the parameters you need to implement a Cartesian controller:
+    * `joint_transforms`: a list containing the transforms of all the joints with respect to the base frame. In other words, `joint_transforms[i]` will contain the transform from the base coordinate frame to the coordinate frame of joint `i`.
+    * `b_T_ee_current`: current transform from the base frame to the end-effector
+    * `b_T_ee_desired`: desired transform from the base frame to the end-effector
+* In addition, the parameters below are relevant only if you are also choosing to implement null-space control:
+    * `red_control`: boolean telling you when the Cartesian Controller should take into account the secondary objective for null-space control. This is only set to True when the user interacts with the control marker dedicated to the first joint of the robot.
+    * `q_current`: list of all the current joint positions
+    * `q0_desired`: desired position of the first joint to be used as the secondary objective for null-space control. Again, the goal of the secondary, null-space controller is to make the value of the first joint be as close as possible to `q0_desired`, while not affecting the pose of the end-effector.
+* The function must return a set of joint velocities such that the end-effector moves towards the desired pose. If you are also implementing null-space control and `red_control` is set to true, the joint velocities must also attempt to bring `q[0]` as close to `q0_desired` as possible, without affecting the primary goal above.
+
+**Algorithm Overview**
+
+* The problem we are aiming to solve with a Cartesian controller is the following: If we have a robot that allows us to directly set joint velocities, what velocities do we set such that the robot achieves a desired end-effector position? The algorithm follows the steps presented in detail in the lectures and recapped in the lecture video "Putting It All Together: Cartesian Control".  Given the parameters listed above, a high level overview of the algorithm to achieve this could be:
+    * compute the desired change in end-effector pose from `b_T_ee_current` to `b_T_ee_desired`. A couple of important points: a) at some point, you will need to go from a desired rotation expressed as a rotation matrix to the same desired rotation expressed as 3 numbers (rotations around the x, y and z axes). In the same file, you will find a helper function called rotation_from_matrix() that, given a rotation expressed as a matrix, gives you the same rotation expressed as an angle around an axis in space. You might find this function helpful. b) it is also important to remember that, eventually, you will need to compute the desired pose change of the end-effector expressed in its own coordinate frame, not in the base frame.
+    * convert the desired change into a desired end-effector velocity. This is essentially a velocity controller in end-effector space. The simplest form could be a proportional controller, where the velocity is equal to the desired change scaled by a constant. You also might want to normalize the desired change if it is larger than a certain threshold to obtain a maximum end-effector velocity (e.g. 0.1 m/s and 1 rad/s) 
+    * Numerically compute the robot Jacobian. For each joint compute the matrix that relates the velocity of that joint to the velocity of the end-effector in its own coordinate frame. Assemble the last column of all these matrices to construct the Jacobian
+    * Compute the pseudo-inverse of the Jacobian. Make sure to avoid numerical issues that can arise from small singular values
+    * Use the pseudo-inverse of the Jacobian to map from end-effector velocity to joint velocities. You might want to scale these joint velocities such that their norm (or their largest element) is lower than a certain threshold
+    * If you are not implementing null-space control, you can return these joint velocities.
+    * If you choose to implement null-space control of the first joint, find a joint velocity that also brings that joint closer to the secondary objective. Use the Jacobian and its pseudo-inverse to project this velocity into the Jacobian nullspace. Be careful to use the 'exact' version of the Jacobian pseudo-inverse, not its 'safe' version. Then add the result to the joint velocities obtained for the primary objective
+    * Return the resulting joint velocities, which will then be sent to the robot    
+
+**Setup**
+
+* As in the previous project, please make sure that the first thing you do in your workspace is to `source` the `setup_project4.sh` script. This starts up the simulated robot and the interactive controls you can use to move it. You can now press the 'Connect' button and you should see both the robot and the controls.
+
+![image](http://roam.me.columbia.edu/files/seasroamlab/imagecache/103X_P4_1.png)
+
+**Grading/ Debug**
+
+* After you have completed the Cartesian controller, you can run your code using `rosrun cartesian_control cartesian_control.py` and use the interactive controls to move the robot around. What you should see is that the robot moves such that the end-effector follows where you drag your mouse.  The behavior should resemble the demo shown in the lecture videos. In particular, when you stretch the robot all the way out (get close to a singularity) there should be no sudden jerks or jumps.
+* For this project, we will also give you a piece of grader code that you can use to test your controller. You can right-click on the interactive control and click 'run grader'. This will set goals for the robot and wait for it to reach them. The first goal will involve a pure translation, the second a pure rotation and the final a combination of translation and rotation. The grader will wait for the robot to reach each goal for 10 seconds. If the robot does not reach a goal in time it will time out and the grader will continue with the next goal. If your robot moves towards the goal but does not reach it in time, consider increasing the gain on your velocity controller or increasing the safety thresholds on end-effector and joint velocities. 
+
+**How do run this project in my own Ubuntu machine?**
+
+* Launch Project 4, then in Vocareum click Actions>Download Starter code. This will download all the files you need to make the project run locally in your computer.
+* Install the needed ROS package(s). Run the following lines on your terminal:
+```
+sudo apt-get update
+sudo apt-get install ros-kinetic-urdfdom-py
+```
+
+* Replace kinetic with the ROS version that you are running on your local machine.
+* IGNORE all the files other than `catkin_ws`, `lwr_defs` folders, and `kuka_lwr_arm.urdf`. Put the `catkin_ws` and the `kuka_lwr_arm.urdf` file in your home directory. Now grab the `lwr_defs` folder and move it inside your `catkin_ws/src` folder with the rest of the packages.
+* The downloaded files are structured as a catkin workspace. You can either use this structure directly (as downloaded) and build the workspace using the `catkin_make` command or use whatever catkin workspace you already had, and just copy the packages inside your own src folder and run the catkin_make command. If you are having troubles with this, you should review the first ROS tutorial "Installing and configuring your ROS Environment".
+* Once you have a catkin workspace with the packages inside the src folder, you are ready to work on your project without having to make any changes in any of the files. Navigate to the catkin workspace folder and build the workspace using the command `catkin_make`.
+* OTE: You can source both your ROS distribution and your catkin workspace automatically everytime you open up a terminal automatically by editing the `~/.bashrc` file in your home directory. For example if your ROS distribution is Kinetic, and your catkin workspace is called `project4_ws` (and is located in your home directory) then you can add the following at the end of your ``.bashrc` file:
+```
+source /opt/ros/kinetic/setup.bash
+echo "ROS Kinetic was sourced"
+source ~/project4_ws/devel/setup.bash
+echo "project4_ws workspace was sourced"
+```
+
+* This way every time you open up a terminal, you will already have your workspace sourced, such that ROS will have knowledge of the packages there. 
+* Before moving forward, if you haven't followed the instructions of NOTE, you will need to source ROS and the catkin workspace every time you open a new terminal. To run the project, first open up a terminal and type `roscore`. In the second terminal (remember to source ROS and the catkin workspace if you didn't do NOTE) make sure you are in your home directory and run `rosparam set robot_description --textfile kuka_lwr_arm.urdf`, followed by `rosrun robot_sim robot_sim_bringup`.
+* On another 2 separate terminals you need to run the scripts for the robot state publisher and interactive markers:  `rosrun robot_state_publisher robot_state_publisher` and `rosrun cartesian_control marker_control.py`. Note that you can find these lines from `setup_project4.sh` in the starter code. Finally you can run your own script in another terminal: `rosrun cartesian_control cartesian_control.py`
+* NOTE: you can safely ignore the messages "multiple times: collisionScalar element defined multiple times" on the console.
+* Now we can open up Rviz using `rosrun rviz rviz`. Inside Rviz, first change the Fixed Frame to "world_link". Then click Add and select RobotModel from the list of options. At this point you should see the robot arm standing straight up. To add the interactive marker needed to command the robot around, click Add and select "InteractiveMarkers" from the list. Then on the left navigation plane, expand the InteractiveMarkers object, and click on Update Topic > /control_markers/update.
+* Now you should see the robot in Rviz, along with an interactive marker to command different positions for the end effect. Once your code works, the robot will follow whatever command is issued by moving this marker around. 
+
+**How to compute delta_X with helper function for the rotation part.**
+
+* Remember you need to do this in the End Effector frame. Hence to compute *delta_X:*
+* Using the knowledge of the transformations *b_T_ee_current* and *b_T_ee_desired* you can compute the transform that goes from ee_current to ee_desired. This transformation contains the translation part and rotation part that you need in the proper frame.
+* The translation part is right there in the transformation matrix, no need for further processing, just extract it.
+* However, the rotation part is a rotation matrix, which you will have to work to transform into a 3 number delta vector to represent the change in pose: *delta_w = [a,b,c]^t* and be able to build your *V_ee* vector. This is where the helper function comes in and gives you the rotation in the angle-axis representation (which is basically an angular velocity vector, i.e, what you were looking for).
+* At this point you have your delta translational and rotational. We recommend to work the translation and rotation parts independently:
+* You compute your EE translational delta, multiply by a gain to obtain your EE translational velocity, and then scale the whole translational vector just in case its norm is too big (that way you cap the maximum velocity). You do the same for rotation, and then at the end you just put the two together to build your *V_ee*.
+
+## Week 8: Motion Planning I
+
+### 8.1 Robot configuration space (C-space)
+
+* 
