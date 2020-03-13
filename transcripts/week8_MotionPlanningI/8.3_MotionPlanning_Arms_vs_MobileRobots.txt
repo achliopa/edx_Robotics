@@ -1,0 +1,211 @@
+So back to our original problem.
+And hopefully so far what I've done
+is convince you that a robot arm that
+needs to go from one configuration
+to another in the presence of obstacles,
+and a mobile robot that needs to go from point A
+to point B also in the presence of obstacles,
+those two are actually behind the scenes very similar
+problems, because you don't think of this in task space,
+but you do the transition to configuration space.
+And then, once you have the images
+of the obstacles in configuration space,
+then this also becomes the problem
+of just finding a path from point A
+to point B that doesn't hit anything along the way.
+And thus, it becomes fairly similar to the problem
+for a mobile robot.
+And again, we'll talk more about mobile robots
+in the next lecture.
+Now interestingly though, even though the problems
+they're very similar, there are still some differences.
+We become clear once we think a little bit about how
+we represent this map.
+So what it boils down to at the end is a map,
+either in Cartesian space for mobile robots
+or in configuration space for robot arms,
+a map of the obstacles and having to go from point A
+to point B on that map.
+How do we store hat map?
+Where does it come from?
+And really, there are two main ways
+in which you can store and use these obstacle maps.
+One of them is just polygonal.
+Every obstacle is defined by a polygon.
+And for each polygon, you know here the vertices are.
+And again, for robot arms, this is configuration space.
+So q1 verse q2.
+And the way you store a map like this in memory
+is that for each obstacle, you simply
+store a list of the vertices that define the polygon that
+corresponds to that obstacle.
+All, so then again.
+The task is to go from some point to maybe some other point
+without hitting anything in between.
+OK.
+Now another very common way to represent obstacles
+is to actually discretize your map and have it as a grid.
+How fine should the grid cells be?
+That depends on the application.
+That's an entirely different conversation.
+So on a discretized map, all you really
+know is whether a cell is occupied or free.
+And in this case, we have an obstacle that
+occupies just these four cells.
+One cell is defined as the start point,
+and then another cell is defined as the goal point.
+And then the way this gets represented in memory,
+it's a very dense for representation.
+The entire grid gets stored in memory,
+and then maybe you use 0s to indicate
+the cells that are free, 1s to indicate
+the cells that are empty.
+Here is a particular representation for this grid.
+I have 0s for the empty cells, 1s for the full cells.
+And here on the left side, it's actually organized in rows
+so that we can see the resemblance to the rendering
+of the map like this.
+Actually in memory, this would just
+be stored as one long stream of numbers.
+And we know by convention that each eight of them
+represent one row in our grid in this specific case.
+The grid representation obviously is very dense,
+because every cell is represented,
+so this will occupy a lot, a lot of memory.
+But on the other hand, its advantages
+because you don't need to know entire polygons
+for the obstacles.
+Anytime you notice that is something in your environment,
+you just say, hey, that particular cell is occupied
+or that particular cell is free.
+And when we think about these representations,
+it also starts becoming clear why
+that I've differences between the mobile robot
+case and the robot arm case.
+So for mobile robots, the configuration space
+that were operating in is low dimensional.
+The mobile robots that we deal with most of the time
+really just navigate in a plane.
+Of course, if we don't think about things like quadrotors,
+but mobile robots, which is a huge, huge domain,
+they basically navigate in a plane.
+If you don't need to think about orientation of the robot,
+then really the only thing that matters is the x and a y
+where the robot is located.
+So the navigation really has to happen in just
+a two-dimensional space.
+What is a robot arm?
+A useful robot arm will have six joints
+quite often for practical applications,
+which means that the configuration
+space is six dimensional.
+So here for illustration, we're showing
+a simple two-dimensional configuration space.
+But in real life, the configuration space
+that were navigating is six-dimensional.
+So very big difference between navigating
+a two-dimensional space for a mobile robot
+and navigating a six-dimensional space, which
+is the configuration space of a robot arm.
+So in two dimensions, this discretizing your map
+into a grid, so using the grid approach to a map,
+if your map is just two-dimensional,
+that's tractable.
+If you think about a room, let's say
+it's 10 meters by 10 meters.
+So let's say I'm 1,000 by 1,000 centimeters.
+If I want to have a grid where each cell is
+one centimeter by one centimeter,
+that means my grid is going to be 1,000 by 1,000
+to cover my room.
+1,000 by 1,000, a million, if you have one bit
+for each cell, a million bits--
+that's really not all that much.
+It fits in memory easily.
+You could have even an entire floor
+of your building represented in that grid,
+and it'll still fit in memory very easily.
+You can maybe even use more than one bit to represent its cell.
+You still have plenty of space.
+Now on the other hand, if you have
+a six-dimensional configuration space for a dexterous robot
+arm, you are not going to be able to discretize
+a six-dimensional space with any decent resolution
+and still have the result fit in memory.
+So other techniques are going to be needed, some of them exists,
+there are ways to store these grid representations that
+aren't as memory intensive--
+[? up-trees, ?] k-d trees are some examples of that,
+but we're not going to go into those in this lecture.
+The problem remains.
+Discretizing the map into a grid for a robot arm
+with many joints is simply not tractable from
+a computational perspective.
+What about your representation of the map when using polygons?
+Well for mobile robots, that often is available already
+to some level, maybe somebody has
+the floor plan of your building, so there you know.
+That's your map.
+You can trace polygons around the obstacles
+or you can just take the floor plan
+and directly discretized it, and that gives your grid.
+So you know from things like floor plans,
+or even somebody moving around with pencil and paper
+can sketch a map of your room, a map of your floor
+with relatively good precision.
+So building the map is something if we can get a handle on.
+On the other hand, for a six-dimensional robot arm,
+if I have an obstacle in Cartesian space,
+what does that obstacle look like
+in six-dimensional configuration space?
+Here in this simple example, you can see three obstacles
+in Cartesian space--
+a yellow, red, and black--
+and you can see the shapes of those obstacles
+in configuration space.
+We can compute those, because it's a simple case.
+It's two dimensions to two dimensions, not a problem.
+If a robot has six joints, and you
+have a table in Cartesian space, what
+is the table look like in the six-dimensional configuration
+space?
+That's a pretty difficult computation to make
+and it's not something that you can easily, easily
+wrap your head around.
+So, so far we've all seen ways in which the robot arm
+motion planning problem is more difficult than the mobile robot
+motion planning problem.
+The one advantage that mobile arms do
+have is that knowing where you are on the map,
+even if you're operating in configuration space,
+is often very easy.
+What does it mean to know where you are in configuration
+space at any point?
+It means to know what your joint angles, what
+your joint values are.
+And most robots that you have available
+do have joint encoders, which will always tell you
+the values of all the joints.
+So you always know where exactly you are in configuration space.
+Here for example, this little crust
+is what illustrates the position of the robot,
+it's always kind of easy to know where exactly you are.
+Whereas a mobile robot that's navigating
+around a house or a room localizing
+itself is a difficult problem.
+It's one that's been solved to a large degree in the last decade
+using many sensors that a robot might reasonably have on board.
+It was solved originally using SONARs, maybe two decades ago,
+then the lasers became available.
+Nowadays, robots are able to localize
+themselves using vision.
+But for a long time, it was an open problem
+and it's nontrivial.
+So knowing where you are on the map
+is hard and requires pretty involved solutions.
+So these are the main differences
+between motion planning for arms versus mobile robots.
+In this lecture, we're going to deal mostly with arms.
+And then in the next lecture, we will
+talk about motion planning that's
+more specific to mobile robots.

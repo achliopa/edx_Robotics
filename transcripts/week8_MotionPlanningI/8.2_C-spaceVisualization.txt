@@ -1,0 +1,152 @@
+If you want to see an exact rendering of what
+the configuration space looks like for two dimensional robot
+and what the images of the obstacles are,
+there's an excellent applet that's
+used by Professor Ron Alterovitz at UNC
+that I strongly recommend you take a look at.
+We're going to play with it a little bit here.
+On the left we have our Cartesian space
+and we are defining our robot here.
+Let's say two links we can change
+the lengths of the links.
+On the right we have configuration space or C space
+and if I click somewhere in C space
+I'm just changing the configuration of the robot.
+So 0,0 on the bottom left means that the robot is essentially
+fully extended.
+This moves joint one as I go along the horizontal axis.
+As I go along the vertical axis this moves joint two.
+So I'm moving around in configuration space
+which changes obviously, the configuration of the robot.
+What happens if now I and add some obstacle
+in Cartesian space.
+This applet shows me the image of that obstacle
+in configuration space.
+And it shows me in particular robot configurations
+that are illegal because the resultant collisions.
+So for example all of these locations in configuration
+space are illegal, because they result in collisions
+in Cartesian space.
+And what's nice is that I can add multiple obstacles,
+and this will show me the image of each obstacle
+in configuration space.
+Right?
+And now you're starting to get a sense of why is it
+the case that motion planning for mobile robots
+is really similar to motion planning for robot arms.
+Let's say that the robot is in discontinuation.
+It's between these two obstacles.
+What I'd like to do is get it outside on the other side
+of one of the obstacles.
+Right?
+So the robot is starting here in configuration space,
+I'd like it to end here.
+To get between those two points what I need to do
+is find a path in configuration space
+as if I was planning a path for a mobile robot.
+And as I'm searching that path in configuration space
+the robot moves and gets to where it needs
+to get to in Cartesian space.
+So you can see here how I have to find the path that's
+literally around the obstacles, but the images of the obstacles
+in configurations.
+We can start adding in interesting shaped obstacles.
+And what happens at some point you block passageways.
+At this point the robot cannot really go past here
+because whatever it does the elbow hits it's that obstacle.
+So then what do I do if, for example, my robot is
+in this configuration.
+How can I get out of here?
+That's a very typical path planning problem.
+And it turns out that there is indeed
+a path in configuration space.
+I'm going to go like this.
+This robot can turned fully around for all the joints.
+So zero is the same as 2pi, so if I go down here
+then I can continue up here.
+And then I can go like this and just barely I got it out.
+And then once it's out now it's in this big area of space,
+so I can get it to go anywhere you want.
+So again we can trace it the other way around.
+Let's say that the robot starts here
+and I want it to get to be between these two obstacles.
+Again I need to find the path.
+And in that case, maybe I'm going
+to go like this, go around this obstacle.
+Go here, then can pick up on the other side.
+Then go through here, carefully.
+OK and then pick it up here, and there you
+go I've gotten to my destination without hitting anything
+in between.
+Of course, depending on how the obstacles are
+you might end up with regions of space
+that really are completely and utterly enclosed.
+For example, if I decide to move this obstacle
+little bit closer, what happens is if the robot is like this,
+it's trapped.
+This is a part of configuration space that the robot cannot get
+out of without hitting anything.
+Anything I try to do results in a collision.
+The same is true for this configuration.
+If somehow the robot gets between those obstacles,
+there's no way it can escape without hitting anything.
+And the configuration space tells me that.
+If it's in this big part that it can do whatever.
+It can reach all of this big chunk of space, and it's fine.
+It won't it won't hit anything.
+But to get to here, it's impossible without hitting
+something along the way.
+In general this applet is an excellent tool
+for getting an intuitive sense of the configuration
+space versus the Cartesian space of a robot.
+As we've said in previous lectures
+this notion of configuration space and joint space
+is really critical in robotics.
+Sometimes it's called joint space.
+Here we're calling it configuration space,
+it's exactly the same thing.
+And then the task space what I'm referring
+to often as Cartesian space, is also often referred to
+as task space.
+They're again the same thing.
+But this ability to freely move between Cartesian space
+and joint space, tasks space to configuration space.
+When you think about robots that's
+something that's really important to acquire
+and this tool will help you with that.
+One thing to note is also that in here we're
+showing just the simple planer robot
+for which really Cartesian space is two dimensional.
+Configuration space is also two dimensional.
+And that doesn't have to be the case.
+In fact, the configuration space of a robot
+it's often high dimensional, right.
+If you think about maybe we have a planer robot, if it has three
+joints, Cartesian space is still two dimensional,
+but in the configuration space it is three dimensional.
+We have Q1, Q2, and Q3.
+If we have some obstacle in Cartesian space,
+let's say there's a two dimensional obstacle here.
+This obstacle will have some representation
+in configuration space.
+Now I'm just going to make up a polygon,
+but the important thing to rip to realize
+is that that representation of the obstacle in configuration
+space is going to be three dimensional.
+There will be some joint configurations that
+collide with that obstacle.
+If we make it even more complicated,
+maybe we add another joint.
+Now the configuration space is four dimensional.
+That's beyond what I can draw on the board, even projected.
+Abusing projective geometry a little bit maybe
+you have another axis here, that's Q4, and that Q5, Q6.
+The configuration space is often high dimensional,
+and you cannot render it for complex robots,
+but it still exists.
+And the same algorithms that we're going to illustrate
+in this lecture on robots with two joints,
+so two dimensional joined spaces apply exactly the same way
+to robots with much higher dimensional configuration
+spaces, but it's just that we cannot render those high
+dimensional configuration work spaces.

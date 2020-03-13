@@ -2087,4 +2087,35 @@ echo "project4_ws workspace was sourced"
 
 ### 8.1 Robot configuration space (C-space)
 
+* Motion Planning is the problem of computing a path for a robot to go from point A to point B
+* The caresian control we have seen is a form of path planning. we are computing a path for the robot to get end effector from point A to point B. to path its such so that end efector goes from a to b in a straight line aka the shortest distance. actually the path we compute is joint movement
+* what if the straight line to the goal is blocked by an obstacle. how do we go from point A topoint B
+* sometimes the robot cannot afford to go to the goal by the shortest path. it has to go around obstacles. it has to plan a path
+* in motion planning we assume that we have a precomputed robot configuration that places the end effector to the right (desired) location using inverse kinematics
+* the problem is how to we plan a path to go from A to B without hitting the obstacles
+* this problem is not only applicable to robot arms but to mobile robots as well
+* in mobile robots the whole robot moves
+* in robot arms the base is fixed only the joints move
+* in order to see that they are similar we have to think for the robot arm not in cartesian space but in joint space (configuration space)
+* we go again to 2D drawing a 2-link planar robot arm with q1 and q2
+* in cartesian space we have **x**=[x,y]T as a point desc
+* a point in joint space  will be **q**=[q1,q2]T
+* both spaces are 2D
+* we do a plot in configuration space q1,q2. 
+* in which cases we have robot configurations that bring collision with an obstacle infinitely small
+    * if the robot is fully straight pointing to the obstacle. we find the angles and plot them in configuration space...
+    * we draw the curve that connects these points in config space
+* if the obstacle has size and is not just a point but a circle then the plot of points in config space is not just aline but a spape (like a thick line). all q1,q2 points in this area are illegal because they hit the obstacle
+
+### 8.2 C-space visualization
+
+* If we want to see how the Config space looks like for a 2D robot check out the [UNC applet](https://robotics.cs.unc.edu/C-space/)
+* If we draw an obstacle in cartesian space we see the illegal areas in config space (C-Space) because they lead to collision
+* if the robot is between obstacles in cartesian spaceand we want to get it out
+* whate we have to do is to find away between the illegal areas in C-SPACe
+* if we keep adding obstacles in cartesian space we might trap the robot representation in C_SPACEs illegal areas
+* the C-Space of a robot is multidimensional e.g 6D for 6 joint robot
+
+### 8.3 Motion planning- arms vs. mobile robots
+
 * 

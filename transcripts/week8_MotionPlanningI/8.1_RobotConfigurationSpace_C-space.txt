@@ -1,0 +1,202 @@
+Today's lecture is about motion planning.
+Motion planning is essentially the problem
+of computing a path that gets a robot from point A
+to point B. We're not going to worry about velocities,
+accelerations, dynamic effects.
+It's strictly about the pathway the robot takes to get
+from a start to a destination.
+So motion planning is also often referred to as path planning.
+So in this context, you've already
+seen one form of path planning.
+And if you think about it in that sense,
+the Cartesian control approach that we
+looked at in the last lecture is in a way
+a form of path planning, right?
+If you think about a robot arm, the end effector
+is at a given point in space.
+We'd like the end effector to get
+to a different point in space.
+When you do Cartesian control, you
+are computing a path that the robot
+takes to get the end effector to the desired destination.
+And that path has a specific characteristic
+that we discussed last time, in that the robot does its best,
+so that the end effector takes a straight line
+from the start to the goal.
+That's what Cartesian control does.
+You compute the joint movement, such
+that the end effector takes in as much as possible
+a straight line path from the start to the goal.
+And that's fine.
+It works in many cases.
+What if the straight line path for the end effector
+is blocked by an obstacle?
+How do you get from point A to point B?
+In that sense, the end effector cannot afford to always go
+directly towards the goal along the shortest path.
+It needs to go around obstacles.
+The robot needs to plan a path, and that
+is one of the core topics of today's lecture.
+There is a little bit of a different flavor
+to the way we approach motion planning, in that we assume
+that we already have a precomputed robot
+configuration that places the end effector at the desired
+location, right?
+So this is where the robot is now.
+This is where we'd like the end effector to be.
+And we've already computed the inverse kinematics, which
+have told us, hey, this is a robot configuration
+that gets the end effector where we need it to go.
+Now, the problem is, how does the robot move such
+that it goes from the current configuration to the goal
+configuration without hitting any of the obstacles?
+How does it plan a path in its environment
+that gets it from one configuration to another
+without hitting anything?
+And interestingly, this problem isn't applicable
+only to robot arms.
+It's extremely applicable also to mobile robots
+and in a very similar form.
+So here's a mobile robot.
+Let's say it's a wheeled robot.
+And in the next lecture, we'll be
+talking a bit more about how do you model the ability
+to drive of a mobile robot, the ability
+to execute trajectories.
+But let's think that for a second
+this is a wheeled robot that can just
+drive around its environment.
+This is where it's starting.
+This is where it needs to go.
+There are obstacles along the way.
+It needs to plan a path that gets to the goal
+and doesn't hit any of the obstacles.
+And the interesting thing is these two problems
+are remarkably similar, even though at first glance,
+they seem to be quite different, right?
+This is a case where the entire robot moves.
+It's a wheeled robot.
+The whole robot just gets up and goes.
+Whereas here, the basis is still fixed.
+It's just the joints that change values.
+It's an articulated robot that doesn't move as a whole.
+It just changes its joint values.
+So how are these two problems really, really similar?
+And in order to see that they are extremely similar,
+we have to reason, not about the robot arm in Cartesian space
+or in task space, but rather about the robot
+arm in joint space, also called configuration space.
+So let's remember what that means, right?
+So let's say we have a simple planar robot.
+So we have our coordinate frame.
+And then a very simple planar robot, which has two links.
+Right.
+So this is Cartesian space.
+We have x and y.
+And then this angle here is q1.
+This angle here is q2.
+And this is where end effector ends up.
+So in Cartesian space, we have a point,
+for example, bold x will have the position of the end
+effector expressed in Cartesian space.
+In joint space, a point in joint space,
+a vector will be a vector that will give you
+the values of all the joints.
+So in our case here, let's say that Cartesian space
+is two dimensional if we only care
+about the position of the end effector and not
+its orientation.
+Joint space, also called configuration space,
+is also two dimensional, because the robot only
+has two joints, OK?
+And now let's say that we have an obstacle.
+I'm going to plot the obstacle, for example,
+right here in Cartesian space.
+What does this obstacle mean for us in joint space,
+in configuration space?
+So let's plot in configuration space
+the robot configurations that are illegal, because they
+intersect that obstacle, right?
+So if this is q1, and this is q2--
+right now I am doing plots in configuration space.
+So this is the value of the first joint.
+This is the value of the second joint.
+So let's look.
+What cases do we have robot configurations that
+put us in collision with that obstacle?
+And for now, we're going to assume that this obstacle is
+infinitesimally small.
+OK.
+So first of all, obviously, if the robot
+points towards the obstacle and it's perfectly straight,
+this configuration is illegal, because the second link
+intersects the obstacle.
+So here, q1 has some values.
+Let's say that this is maybe 30 degrees.
+So q1 has a value of 30 degrees.
+q2 is zero.
+So this point right here is illegal in configuration space,
+because it intersects the obstacle.
+But that's not the only configuration
+where the robot intersects the obstacle.
+For example, the robot could also look like this.
+And this is also an illegal configuration,
+because the second link hits the obstacle, right?
+So in this case, q1 is, let's say, 45 degrees.
+So maybe q1 is right here.
+q2 here is, let's say, negative 60, right?
+So q2 is right here.
+This is also illegal, because the robot
+intersects the obstacle.
+Similarly, for example, if I plot my robot
+like this, where the end effector just
+hits the obstacle, right?
+Now I have a negative value for q1.
+So this is my q1.
+And I have, let's say, 90 degrees for q2.
+And that's illegal, because it intersects the obstacle, right?
+So for a negative q1, and then, let's say,
+90 degrees for q2, this is also illegal,
+because it intersects the obstacle.
+And now you're getting the sense that, look,
+there are many, many configurations that
+will make the second link hit the obstacle.
+And in fact, all of those will give me an illegal point
+somewhere in joint space.
+So there is some curve here that connects this.
+For some cases, it's not necessarily a straight line,
+but it's certainly some curve that
+is comprised of illegal configurations in joint space.
+So this point obstacle in Cartesian space
+gives me this entire range of illegal configurations
+in joint space.
+If, let's say, the obstacle has a little bit of heft
+to it-- it's not just an infinitesimally small point,
+but rather it's a circle in Cartesian space.
+So let's draw that case.
+Right.
+So now our obstacle maybe looks like this.
+What happens to the image of the obstacle in configuration
+space?
+Well again, when q1 is 30 degrees--
+so now we are right here.
+So we are along this line configuration space.
+Now you can see that there are a range of values
+for q2, for which the robot hits the obstacle.
+Here it hits the obstacle.
+Here it hits the obstacle.
+And for everything in between it also hits the obstacle.
+So now for this entire range of q2 at q1
+equals 30 degrees, all of this is illegal.
+And then if you carry out this exercise
+for multiple possible values of q1 and q2,
+you see that this line that we drew before actually
+gets a little bit of thickness to it.
+So the model of the obstacle in configuration space
+looks maybe something like this.
+OK.
+So any combination of q q1 and q2
+that falls inside of this area is illegal,
+because it causes the second link to hit the obstacle.
+So what we've done is we've mapped this obstacle
+from Cartesian space in two configurations.
