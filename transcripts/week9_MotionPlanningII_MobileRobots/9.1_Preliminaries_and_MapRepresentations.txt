@@ -1,0 +1,215 @@
+Today we are going to talk about motion planning
+in the context of mobile robots.
+Before we get to that, let's quickly
+recap what we talked about last week for motion
+planning as a general problem.
+And we phrase this as this question
+of finding a path from a current position of the robot
+to a desired, or goal configuration, of a robot.
+For mobile robots, it's obviously
+a pretty straightforward case of,
+here is the robot right now.
+This is what I'd like the robot to be.
+I have these obstacles along the way--
+maybe pieces of furniture, maybe who-knows-what.
+So I need to get from point A to point B--
+find a path that doesn't hit anything along the way.
+For robot arms, the question seems a little different.
+The robot arm-- obviously, the base is fixed in space.
+The robot arm is an articulated device.
+So the question is, how to get the end effector from point A
+to point B without hitting anything along the way.
+But what I need to do is decide how the joints need to move
+such that my end effector gets from point A to point B,
+and none of the robot-- the link of the robot--
+hits anything along the way.
+So that's the motion planning problem--
+finding a path from the start to the goal for robot arms,
+for mobile robots.
+It turns out, though, that these two problems
+are remarkably similar once we think about robot arms
+not in Cartesian space or task space,
+but in configuration space.
+So this is the configuration space
+of a two-dimensional robot arm.
+But instead of having the Cartesian coordinates
+x and y along the axis, instead, I
+have the values of the joints, q1 and q2.
+For a robot with more joints, then the configuration space
+will be higher-dimensional. dimensional.
+And then what you do is, you map the obstacles
+from Cartesian space into configuration space.
+So this map in white shows these are acceptable positions
+in configuration space.
+So if the robot assumes that configuration,
+it won't hit anything.
+Whereas things that are colored show obstacles.
+So those are places in configuration space
+that are illegal because of collision.
+So now, again, the problem becomes, hey, the robot starts
+out with some joint values.
+So at some point in configuration space,
+it needs to get to some destination.
+So I need to find a path for a point from the start
+configuration to the desired configuration that avoids all
+the obstacles along the way.
+Here, again, is the mobile robot,
+still shown in Cartesian space-- so x and y along the axes.
+So motion planning for both of these cases--
+let's find a path that gets me from point A
+to point B without hitting any obstacles along the way.
+And last week, we talked about practical algorithms
+that work well for robot arms, where the configuration space--
+so that's the space that I'm doing motion planning in--
+tends to be high-dimensional-- so maybe six, seven-dimensional
+if a robot arm has six or seven joints.
+For a mobile robot, often, the space
+you are doing the search in Cartesian space
+is lower-dimensional.
+Most mobile robots will really only operate in a plane.
+So I only care about x and y.
+Of course you know, drones, flying robots
+will operate in 3-D space.
+But x and y is very common.
+If I also care about the orientation of the robot,
+then I can add in theta as the orientation.
+But again, very often, it's just a two-dimensional space.
+Here's a map.
+Here's where you start on the map.
+Here where you end on the map.
+The map is a two-dimensional space that I'm looking at.
+So if that's, indeed, the case and the robot--
+your mobile robot-- is operating in a fairly low
+dimensional space, then you have multiple ways
+of representing your map.
+Where could that map come from?
+Well, it's just a map of the area that the robot is in.
+Maybe you have a floor plan of where the robot is.
+Or maybe you just go ahead and you
+measure where all the pieces of furniture
+are and all the walls and everything.
+And then you create exactly a 2-D map of the space.
+Maybe the robot builds the map itself
+as it navigates, using its own sensors.
+But that is not what we're going to cover in this class.
+That is a more advanced topic that we're not
+going to cover today.
+In any case, you do have this floor plan, which could
+come in one of multiple ways.
+Maybe you have a polygonal representation, where,
+for each obstacle-- maybe each piece of furniture--
+you have a polygon, and you know the coordinates of each
+of the vertices in the polygon.
+So maybe this is--
+I don't know-- a specific piece of furniture.
+It has-- what do we have here--
+five vertices.
+You have the coordinates for all of those five vertices.
+That defines this polygon.
+Here's another obstacle.
+So this is one way to represent maps.
+Another way to represent maps is to discretize them, and have,
+essentially, what's called a grid,
+where each cell in this grid--
+you really only care whether it is free,
+so the robot can travel through it, or if it's occupied--
+so really binary--
+zero or one.
+Here's an example.
+This is an eight by eight grid.
+So this is the binary representation of it
+with zero marking empty cells and ones
+marking occupied cells.
+Here, the binary representation I've
+also formatted as eight by eight,
+so that there is a clear correspondence
+between these two.
+But in practice, in memory, this just
+gets represented as a long stream
+of bits, where you have some additional information
+about the size of the rows and the columns.
+So grids are nice.
+All you need to know is, hey, is this cell free or not?
+When you get additional information-- that
+is, a piece of an obstacle here--
+you don't need to know the extent of the whole obstacle.
+You can just go ahead and mark each cell individually
+as occupied or not.
+Grids, though, will take up quite a bit
+of space and memory.
+If you think about it, for example,
+you have a room that's maybe--
+let's say it's 10 meters by 10 meters--
+So 1,000 by 1,000 centimeters.
+And you want your grid to have one-centimeter resolution.
+So you want each cell to be one centimeter by one centimeter.
+You end up with a million cells in your grid.
+That's tractable with the kind of memory
+that computers have today.
+It's not really that big of a deal.
+But it does kind of tell you that if you
+had a six-dimensional or seven-dimensional space
+that you are dealing with, which happens for robot arms,
+then discretizing into a grid like this is not
+computationally tractable, and you
+need other methods to take care of your memory consumption.
+But for mobile robots, especially
+those where you just care about x and y position,
+grid representations of the map are pretty common.
+And today we're going to look at motion planning algorithms,
+both if you have your map represented
+in polygonal representation, or if you have your map in grid
+representation.
+So let's do them one by one.
+First, let's think about polygonal map representations.
+But the first thing we need to address
+is this subtlety where we've defined motion planning
+as the problem of finding a path from a point, which
+is the start, to another point, which is the goal.
+And the path is made of lines in between--
+which is fine.
+But our robot isn't really a point.
+Our robot has some size.
+There's some dimension to it.
+So here, for example, I've shown a mobile robot
+that has some specific size.
+If I only reason about a tiny, tiny point,
+then a point will fit through this gap between the obstacle
+and the wall.
+But the robot, which has some non-zero dimension,
+might not fit.
+So any algorithm that only reasons about points
+will have difficulty applying to robots that are not points.
+So how do you make that work?
+One way of doing it is to preprocess your maps to do
+what's called map inflation.
+And instead of, in order to reduce your robot
+to a point, what you need to do is, inflate your obstacles
+by the size of the robot.
+So here, what I'm doing is, I've taken my robot dimensions,
+and I have placed them at each of the vertices that
+define each of the obstacles.
+And then I've taken, for each obstacle, the hull
+of the resulting new polygon.
+So I have grown each obstacle by the size of the robot.
+And then these are my new obstacles.
+And now, what's nice is that I can
+reduce the robot to a point.
+And I know that on this inflated map, anywhere
+that a point will fit, the real robot will also
+fit on my original map--
+so the uninflated map.
+So once I've done map inflation, then, again, I
+can think about the same problem for motion planning
+for an infinitesimally small point.
+I have a start.
+I have a goal somewhere.
+I just need to find a path that is infinitely thin.
+Because I've inflated the obstacle,
+so I know that the actual robot will
+fit in the original map, where the obstacles have not
+been inflated, which is great.
+Because, again, we can just think
+about this problem of motion planning
+as finding an infinitely thin path.
+So how do we do that for polygonal map representations?

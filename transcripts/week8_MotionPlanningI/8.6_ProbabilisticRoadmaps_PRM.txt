@@ -1,0 +1,244 @@
+Here is another example of an algorithm that
+falls in the same category of stochastic motion planning
+algorithms.
+This one is called probabilistic roadmap, or PRM.
+Let's again draw ourselves a little tiny toy
+example, with Q1, Q2.
+This is our workspace.
+And let's put some obstacles in here.
+OK, what's interesting about this algorithm
+is that you can one variant of it, which is shown here.
+What you're doing, you're building
+what's called a roadmap, without even necessarily having
+a start and a goal.
+So what we're going to do is sample a number
+at random points in C-space.
+I'm going to say 10 here because you just
+need to select a threshold.
+But even with just as few as 10, I think we'll get good results.
+And then what we do is we connect those points
+to as many other points that we've sampled as possible.
+So let's do 10 of them.
+So 10 and 7.
+So let's use blue to draw the roadmap.
+So if this is 10 and 7, this is the first point
+on our road map.
+Then we get 4 and 7, so 4 and 7.
+And you always connect every new point with as many points
+that you've already sampled as you can,
+as long as the straight line doesn't
+intersect any obstacles.
+Then we get 6 and 4.
+So 6 and 4.
+That's going to be inside an obstacle.
+So keep going.
+4 and 2.
+Let's say this is 4 and 2.
+OK.
+5 and 1.
+5 and 1 is right here.
+7 and 6.
+7 and 6 right here.
+Does this go-- let's say it doesn't.
+6 and 6.
+6 and 6.
+So right here.
+6 and 7.
+So maybe right about here.
+And we keep connecting.
+0 and 4.
+So we're going to be here.
+And we can connect to all of these.
+I'm not necessarily going to draw all of the connections,
+just because it gets very busy.
+3 and 6.
+So let's say that 3 is right here and 6 is right here.
+And again you would have a bunch more of these.
+OK, how many points do we have?
+One, two, three, four, five, six, seven, eight.
+So let's do two more.
+2 and 8.
+So 2-- let's say 2 is right here, and 8,
+let's say this is right there.
+So we can connect like this.
+One more, 8 and 2.
+So maybe right here.
+And we can connect like this.
+OK.
+So that's it.
+We stop.
+This is our road map.
+Now somebody is actually telling us this is your start
+and this is your goal.
+So now somebody's giving you a start and a goal.
+So let's say again that the start is random.
+So the start is going to be 1 and 1.
+So somebody is asking us to start from right here.
+OK.
+And to get 2 and 3.
+So let's say, well, 2 and 3 is inside an obstacle.
+So obviously nobody's hopefully going
+to tell us to go inside the obstacle.
+So that's simply another point.
+2 and 7.
+So somebody's asking us to get to right here.
+How do you do that?
+Well, first, from the start, you try to connect to your roadmap.
+And in this particular case, really the only connection
+that we have to the roadmap is this.
+If this obstacle is not drawn as sloppy,
+then maybe we'd have another connection down there.
+We connect the goal to the obstacle, to the roadmap,
+as fast as we can.
+So this is the closest point.
+So now we have a start point that's
+on the roadmap, a goal that's on the roadmap.
+And this network of lines that we know
+are all collision free that connect
+all the points of the roadmap.
+So now, from the start to the goal,
+we can plan a path that goes exclusively on the roadmap,
+and that we know isn't going to collide with anything.
+How exactly you plan a path only on the roadmap,
+we will actually see an algorithm
+for that in the next lecture for mobile robots.
+But the important thing here is that once you
+have your roadmap, anytime somebody gives you--
+let's say that this is the goal.
+And let's say that this is the start.
+Right, you hop on to the roadmap as quickly as you can.
+And then you plan a path exclusively
+on the roadmap that gets you from the start to the goal.
+Again, the power of random exploration.
+With only 10 points, we've done actually a reasonable job
+of covering this space.
+Most of the starts and the goals that somebody could give us,
+we will be able to hop onto the roadmap.
+And also the roadmap is fully connected.
+It can happen if your obstacles are really difficult,
+that your roadmap has two completely separate components
+and you cannot get from one to the other.
+It can happen that somebody gives you a start,
+and you just cannot hop on to the roadmap.
+If either of those happen, then you just
+keep constructing your roadmap.
+You just go back to this point and you
+make your roadmap even bigger.
+Eventually though, your roadmap will give you
+good enough coverage that from any start
+you can get to any goal exclusively on the roadmap.
+And again, the power of random explorations.
+RRTs, PRMs, they both perform very well
+in many problems for robot arms.
+Which to choose, that will depend
+on the subtleties of the problem or maybe
+which implementation you would have available.
+Again, I have highlighted here all the external
+calls that this makes.
+Again, you need a random number generator.
+The same idea, you need to check if a branch of your roadmap
+intersects an obstacle, which you do by discretizing, just
+like we did for RRTs.
+The only new thing is this goal.
+Find the path between start and goal,
+going exclusively on the roadmap.
+And we'll have an algorithm for this in the next lecture.
+So let's recap stochastic motion planning.
+RRTs, PRNs, other algorithms, and there
+are many variations of these algorithms.
+Again, the one we've looked at here
+are just some possible implementations, which
+are nice in their simplicity.
+There are many possible variations of them.
+What's nice about this family of algorithms
+is that really the only thing you need
+is this ability to quickly check if a point in C-space is legal
+or not.
+Most often it means is it in collision.
+You might have other ways to define
+a point that's legal or not in configuration space.
+Maybe it's not that you're in an obstacle.
+Maybe you're too close to an obstacle.
+Or maybe that configuration of the robot requires the robot
+to be fully extended, in which case it cannot support
+the weight of whatever it's carrying.
+There are other ways to define when a point in C-space
+is legal or not.
+Most often it means are you hitting something or not.
+So this is really the only thing you
+need to be able to run and execute
+one of these stochastic motion planning algorithms.
+The theoretical characteristic of many of these algorithms
+is that they are what is called probabilistically complete.
+It can be proven, theoretically, that if a path exists
+from the start to the goal, the algorithm will find it.
+Because again, this random nature of it
+can be scary at first.
+Wait a second, I'm going to just do random exploration
+and you're telling me it'll be fine?
+So the one theoretical guarantee is that if a path exists,
+it will be found in finite time.
+The flipside is that, well, you really
+don't have any guarantees.
+It's possible that that finite time
+will be very, very, very long.
+Might be even longer than just doing an exhaustive search
+of all possible paths.
+So while you have this theoretical guarantee
+of probabilistic completeness, there
+are no guarantees in terms of how long it'll take.
+But the one thing that you do know from experience
+is that in practice, these algorithms work remarkably well
+for high-dimensional spaces.
+So if you have a robot that has six joints, or seven joints,
+or maybe even more.
+And in general, a motion planning problem
+where you're searching for a path from a start
+to a goal in a high-dimensional space,
+in the presence of obstacles, stochastic motion planning
+is known to perform really, really well.
+The other thing that stochastic motion planning
+makes no guarantees about is the quality of the solution.
+What do we mean by the quality of the solution?
+Well, maybe you don't just want a path,
+you want the shortest path.
+There's no guarantee that once RRT or PRM has found a path,
+that that's the shortest path.
+In fact, if you just take the raw solution
+from the RRT and the PRM, it's immediately obvious
+that it's not the shortest because it contains
+many, many zigs and zags.
+And that's just the nature of random exploration.
+So you can eliminate most of those zigs and zags
+by just very simple post-processing.
+You just take your path, and you say hey can I take shortcuts?
+I have all these points along my path.
+Can I just connect two of them directly and ignore everything
+in between?
+And if you can, then I'm just going to shortcut.
+So that improves the quality of the solution.
+Even after you post-process, there are no guarantees
+that you found the optimal solution.
+There might be an even shorter one.
+If you keep running the stochastic algorithm,
+if you just give it more time, maybe it'll
+find a better solution for you.
+You still won't know if that's the best you can do.
+All you can say is, you know what,
+I have this much budget available to me
+in terms of how long I can afford to let it run.
+I'm just going to let it run for that long.
+And if it finds a solution, great.
+And I'll take whatever is the best solution that it has found
+in that limited amount of time.
+For six or seven degree-of-freedom robot arms,
+in realistic problems with obstacles
+that you can expect in the real world,
+generally high quality implementations
+will find solutions in less than a second.
+If a problem is pathologically bad, where the robot really
+has to reach through a tight passageway,
+it might take a few seconds.
+Most problems you can expect to encounter for robot arms in six
+and seven dimensions, are tractable and solvable using
+this category of algorithms in just a few seconds.

@@ -1,0 +1,208 @@
+So now we're actually going to look at one of the possible--
+the available high-quality implementations
+of these algorithms.
+The software package called MoveIt!, which is open source,
+contains high-quality implementations of many motion
+planning algorithms, RRTs, PRMs included.
+MoveIt!
+Contains a lot more than just those core algorithms.
+And in fact, it often uses the core algorithms
+from external sources as well.
+But what it does is it brings all of them
+together into one package.
+And it allows you to run them as it has interfaces
+to various robots, it allows you to do collision queries,
+and so on.
+And in fact, I strongly recommend going to the MoveIt!
+web page, learning about the underlying planning
+packages that it relies on, again, which many of them
+come from different sources-- from academic labs,
+from industry.
+Some of them were actually written
+by the authors of MoveIt!
+And checking out all the examples
+that you can find there, you'll see many cool examples
+of motion planning on robots.
+I think MoveIt!
+has been used on dozens and dozens of robots so far.
+So I have MoveIt!
+running on my laptop.
+And I can use it on a simulated robot.
+I have a workspace set up for that.
+The simulated robot that we're going to use
+is a simulation of the Baxter robot,
+the Baxter made by Rethink Robotics.
+The Baxter has two arms, each arm
+with seven degrees of freedom.
+So you could be planning for both arms simultaneously,
+and then it becomes a 14-dimensional planning
+problem.
+However, to make things a little simpler,
+we're only going to use a single arm here.
+So let's say we're going to plan for the left arm.
+So you can ask for new positions for the arm.
+And the ghosted, transparent, orange arm
+shows where I'm asking the arm to go to.
+Let's say I ask for this position in free space.
+I'm going to slow down the paths a little bit so that we
+can better visualize what's happening.
+And then MoveIt!
+will plan a path and show us the execution of the path that gets
+us from the start to the goal.
+Pretty simple path here.
+No obstacles really to speak of.
+Let's make things interesting.
+Let's import an obstacle.
+So now this pillar, let's say, represents an obstacle.
+And I'm going to ask MoveIt!
+to find a path that gets the arm starting
+from one side of the obstacle and gets us to the other side.
+So it will look, maybe, something like this.
+And then it finds a way to go over the obstacle
+and to the other side.
+Let's do it again.
+Let's move back to our original side.
+Maybe go down a little bit.
+Again, where we're starting from is in red.
+Where we want to end up is orange and transparent.
+We're asking for a plan and the execution.
+And you can see that it finds the path that
+takes the arm over the obstacle and ends up exactly where
+we've requested it to go.
+Sometimes, the path will take what
+looks like some unnecessary zigs and zags.
+We saw, maybe, some of those in this last execution.
+MoveIt!
+will smooth and shorten the path and take shortcuts,
+and in general, do the post-processing the way
+it's supposed to be.
+RRTs-- stochastic motion planning in general--
+do have that characteristic that, sometimes, the path
+isn't what would seem optimal.
+So let's plan for a new path.
+Up and over.
+And gets to the destination.
+And again, I strongly encourage you,
+if you have ROS installed on your computer,
+to go ahead and get MoveIt!
+And then there is a variety of simulated robots
+you can play with and get a sense for what the motion
+planners look like.
+MoveIt!, again, can use many motion planning algorithm
+implementations.
+It will have RRTs, it'll have PRMs.
+So you can get a sense for how those work.
+And it will solve what looks like pretty complicated
+planning problems-- robot reaching into tight spaces
+or coming out of tight spaces.
+So let's recap the motion planning, the part of it
+that we looked at today.
+And we phrased the general motion planning problem
+as this idea of searching for a path
+from a start, a current configuration of the robot,
+all the way to a goal, or a desired robot configuration.
+Obviously, that has a very clear correspondent
+for mobile robots, right?
+The robot is at a current location in space.
+You'd like it to get somewhere else.
+And then there's a map on the way,
+which shows you the obstacles that the robot must avoid.
+Interestingly, the problem is phrased the same way also
+for robot arms.
+So articulated robot arms that start
+in a current configuration, you'd
+like the arm to end up in a different configuration.
+You'd like it to not hit anything along the way.
+And it turns out that, if you reason
+about this not in Cartesian or task space,
+but rather in the configuration space of the robot arm,
+it ends up looking a lot like finding a path for a point
+from a start to a goal, avoiding a bunch of obstacles
+along the way.
+So we've talked about configuration space,
+how to build configuration space, the configuration
+space of a robot, what it means, and how to operate in C space.
+So once you think about the problem in C space
+for robot arms, and then, for mobile robots,
+you think about it in Cartesian space,
+then motion planning becomes really
+the same problem of finding a path
+from the start to the goal.
+But then, once you start looking for ways to solve the problem,
+then these two cases start diverging again,
+just because of the practical implications
+of the nature of working with mobile robots versus robot
+arms.
+With mobile robots, the space that you're searching in,
+which is Cartesian space, tends to be low-dimensional--
+maybe two-dimensional, three-dimensional
+in some cases.
+On the other hand, for robot arms,
+this space is going to be very high-dimensional.
+If you have a robot arm that has six joints or seven joints,
+then the configuration space is six-dimensional
+or seven-dimensional.
+That means that it's difficult to build representations
+of the obstacles in this high-dimensional configuration
+space.
+If you want to discretize your configuration space
+and represent it as a grid, a six-dimensional,
+seven-dimensional grid is something
+that's computationally intractable to keep track of
+and to use.
+So because of the different nature
+of the dimensionality of the problem,
+we tend to have different types of algorithms
+that solve motion planning for mobile robots versus motion
+planning for robot arms.
+We will talk about mobile robots in next lecture.
+This lecture, we focused on motion planning for robot arms.
+And a very common solution for motion planning
+for robot arms with many joints is this family
+of sampling-based algorithms.
+These sampling-based algorithms, they
+share a couple of very interesting characteristics.
+They fundamentally rely on the ability
+to sample random locations in configuration space.
+Because of the randomness, we also
+sometimes refer to them as stochastic motion planning
+algorithms.
+And furthermore, you don't need actual representations
+of the obstacles in [? the ?] configuration space.
+All you need to do is, if you sample a particular point
+in configuration space, you just need to know,
+hey, is this point valid--
+usually meaning in collision with something-- or not?
+And then, if you have this ability,
+then even if you have two points in [? the ?]
+configuration space, we can also check if the line between them
+is valid or not by sampling many points along that line
+and checking if each of those individual points
+is in collision or not.
+So sampling-based motion planning algorithms
+use this ability to sample random points
+and just say, are these points in collision or not,
+and use them for a random exploration
+of the configuration space, which eventually ends up
+connecting your start to your goal.
+At first look, it can seem that the random nature of it
+is going to be a problem.
+But it turns out, in practice, that this random exploration is
+extremely, extremely powerful, especially
+for high-dimensional robot arms.
+And we've looked at two examples of sampling-based motion
+planning algorithms, RRTs and PRMs.
+We've looked at the implementations of those.
+But then we've also checked out high-quality, essentially
+industrial-grade implementation of sampling-based motion
+planning algorithms, which are available as part
+of the open source MoveIt!
+software framework, which is an excellent entry
+point for playing with, getting a sense
+of how motion planning algorithms work for robot arms.
+And it's integrated with ROS, so you can always
+download it and try it with various robot models,
+and get a sense for how motion planning algorithms work.
+So this was primarily focused on robot arms.
+Next week, we'll also talk about motion planning
+for mobile robots.

@@ -2118,4 +2118,226 @@ echo "project4_ws workspace was sourced"
 
 ### 8.3 Motion planning- arms vs. mobile robots
 
-* 
+* a robot arm that needs to go from one place to other with presence of obstacles and a mobile robot that wants to go from A to B in presence of obstacles are very similar problems if we think the robot arms C-SPACE representation. both cases we seek for a path in a map. for mobile robot in cartesian space, for robot arm in C-Space
+* How we store that map. there are 2 ways
+    * polygonal. each obstacle is defined as polygon as a list of vertices that define it.
+    * grid. a descrite map where for each cell we set if its free or not. also we mark the start and end cell. the entire grid is stored in memory, its a dence representation. Memory Greedy CPU friendly
+* Motion Planning: Robot Arms
+    * High Dimensional C-Space (often 6D)
+    * Discretizing map into grid is not tracktable
+    * Polygonal C-space obstacle map very hard to compute
+    * knowing "where" you are on the map is generaly easy
+* Motion Planning: Mobile Robots
+    * Low dim C-Space (often 2D)
+    * Discretizing map into grid is tracktable and often done
+    * Polygonal obstacle map can be available (e.g floorplan)
+    * Knowing "where" you are on the map is generaly hard
+* 2D grid maps ofr mobile robots fit easily in mem. 6d C-SPAce grids for preision arms are difficult to fit. so discretising the grid for a robot arm with high precision is not tractable computationaly
+* IN C-Space if we have an obstacle in cartesian space in C-space it looks like an area of strange shape. in 6D space we cannot percieve it
+* The easy thing with robot arms is thats easy to know where we are at any moment. robots have joint encoders so we know joint angles so we know position of end effector
+* for a robot navigating in space to know its position is not trivial. it uses sensors (LIDAR,Machine Vision)
+
+### 8.4 Motion planning for robot arms, sampling-based algorithms
+
+* Assume a robot arm with walls in 2 axis and a table in front of it
+* wassume we have the models of obstacles in task (cartesian) space
+* mapping obstacles from task space to joint space is hard
+* answering point queries (is this point in C-Space $q=[\frac{\pi}{3},\frac{\pi}{5}]$ in collision?) is easy. INV KINEM => check if mesh of robot intersect the obstacle in cartesian space
+* So we might not know the sHape of illegal area in C-Space but we can check points one by one by moving from C-Space to Task Space
+* There are motion planning algorithms that use this approach (Sampling based Motion Planning Algotithms) aka Stochastic Motion Planning Algorithms
+    * Search C-Space in random fashion
+    * Take advantage of ability to check collisiona at any point we want
+    * Random exploration is surprisingly powerful, especially in high dimensional. it allows to be unstuck if we get stuck in a dead end
+
+### 8.5 Rapidly-exploring Random Trees (RRT)
+
+* Rapidly-exploring Random Trees (RRT)
+* Input: start and goal point in C-space
+* Output: path from start to goal
+* Algotithm: 
+    * insert start point in tree
+    * while tree can not connect to goal:
+        * sample random point r in C-space
+        * find point p in tree that is closest to r
+        * add branch of predicted length from p in direction of r
+        * if new branch intersects obstacle:
+            * discart new branch (or shorten)
+    * compute path from start to goal through tree
+    * shortcut path: for any two points in path. add direct line unless direct line intersects an obstacle
+* Nore: many variations are possible: production level implementation have additional subtleties
+* We draw a 2D workspace q1,q2 size 10x10
+* we set a start point q1=2,q2=4, end point is q1=9,q2=8, and a rectangular obstacle between (4,4) and (6,7) and another between (2.5,0) and (4,1) and another between (1,8) and (3,9)
+* we use python to generate random tuple between 0 and 10.
+    * first is 7,7. is OK. we draw a branch for the tree starting from S towards 7,7 for predefined length (1) and continue. the end point is A
+    * second random point is (1,7). the closest tree point is S. so we draw a branch from S to the new point of predefined length, the end point is B
+    * next point is (8,5). closest tree point is A. if i draw a line towards it in the predefined length i hit the obstacle. so we draw a shorter line. the end point is C
+    * next point is (1,8) closest point is B. we draw the line at predefined length
+* we continue the drill building the tree towards the Goal point
+* we draw a direct line from a tree end point to goal to see if we can reach without hitting obstacle. if yes we are done
+* the path is the branch from start to tree end point and then to goal
+* after we get the path we attempt shortcuts by joining not adjacent points with straight lines. if it passes i throw away the long path
+* if we keep start and gal points and change obstacles. making it harder. the tree will solve it and go to goal but it will take time to grow a tree that solves the problem
+* in this algo we ask if lines intersect with obstacles.. with what we know so far we can ask the question for points not lines. so we need to discretize the line and sample points in it
+
+### 8.6 Probabilistic Roadmaps (PRM) 
+
+* Map construction:
+    * While number of points in roadmap lower than threshold
+        * sample *random* point in C-space
+        * if new point is not in collision:
+            * connect new point to all other points in the roadmap vis lines, as long as lines do not *intersect obstacles*.
+* Input: start and goal point in C-space
+* Output: path from start to goal
+* Path finding:
+    * connect start point to nearest point in roadmap such that connecting line does not *intersect obstacle*.
+    * connect goal point to nearest point in roadmap such that connecting line does not *intersect obstacle*
+    * *find a path between start and goal going exclusively on the roadmap*
+* External calls in italics. Checking if a line intersects an obstacle is done by dicretizing the line. and then checking individual points for collision
+* again a stochastic algo
+* We draw a 2D workspace q1,q2 size 10x10
+* we draw some random obstacle shapes.
+* we get 10 random points
+* we connect each one with as many from the others as possiblew with straight lines that dond hitting the obstacle
+* we end up with a mesh (roadmap)
+* we get the start and goal points, we do the same like before but in case of multiple connections we choose the shortest line
+* if we have the roadmap ready anytime we get a goal and a start we use it to get the path
+* for diffiult obstacles the paths might be separated so we cannot go from one side to the other
+* Sampling based Motion Planning (Stochastic) - Recap:
+    * only requires the ability to quickly check if a point in C-space is "legal" or not (often that means collision-free)
+    * many versions are probabilisticaly complete. if a path exists it will be found in finite time...
+    * ...but make no guarantees. in the worst case, time to solution can be very long (longer than exhastive search)
+    * in practice these algorithm tend to be very effective in high-dimensional spaces
+    * there are also no guarantees regarding quality of solution
+        * not guaranteed to be the shortest possible
+        * in practice, often needs post processing (to eliminate zig zag)
+
+### 8.7 Motion Planning I- Demo and Recap
+
+* SW package [moveit](http://moveit.ros.org) contains many ready implementations of motion planning algorithms
+* we install it to run a demo.
+* in catking workspace 'moveit_demo_workspace' we source `devel/setup.bash`
+* we `roslaunch hw3 hw3.launch`
+* we use a simulator of the baxter robot `roslauch baxter moveit config demo baxter.launch`
+* baxter has 2 arms with 7DOF. we can plan for both arms in same time. what we end up is a 14DOF problem
+* for simplicity we will pln for the left arm only. in planning group we select left arm
+* we ask for new positions of the arm by dragging it and moving it. 
+* moveit will plan a path and move the arm to go to the destination
+* we add a scene object as an obstacle.
+* we go to planning asking it to find a path by moving the arm in a position bypassing the obstacle
+* sometimes the path is not optimal but it works
+* Motion Planning Recap:
+    * Generally formulated as the search of a path from start to goal through obstacles
+    * mobile robots: direct application in task space
+    * robot arm: articulated movement in task space becomes path through C-space (config space)
+    * For dexterous arms C-space is high-dimensional, and translating obstacle outlines from task space to C-space is hard
+    * Practical planning for arms: samplins-bassed algorithms
+    * based on "random" exploration of C-space
+    * only require the ability to check points in C-space
+
+### Project 5
+
+*Project 5 Description*
+* In the previous project, you implemented a Cartesian controller for a 7-jointed robot arm. With this you could interactively control the position of the end-effector in Cartesian space. However, this method of control is not sufficient in the presence of obstacles. In order for the robot end-effector to reach a desired pose without collisions with any obstacles present in its 
+environment we need to implement motion planning. In this project you will code up a Rapidly-exploring Random Tree (RRT) motion planner for the same 7-jointed robot arm. This will enable you to interactively maneuver the end-effector to the desired pose collision-free.
+
+*The motion_plan(...) function*
+* You are given starter code including the motion_planning package, which in turn contains the `motion_planning.py` file you must edit. Specifically, you must complete the motion_plan function. The arguments to this function and the methods provided by the MoveArm class are all you need to implement an RRT motion planning algorithm. 
+* The arguments to the motion_plan function are:
+    * q_start: list of joint values of the robot at the starting position. This is the position in configuration space from which to start
+    * q_goal: list of joint values of the robot at the goal position. This is the position in configuration space for which to plan
+    * q_min: list of lower joint limits
+    * q_max: list of upper joint limits
+* You can use the provided `is_state_valid(...)` method to check if a given point in configuration space is valid or causes a collision. The motion_plan function must return a path for the robot to follow. A path consists of a list of points in C-space that the robot must go through, where each point in C-space is in turn a list specifying the values for all the robot joints. It is your job to make sure that this path is collision free.
+*Algorithm Overview*
+* The problem we are facing is to find a path that takes the robot from a give start to another end position without colliding with any objects on the way. This is the problem of motion planning. The RRT algorithm tackles this problem by placing nodes in configuration space at random and connecting them in a tree. Before a new node is added to the tree, the algorithm also checks if the path between them is collision free. Once the tree reaches the goal position, we can find a path between start and goal by following the tree back to its root. 
+* The algorithm follows the steps presented in detail in the lecture on Rapidly-exploring Random Trees.  Let us break this task into smaller steps:
+* Create an RRT node object. This object must hold both a position in configuration space and a reference to its parent node. You can then store each new node in a list
+* The main part of the algorithm is a loop, in which you expand the tree until it reaches the goal. You might also want to include some additional exit conditions (maximum number of nodes, a time-out) such that your algorithm does not run forever on a problem that might be impossible to solve. In this loop, you should do the following:
+    * Sample a random point in configuration space within the joint limits. You can use the random.random() function provided by Python. Remember that a "point" in configuration space must specify a value for each robot joint, and is thus 7-dimensional (in the case of this robot)!
+    * Find the node already in your tree that is closest to this random point.
+    * Find the point that lies a predefined distance (e.g. 0.5) from this existing node in the direction of the random point.
+    * Check if the path from the closest node to this point is collision free. To do so you must discretize the path and check the resulting points along the path. You can use the is_state_valid method to do so. The MoveArm class has a member q_sample - a list that defines the minimum discretization for each joint. You must make sure that you sample finely enough that this minimum is respected for each joint.
+    * If the path is collision free, add a new node with at the position of the point and with the closest node as a parent.
+    * Check if the path from this new node to the goal is collision free. If so, add the goal as a node with the new node as a parent. The tree is complete and the loop can be exited.
+* Trace the tree back from the goal to the root and for each node insert the position in configuration space to a list of joints values.
+* As we have been following the branches of the tree the path computed this way can be very coarse and more complicated than necessary. Therefore, you must check this list of joint values for shortcuts. Similarly to what you were doing when constructing the tree, you can check if the path between any two points in this list is collision free. You can delete any points between two points connected by a collision free path.
+* Return the resulting trimmed path.
+
+*Setup*
+* As in the previous projects, please make sure that the first thing you do in your workspace is to source the 'setup_project5.sh' script. This starts up the simulated robot and the interactive controls you can use to move it. You can now press the 'Connect' button and you should see both the robot and the controls. 
+
+*Grading/ Debug*
+* After you have implemented the RRT algorithm, you can run your code with rosrun motion_planning motion_planning.py and use the interactive controls. You can move the controls around in space, however the robot will not immediately follow as it did in the last project. Instead, right clicking on the controls will open a menu, in which you can command the arm to move to the desired position. You can also add obstacles of varying complexity or run a grader we provide for you to test your code. This will test your implementation on all three objects and tell you if there have been any collisions. It gives your algorithm 10, 30 and 120 seconds for each object in order of increasing complexity. 
+* Keep in mind that the RRT algorithm is stochastic in nature. That means that it will have different results every time you run it. Therefore, it is possible that the algorithm finds a path within the time given one time and times out another time. Particularly for the most complex obstacle running time can vary considerably. The same of course is true for the grade you get when you press the 'Submit' button. We encourage to test with the grader we provide for you until you get consistent results. The delay between you submitting and receiving a grade can be a little longer than in the previous projects, but should be no longer than 5 minutes.
+
+### Project 5 FAQ
+
+*How do run this project in my own Ubuntu machine?*
+* 1) Launch Project 5, then in Vocareum click Actions>Download Starter code. This will download all the files you need to make the project run locally in your computer.
+* 2) Install the needed ROS package(s). Run the following lines on your terminal:
+```
+sudo apt-get update
+sudo apt-get install python-wstool ros-kinetic-moveit*
+```
+* Replace kinetic with the ROS version that you are running on your local machine.
+* 3) IGNORE all the files other than the `catkin_ws` folder and `kuka_lwr_arm.urdf` file. Put the `catkin_ws` and the `kuka_lwr_arm.urdf` file in your home directory. 
+* 4) The downloaded files are structured as a catkin workspace. You can either use this structure directly (as downloaded) and build the workspace using the "catkin_make" command or use whatever catkin workspace you already had, and just copy the packages inside your own src folder and run the catkin_make command. If you are having troubles with this, you should review the first ROS tutorial "Installing and configuring your ROS Environment".
+* 5) Once you have a catkin workspace with the packages inside the src folder, you are ready to work on your project without having to make any changes in any of the files. Navigate to the catkin workspace folder and build the workspace using the command "catkin_make".
+* 6) NOTE: You can source both your ROS distribution and your catkin workspace automatically everytime you open up a terminal automatically by editing the ~/.bashrc file in your home directory. For example if your ROS distribution is Kinetic, and your catkin workspace is called "project5_ws" (and is located in your home directory) then you can add the following at the end of your .bashrc file:
+```
+source /opt/ros/kinetic/setup.bash
+echo "ROS Kinetic was sourced"
+source ~/project5_ws/devel/setup.bash
+echo "project5_ws workspace was sourced"
+```
+* This way every time you open up a terminal, you will already have your workspace sourced, such that ROS will have knowledge of the packages there.
+* 7) Before moving forward, if you haven't followed the instructions on step 6, you will need to source ROS and the catkin workspace every time you open a new terminal. To run the project, first open up a terminal and run `roslaunch motion_planning mp.launch`. In the second terminal, run `rosrun motion_planning marker_control.py`. Note that you do NOT have to run `roscore` as roslaunch includes all the necessary packages.
+* 8) On another 2 separate terminals, run `rosrun motion_planning motion_planning.py` (this is what you need to edit to complete the project), and as always `rosrun rviz rviz` to visualize the robot.
+* 9) On rviz, you will need to add a RobotModel, InteractiveMarker, and Marker. When you add the InteractiveMarker, click on "InteractiveMarker" to expand it, and select /control_markers/update as the update topic. You shouldn't need to do anything for the RobotModel and the Marker. 
+
+*Pyassimp error with kinetic*
+* Edit "/usr/lib/python2.7/dist-packages/pyassimp/core.py" as follow :
+```
+-    load, load_mem, release, dll = helper.search_library()
++    load_mem, release, dll = helper.search_library()
+```
+* (You should navigate to this path and use sudo gedit core.py to edit the file. Once its open find the mentioned line (-) and replaced it with the one marked (+))
+* If it doesn't work, try to update the pyassimp module to latest 3.3 version.
+```
+sudo pip -H uninstall pyassimp
+sudo pip -H install pyassimp
+```
+
+*XML error running roslaunch locally on kinetic ubuntu*
+* You have to edit the file `lwr_robot/lwr_defs/defs/util_defs.xml` and ensure matching parantheses in the marcro definitions as following :
+```
+<?xml version="1.0"?>
+<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor"
+       xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller"
+       xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface">
+
+  <property name="M_PI" value="3.1415926535897931" />
+
+  <!--
+     Little helper macro to define the inertia matrix needed
+     for links.
+     -->
+  <macro name="cuboid_inertia_def" params="width height length mass">
+    <inertia ixx="${(mass * (height * height + length * length) / 12)}"
+                 iyy="${(mass * (width * width + length * length) / 12)}"
+             izz="${(mass * (width * width + height * height) / 12)}"
+             ixy="0" iyz="0" ixz="0"/>
+  </macro>
+
+  <!-- length is along the y-axis! -->
+  <macro name="cylinder_inertia_def" params="radius length mass">
+    <inertia ixx="${(mass * (3 * radius * radius + length * length) / 12)}"
+                 iyy="${(mass * radius* radius / 2)}"
+             izz="${(mass * (3 * radius * radius + length * length) / 12)}"
+             ixy="0" iyz="0" ixz="0"/>
+  </macro>
+
+</robot>
+```
+
+## Week 9: Motion Planning II, Mobile Robots 

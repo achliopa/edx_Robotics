@@ -1,0 +1,124 @@
+Let's focus a little bit on this case of motion planning
+for robot arms.
+Here's an example of a rendering of a robot arm.
+In Cartesian space, let's say, on the bottom left,
+you see a picture of it.
+Let's say it's a robot in a corner of the room,
+so there are two walls.
+And then there's also a table in front of it.
+I have models of all of these obstacles in Cartesian space.
+What does the configuration space look like?
+It's difficult to take these tables
+and map them into configuration space.
+And in general, doing these kind of computational queries
+in 6D space is difficult.
+One thing that's easy, though-- so I cannot,
+I don't want to create a map of these obstacles
+in configuration space.
+One thing I can do, however, pretty easily
+is answer point queries.
+If somebody says, here's a list of joined values.
+Tell me, for that specific point in configuration space,
+is the robot in collision or not?
+So if you think about it-- and again, I'm
+going to draw a simple case, let's
+say, just looking at a two-dimensional configuration
+space.
+Let's say this is a two-dimensional configuration
+space.
+So actually, drawing a map of the obstacle and saying,
+you know what-- this obstacle looks like this
+in configuration space--
+this is difficult. And I don't want to be doing that.
+However, one thing that's relatively easy
+is to answer a point query.
+If somebody tells me, hey, you know what--
+for a point in configuration space, let's say, whatever,
+pi over 3, pi over 5--
+is this in collision or not?
+So that's one specific point.
+Let's say that falls here.
+Is this specific point in configuration space
+legal or not?
+It's relatively easy for me to answer those queries because,
+once I have this model, all I have to do
+is place the robot in this configuration.
+And then it's a relatively easy task of computational geometry
+to say, hey, does the mesh of the robot
+intersect any of the meshes of the obstacles?
+So answering point queries is easy.
+I don't know the map of the obstacles,
+but if somebody gives me that, I can say, yep, that's A-OK.
+Well, what about q equals pi over 3, pi over 3?
+Now the robot is, let's say, right here.
+I can say, yeah, OK, and then--
+so on, and so forth.
+What about pi over 2, pi over 2?
+Well, you know what?
+No.
+That's not legal.
+So again, I might not have an actual explicit knowledge
+of what the shape of the obstacle is.
+But any time I drop a point here, I can very easily say,
+this is not fine.
+This is fine.
+This is fine.
+Anytime somebody says, is this fine?
+No.
+Is this fine?
+Yes-- and so on.
+So that's the nature of the beast with mobile arms,
+especially with highly articulated mobile arms.
+So given this, given that I don't have explicit obstacle
+maps, but I can answer point queries,
+what can I do with this?
+Is there a way for me to do effective motion planning
+using these tools?
+And it turns out that there is.
+The family of motion planning algorithms
+that take advantage of this ability to do point queries
+is generally referred to as sampling-based motion planning
+algorithms.
+And they share a common trait in that, fundamentally, they
+rely on the same basic operation, which
+is to take random samples--
+random, to sample random locations
+in the configuration space and check
+if those locations are valid.
+We will go into detail in just a minute
+with two of these algorithms.
+But first, let's immediately address kind of the big idea
+here, which is this notion of taking
+random sampling, of doing random exploration
+of the configuration space.
+And because of this random nature of the algorithm,
+sometimes they're also referred to as stochastic motion
+planning algorithms.
+You'll also hear me use that term.
+But the most common term is sampling-based motion planning.
+So you explore the configuration space in random fashion.
+That seems a little bit strange, right?
+Wait a second.
+Is that going to work?
+That's not how people do it.
+If I need to get from here, from point A to point B,
+I don't start moving in random directions,
+hoping that, eventually, I'll find my way there.
+So initially, this random exploration
+seems a little bit iffy, right?
+But it turns out that it's an extremely, extremely powerful
+tool, particularly with high-dimensional configuration
+spaces.
+So robots with six joints, seven joints, or more
+are going to have even much higher dimensional
+configuration spaces.
+This idea of random exploration is incredibly powerful.
+And what's very powerful about it
+is that it allows you to get unstuck if you end up
+being stuck in a dead end.
+And we'll see examples in a few minutes.
+So sampling-based motion planning algorithms,
+relying on this notion of random samples in the configuration
+space and checking the validity of these random samples--
+let's look at a couple of concrete examples of algorithms
+that belong to this family.

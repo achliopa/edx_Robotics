@@ -1,0 +1,248 @@
+Let's look at one specific example.
+This is an algorithm that's called Rapidly-exploring Random
+Tree, or an RRT.
+And the algorithm is here.
+And in fact, this is exactly the algorithm
+that you'll be implementing for the last project
+in this course.
+So here, we're going to take a look at how it works.
+We're going to be a little informal about it.
+But you'll be making it a lot more formal
+as you go through your project.
+So let's see what this algorithm looks like in practice.
+And this example is just to get a hang of it,
+we're not going to be necessarily terribly exact.
+But in the project implementation, that'll happen.
+So let's draw a relatively simple
+two-dimensional workspace.
+We're going to have q1 and q2.
+OK.
+And I'm just going to put some simple limits on this.
+1, 2, 3, 4, 5, 6, 7, 8, 9, and 10.
+And say that this is the limit of my workspace.
+And then the same thing here.
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10.
+OK.
+And I have a start point.
+I have a goal point.
+And I have some obstacles that are blocking my route.
+OK.
+How do I get from the start to the goal using this algorithm?
+I'm going to use blue to draw the tree.
+So you can see that we begin by just saying
+the start point is in my tree.
+So this is the extent of my tree when I start.
+And then we go into this main loop of the algorithm.
+And I'm just going to use a simple Python
+command to just generate random numbers between 0 and 10.
+So let's start.
+Let's say I'm going to take two random numbers
+for my first point.
+And I'll be rounding to the next integer.
+So 7 and 7.
+7 and 7 is right here.
+OK.
+So then what this says--
+sample random point in C-space, which I just did.
+Find the point in your tree that is
+closest to the new point you've just sampled.
+This is the only point in my tree
+so far, so this is going to be it.
+Add branch of predefined length from your tree
+towards the new point.
+So I'm going to add a branch that comes from s
+and goes towards this new point that I've
+sampled of some pre-defined length-- let's say roughly 1.
+And then we continue.
+I'm going to get two more numbers.
+So 1 and 7.
+1 and 7 puts me right here.
+The closest point in my tree, let's say it's still s.
+So I'm going to get this branch.
+Keep going.
+8 and 5.
+So 8 and 5.
+This is the point right here.
+The closest point in my tree is this.
+I'm going to try to grow a branch.
+But if I grow a branch that's of my pre-defined length,
+I'm going to realize that, wait a second,
+this new point intersects the obstacle.
+So instead, I'm going to make my branch as long as it can be
+without hitting the obstacle.
+So that's where I'm going to get to-- right there.
+Keep going.
+1 and 8.
+So 1 and 8 puts me right here.
+So then I can go from this point in that direction.
+9 and 4.
+9 and 4 is right here.
+And then what happens is I cannot really grow this point
+anymore, because I'd hit the obstacle.
+So never mind.
+Keep going.
+3 and 3.
+So 3 and 3 puts me right here.
+So then what I'm going to do is grow from the nearest
+point in this direction.
+Now you're starting to get a sense of how the tree grows.
+1 and 7.
+That's right here.
+So I can just add a tiny, little branch that goes like this.
+That's fine.
+They don't have to be necessarily too long.
+5 and 7.
+5 and 7 is right inside the obstacle.
+I cannot really grow that anymore, because I would hit.
+6 and 1.
+6 and 1 is right here.
+Let's say that this is the closest point.
+So I'm going to grow in that direction, which
+would put me right here.
+Again, 6 and 3.
+So 6 and 3 is right here.
+This is my closest point.
+So I'm going to grow in that direction.
+6 and 4.
+So 6 and 4, that's right here.
+That's inside the obstacle, but I can still
+grow up until that point.
+1 and 6.
+1 and 6 is right-- this.
+So I'm going to grow like this.
+6 and 3.
+So 6 and 3 is right here.
+So now I can grow like this.
+And then there's this additional check, which, so far,
+we haven't done.
+It says, "while tree cannot connect to goal."
+So in fact, every time I add a new point to my tree, what
+I also do is I check, hey, can this new point
+connect directly to my goal?
+And then let's say that when I add this point, I realize,
+you know what, this straight-path line is actually
+collision-free.
+At this point, the tree connects directly to my goal
+and I'm done.
+Now I have a path that goes on the tree
+and only on the tree that goes from the start to the goal.
+Then what happens is I also realized, in practice,
+oftentimes, the paths that you get when you run an RRT
+will have a lot of zigs and zags.
+So I can do some shortcuts.
+In this particular case, I realize, hey,
+you know what, once I have this path,
+I can go from here straight to here without hitting anything.
+So I'm just going to short-cut like this.
+And then after I've short-cutted,
+then I can throw away all the rest.
+And there you go.
+Now I have my path from the start to the goal.
+Right?
+So the tree grows from the start.
+It kind of grows in all directions.
+It eventually finds its way between obstacles.
+It's OK if you explore in what seems initially
+to be like the wrong direction.
+Eventually, it finds its way around the obstacles,
+and you get the path to the goal.
+And it's actually very important.
+This ability of the tree to grow randomly,
+to go in all directions is very, very
+important, because oftentimes, what happens
+is you find yourself trapped.
+So for example, in this case, what could easily happen
+is you have a different configuration.
+Let's say you have the same start and the same goal.
+So the start is right here, and the goal is right there.
+But maybe the obstacles look like this.
+And if that's the case, then if you just
+try to go towards the goal, which
+is what, for example, Cartesian control, you would do,
+you would get yourself immediately stuck.
+However, a tree in RRT, it will grow in all directions.
+And yes, it will find all of these paths that don't really
+go anywhere.
+But eventually, because it keeps growing in all directions,
+even in directions that, momentarily, these
+look like bad ideas, wait, the goal is that, again, remember,
+you don't know the shape of the obstacles.
+All you know is whether a new point collides with an obstacle
+or not.
+So when you start off, going that way
+seems like a good idea.
+Going the other way seems like a bad idea.
+But the random tree, the stochastic algorithms
+go in all directions.
+So eventually, even what initially
+seemed like a bad idea eventually
+gets out of the obstacle and can connect
+whereas all the paths that seemed like a good idea
+at the beginning are still getting stuck in all
+these dead ends, essentially.
+So this is a very, very simplified implementation.
+And production-level implementations of RRTs
+have various subtleties which increase performance.
+For example, a neat trick is to grow two trees,
+to grow one tree from the start, one tree from the goal.
+And at some point, check if those two trees
+can connect to each other.
+That makes computation faster and finding a path faster.
+There are many other subtleties along similar lines.
+But fundamentally, this is what an RRT looks like.
+And this is exactly the RRT that you'll be
+implementing for your project.
+One thing to point out.
+I've highlighted here the external calls.
+So what do you need in order to implement an RRT?
+And in blue, in this pseudocode, it
+shows what can be considered external calls, calls
+to external tools.
+Obviously, you need a random number generator,
+because you need to be sampling truly random points
+in configuration space.
+Most high-level languages these days
+will have a pseudo random number generator,
+which is perfectly fine.
+The only other external call that you're making here--
+you're asking if a new branch that I'm adding to my tree--
+so let's say I have this point in my tree.
+I want to add this branch.
+Does this intersect an obstacle or not?
+This is the only other external call that's being done--
+asking if a branch intersects an obstacle.
+I told you earlier that really all you have at your disposal
+is the ability to answer point queries.
+Is a point inside an obstacle or not?
+How do you check if a branch intersects an obstacle?
+Well, very simply, you just discretize it.
+You sample individual points along the branch
+with however fine resolution you want.
+And you just ask, individually, does any of these points
+intersect an obstacle?
+And then if any of the points intersects an obstacle,
+you know the branch intersects an obstacle
+and you react appropriately in your algorithm.
+That's everything you need.
+So again, when you're doing RRTs,
+you don't have an actual knowledge
+of the shape of your obstacles.
+You don't know what they look like.
+All you know is that in this case, every time
+you try to grow the tree from here, this tells you,
+no, collision.
+This way?
+No, collision.
+This way?
+No, collision.
+This way?
+Yes, you can go.
+This way?
+No, collision.
+This way?
+Yeah, this is fine.
+This way?
+No, collision.
+And eventually, if you try enough of these,
+you find your way around the obstacle
+and you get to the goal.
