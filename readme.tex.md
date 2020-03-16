@@ -2593,7 +2593,7 @@ $$q_{goal} + collision \Rightarrow MotionPlanner \Rightarrow [q] \Rightarrow Tra
 ### Final Exam Instructions
 
 * About the final exam: 
-    *  It will contain 11 questions and students will have 1 hour to complete it.
+    * It will contain 11 questions and students will have 1 hour to complete it.
     * It is open book and open notes. 
     * Students can access the internet during the exam.
     * Calculators are allowed.
