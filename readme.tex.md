@@ -2597,5 +2597,3 @@ $$q_{goal} + collision \Rightarrow MotionPlanner \Rightarrow [q] \Rightarrow Tra
     * It is open book and open notes. 
     * Students can access the internet during the exam.
     * Calculators are allowed.
-* Godspeed you! future roboticist...
-
