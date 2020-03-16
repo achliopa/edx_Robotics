@@ -1,0 +1,154 @@
+But now, let's talk for a second about the most common solution
+for outdoors robots, for robots that do drive
+on our roads and highways.
+And in fact, not just for robots, but in general
+for vehicles that drive on roads.
+Cars, right.
+You all know how a car steers, right.
+The name for it is Ackerman steering.
+What that means-- Ackerman steering is a mechanism that
+turns the front wheels in such a way
+that all the four wheels of the car
+move along circles that have the same center.
+Right, so let's say that your mechanism--
+which isn't drawn here-- your mechanical device ensures that
+when you turn the steering wheel of the car,
+the front wheels turn such that both of these front wheels go
+along--
+are tangent to circles that have the same center.
+And they must have the same center as the back wheels
+as well.
+Since the back wheels don't turn,
+it means that the center of all of these circles
+has to lie somewhere along this line, right.
+Ackerman steering will ensure that the front wheels also
+are tangent to circles that do have the exact same center.
+So that has a lot of advantages, obviously.
+It's used in all the cars that are on the road today, right.
+And the advantages are that, again, you
+only need two steered wheels.
+Your car can drive, even though the back wheels don't turn.
+Which is very important, right.
+Reduces the cost and simplifies the design a lot.
+You also need a single steering input.
+You don't have-- imagine how hard driving it
+would be if you had two steering wheels, one for the front left,
+and one for the front right.
+And you had to be careful how you turn
+them relative to each other.
+Ackerman steering ensures that a single input
+is sent to both front wheels, and it's just right
+so that they're both on circles with the same center.
+And that means that once you've turned the wheel, your car--
+the whole, the entirety of your car--
+will turn around this point right here,
+and the wheels don't have to slip sideways, right.
+All the wheels only move forward,
+and the car nicely turns around this center of rotation, right.
+So there is no sideways slip, which
+would have all kinds of massive negative consequences.
+So many advantages.
+The disadvantages are that, from our perspective,
+from robotics, is that in practice, this turning radius--
+right, so this distance-- cannot be arbitrarily small.
+You cannot make these wheels really to point towards
+a center right here.
+That would be extremely, extremely difficult
+from a mechanical perspective.
+So what happens is that the turning radius has limits.
+In particular, the car cannot turn in place.
+We all know that.
+Wouldn't it be nice, wouldn't that
+make parallel parking and parking
+in general a lot easier, if your car could just turn in place.
+Or even better, if it could move sideways.
+It can do neither of those things.
+It cannot move sideways, so it's a non-holonomic robot.
+But it can also not turn in place.
+A differential drive can turn in place,
+so it can do its best to impersonate a holonomic robot.
+An Ackerman steered car cannot even do that.
+So then it's really a non-holonomic robot,
+and you cannot move in arbitrary directions, right.
+If your car points like this at a certain moment in time,
+then you can choose between turning
+in one direction at the smallest radius,
+turning in the other direction, or going forward.
+And obviously the same things backwards, and really anything
+in between.
+But that's it, you can not translate sideways,
+you cannot even turn in place and move,
+so you are limited in what you can do.
+So how do you do motion planning for robots,
+for non-holonomic robots?
+This is a topic in itself, it's a more advanced topic
+that's really outside of the scope of this class.
+But just to give you kind of an idea, well, for example,
+when you're doing an RRT, what you could do
+is, let's say your RRT so far, you have your starting point.
+OK, and you have decided that this is the node that you're
+going to extend of your RRT.
+Well, you cannot really go in an arbitrary direction.
+Let's say you give yourself five possible choices.
+Let's say you give yourself this five choices.
+And you say, I'm going to do one of these five things.
+And you select at random, you need
+to keep track of how your card is oriented, right.
+So you do one of these five things,
+so maybe you choose to do this version.
+So your RRT grows like this.
+You still do your random sampling,
+so let's say you do your random sampling right here.
+You choose that this is the next point that I'm going to extend.
+Well from here, now, you again choose
+one of these five primitives, but now
+again, you have to keep track of how you
+are oriented at that moment.
+So maybe you choose the version to go straight.
+Then maybe again later you choose to extend this node,
+but now you choose to go like this.
+At some point in time, you're going
+to also try this primitive.
+So your RRT will only ever grow using one of these five
+discrete primitives that you've chosen as your control inputs.
+And it's still-- everything else about the RRT still
+holds, in terms of how do you choose which node to expand,
+and all that stuff.
+The random nature of it is still there, everything
+else just as we've discussed.
+Except that when you grow a node,
+you don't just grow in any direction.
+You can only grow by choosing one of the primitives
+that you've pre-selected for yourself.
+And if you grow the tree using only one
+of these five primitives always, you ensure that your path
+you end up with in the end, it's something
+that your vehicle can follow.
+Again, this is just a very simple way of saying,
+look, these algorithms that we've talked about
+do have extensions to non-holonomic robots.
+But that is pretty much a topic of study in itself,
+that we could devote numerous, numerous lectures to.
+Another way of doing it is when you
+think about the configuration space, right.
+So far we've had a configuration space for mobile robots--
+or a task space--
+where you had x and y, right.
+And you only traveled through x and y.
+Well now maybe you extend the space
+that you're searching to also include orientation,
+so you have x, y, and theta.
+And you have rules about how you can connect points
+in the space of x, y, theta, such
+that they are trackable by your car.
+The space you are searching in can now
+start to include derivatives-- x dot, y dot, theta dot.
+The dimensionality of it grows.
+But we do have algorithms that are good at searching
+in high dimensional spaces.
+So again, there are ways to extend to non-holonomic robots.
+It's something that definitely you
+have to take into account when your robot is something
+like a car, or many other kinds of robots
+that don't have the ability to move instantaneously
+in any direction.

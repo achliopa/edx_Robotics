@@ -1,0 +1,92 @@
+Let's again look at one possible map.
+And let's say that here the obstacles have already
+been inflated.
+In this case, just for clarity, I
+don't have any walls around the whole thing.
+But it don't really change anything.
+So I have three obstacles.
+I have a start point.
+And I have a goal point.
+And I want to find a path from the start to the goal.
+And a very common method is to convert your map
+representations to what's called a graph
+and then take advantage of a very well-known family of path
+planning algorithms for graphs.
+What's a graph?
+A graph is a collection of nodes and edges,
+where the edges connect to the nodes.
+And in this particular case, for path planning
+for mobile robots, one way to convert a map to a graph
+is to build what's called a visibility graph.
+So here I have connected every vertex of every obstacle
+with every other vertex as long as the straight line doesn't
+collide with anything.
+And I've done the same thing for the start and for the goal.
+So every vertex, I've put a straight line
+to every other vertex if the straight line
+doesn't collide with anything.
+And once I've done this, I can essentially
+forget about my obstacles and use just the graph instead.
+The former vertices of my obstacles
+have become the nodes of the graph.
+And then I have these edges that connect various nodes.
+And one thing that's nice is that I
+know that if I go from my start to the goal
+and only travel along the edges of my graph,
+I am guaranteed never to hit anything,
+because that's how I've built my graph originally.
+It only contains the edges that don't collide with anything.
+And I've also inflated my obstacles first.
+So I know that if the infinitesimally small point
+travels along these lines, then the original robot, which
+has some dimension to it, is guaranteed
+not to collide with anything.
+So now I have reformulated my problem
+from finding a path from the start to the goal
+just on the map in general to finding the path on this graph,
+searching for a path on this graph.
+And that's a problem that we have some very well-known, very
+well-studied algorithms for.
+So how do I find the path from the start
+to the goal going exclusively on the edges of the graph?
+Let's look at another example.
+And here what I've also done-- again, I have nodes.
+So each letter N shows a node of my graph.
+I have the edges.
+And then I have the start node S and the goal node G.
+But here in yellow, I have also added what are called weights
+to the edges.
+And the weight is--
+or the cost of an edge.
+Either the weight of an edge, the cost of an edge,
+depending how you want to call it.
+The cost of an edge is associated with, obviously,
+what is the cost to the robot for moving along that edge?
+A very simple way to think of it is
+the cost as being equal to the length of the edge.
+This edge is shorter.
+It's just 11 distance units.
+This one is longer.
+So it's 32 distance units.
+And the problem becomes I want to find
+a path from the start to the goal, such
+that the overall cost of the path is as low as possible.
+If the costs that I have on the edges are lengths,
+are distances, then that's the same as saying I
+want to find the shortest path from the start to the goal.
+Those costs could also be other things.
+It could be the time that it takes to travel along the edge.
+Maybe some of these edges are highways
+and they're really fast.
+And some of them are local roads, so they're very slow.
+But I have the information.
+So then I can associate--
+I can put a time cost on each edge.
+And then I say, I want the fastest time or the fastest
+path from the start to the goal.
+To keep things simple throughout the lecture,
+we will just use distance and think about the cost of an edge
+as being just the length of the path.
+So now, given these costs or lengths,
+how do I find the shortest path from the start
+to the goal on this graph?

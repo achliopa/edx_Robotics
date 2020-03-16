@@ -2164,7 +2164,7 @@ echo "project4_ws workspace was sourced"
             * discart new branch (or shorten)
     * compute path from start to goal through tree
     * shortcut path: for any two points in path. add direct line unless direct line intersects an obstacle
-* Nore: many variations are possible: production level implementation have additional subtleties
+* Note: many variations are possible: production level implementation have additional subtleties
 * We draw a 2D workspace q1,q2 size 10x10
 * we set a start point q1=2,q2=4, end point is q1=9,q2=8, and a rectangular obstacle between (4,4) and (6,7) and another between (2.5,0) and (4,1) and another between (1,8) and (3,9)
 * we use python to generate random tuple between 0 and 10.
@@ -2341,3 +2341,180 @@ sudo pip -H install pyassimp
 ```
 
 ## Week 9: Motion Planning II, Mobile Robots 
+
+### 9.1 Preliminaries and Map Representations
+
+* Most of the times a Mobile Robot operates in 2D space
+* In low dimensional spaces we have multipme ways to represent the map (grid-discretized, polygonal-vertices)
+* the map might come from floorplan or by measurements from sensors and built in realtime
+* Remember that for 6D maps (mostly for robot arms) discretizing them is not feasible. for 2D is ok
+* In Mobile robots maps the robot is not a point. it has dimensions. its not realistic to talk about point. so the algotithms that we have seen so far do not work per se
+* a cheap trick to use them is to manipulate the maps (map inflation) by inflating the obstacles by the size of the robot. then we can use the point based algorithms
+
+### 9.2 Motion Planning as Graph Search
+
+* we look at a 2D map where the obstacles have been inflated so that the robot position can be treated as a point
+* again we want to find the path between the start point and the goal point
+* a common approach is to convert a map representation as a graph aka a collection of nodes and edges
+* then we can use path planning algorithms that use graphs
+* an easy way to convert a map to a graph is to produce a visibility graph. we connect any vertex of any obstacle and start.goal with any abailable vertex with a straight line as long as the line is unobstracted
+* then we remove the obstacles from the picture. vertices are the graph nodes and edges are the lines
+* if we travel start to end following the graph we will have no bumps to the obstacles
+* we can assign costs to each edge depending on the cost of robot for moving through the edge. (e.g length or time)
+* we aim the cost of the path to be as low as possible
+
+### 9.3 Dijkstra's algorithm
+
+* For any node n, keeps track of the *length of the shortest path from start to n found so far*, labeled g(n)
+* Input: visibility graph, start S, goal G
+* Output: path from S to G
+* Algorithm:
+    * Label all nodes 'unvisited'
+    * Mark S as having g(S)=0
+    * While unvisited nods remain:
+        * choose unvisited node n with lowest g(n)
+        * mark n as visited
+        * for each neighbor r of n:
+$$g(r)=min[g(r),g(n)+d(n,r)]$$
+
+* in this algo at anytime we keep track of the shortest path from start to a set of parrticular nodes
+* all nodes are unvisited at first
+* we know only start node and length to itself is 0: $g(S)=0$ we mark it as visited
+* we look at S neighbours. the weight of the node is the node N1 is the g of S + the weight of the edge s->N1 so g(N1)=11 . similarly g(N2)=10. we mark N2 as visited because it has lowest weight. we look to all its unvisited neighbours N1,N3,N4 => g(N3)=21, g(N4)=42 g(N1)=28. because what we have for N1 is lower. lowest marked node is N1 with 11 so we mark it as visited
+* we look at unvisited neighbors of N1 (N8,N3)
+* we repeat till we visit the goal. th epath length is 58
+* Dijksta's Algorithm
+* for any node n, keeps track of the *length of the shortest path from start to n found so far*, labeled $g(n)$
+* Key Idea: visit closest nodes first
+* Guarantee: once a node n has been "visited", $g(n)$ is equal to the length of the shortest part that exists from S to n.
+* The algorithm is thus *guaranteed* to find the *shortest possible path* from S to G (along the graph)
+* Running time: can be *quadratic* in the number of nodes
+* When we write the q for a node we write from which node we are comming from. in this way we can extract the shortest path in the end easily
+
+### 9.4 Graph Search on Grids
+
+* we have seen how a polygonal map can be converted as a graph.
+* what if our map comes as a grid.
+* an easy way is to say that each (empty) cell (central point) is a node. also each cell is connected to its neighbors (like minesweeper). cost is higher for diagonals. ecqual for vertical or horizontal
+* our graph will have many nodes
+* we can apply Dikstas algorithm for grids. we get usually many cells with same weight along the way . not an issue we can choose randomly
+
+### 9.5 A* search
+
+* For any node n, also uses a *heuristic that estimates how far n is from the goal*, labeled here $h(n)$
+* A heuristic is *admissible* only if it never over-estimates the real distance. A commonly used hevristic that meets this requirement is straight-line distance to goal
+* Input: visibility graph, start S, goal G
+* Output: path from S to G
+* Algorithm: 
+* mark all nodes "unvisited"
+* mark S as having $g(S)=0, f(S)=g(s)+h(s)$
+* while unvisited nodes remain:
+    * choose unvisited node n with lowest $f(n)$
+    * mark n as visited
+    * for each neighbor r of n:
+$$g(r)=min[g(r),g(n)+d(n,r)]$$
+$$f(r)=g(r)+h(r)$$
+
+* th intuition of this algo is to use the distance of a node to the goal. we dont know but we guess using a heuristic. and it should be optimistic. like straight distance to goal..
+* so before even starting to iterate we have for all nodes (e.g grid cell centers) their h(n) filled with the distance from the goal in straight line. we ignore obstacles. of course we dont calculate for obstacles
+* dijkstras algo explores first the node closer to the shortest path from the start
+* A* explores first the node with higher chance to lead us to the goal faster
+* A* reduces randomness and saves time
+* we still use shortest path in our selection as f(n)=g(n)+h(n)
+* remenber that g(n) is calculated with Dijkstra's algo logic
+* we see A* going straight to goal then hitting the obstacle and backtracking and even improving the path
+* A* in worst case is quadratic but in most cases is faster
+
+### 9.6 Differential Drive Robots
+
+* Αpplication to Real Robots
+
+* so far, we have assumed that the robot can always *move in a straight line in any direction*
+* that is a complex (and expensive) mechanism to realiz in practice. e.g we need fully rotating wheels
+* a robot that has no constrains in velocity is referred as *holonomic*. it can generally move in any direction
+* A common solution especially for indoor robots is: Differential Drive Robots
+* 2 main drive wheels and a passive 3rd rotating that does no move
+* the drive whwwls do not steer. but can be rotated with variable speed of drive wheels
+* If the linear velocity of left wheel is VL and of the rigth wheel is VR,the distance between the wheels is l, the angular velocity of robot around a center of rotation with a radius distance from the projection of drive wheel position on the Drive wheel  inter distance is R, we have:
+$$ω(R-\frac{l}{2})=V_R$$
+$$ω(R+\frac{l}{2})=V_L$$
+$$R=\frac{l}{2}\cdot \frac{V_R+V_L}{V_L-V_R}$$
+$$\omega=\frac{V_L+V_R}{l}$$
+
+* if VR=VL then R=inf and \omega=0 robot is doing pure translation (no rotation)
+* if VR=-VL the R=0 so robot turns in place
+* any other combination os speeds has a translation part and a rotation part
+* Differential Drive Pros:
+    * only two powered wheels. both non-steered
+    * no separate steering mechanism
+* Differential Drive Cons:
+    * cannot move "sideways" must turn and move (non holonomic)
+    * passive caster wheel can still cause jerks
+* Motion Planning for Differential Drive:
+    * Robot often designed with circular foorprint
+    * "Turn in place" almost as good as "drive in any direction" (it impersonates a holonomic robot so point algorithms apply)
+
+### 9.7 Non-Holonomic robots
+
+* We will now talk about oudoor robots. robots that do drive
+* Car like steering is called Ackerman Steering, a common solution for outdoor robots
+* all 4 wheels of the car move on cyrcles with the same center when steering
+* wheels allways are on the tangents of these circles
+* the center of the circles is  perpendicular to the back wheel axis
+* Pros:
+    * only two steered wheels
+    * single steeering input
+    * no sideways wheel slip
+* Cons: 
+    * in practice, turning radius cannot be arbitrary small
+    * in particular cannot turn in place
+    * non-holonomic, and cannot really approximate a holonomic robot
+* Path Planning for Non-Holonomic Robots
+    * orientation matters when planning
+    * movement must be selected from allowed primitives
+    * simple example: left,right,forward
+    * must keep track of orientation
+* when we do RRT for non-holonomic robots.
+    * when we choose a node we cannot go in an arbitrary direction.
+    * we chose one of the available discrete primitives (directions)
+* other posibilities:
+    * C-space extended to include orientation (x,y,θ)
+    * or even derivatives
+
+### 9.8 Recap
+
+* Motion Planning for Mobile Robots:
+* Search space is generally 2D or 3D (with orientation)
+* Lends itself to discretization into grids, or polygonal obstacle representations
+* obstacle images are often available
+    * must  be inflated to accomodate robot size and allow use of algorithms for point robots
+* motion planning formulated as *search on a graph*:
+    * works on either polygonal or grid maps
+    * algorithms: dijkstra, A* etc
+* in real life:
+    * indoors robots often use differential drive; with turn-in-place allows movement in any direction
+    * outdoors robots (cars) can not move in arbitrary direction, so path planning must account for that.
+
+## Week 10: Conclusion 
+
+### 10.1 The Hall of Fame
+
+* PUMA robot arm (1st wave of industrial robot)
+    * pick and place: set position -> Inv Kin-> joint positions
+    * welding: ee path => Cartesian Control => joint velocities
+    * manual: user moves the robot
+* The robot after getting the joint values
+    * a controller runs a loop (PID). closed loop control
+    * it sends current to motor
+    * it uses an encoder to get joint value feedback
+* Motor => moves Link => Link moves EE => an effect happed in physical world
+* preprogrammed, precise, tireless job execution
+* little feedback from environment
+
+### 10.2 The Leading Edge
+
+* New technologies post 2010 going in production
+* Starting to integrate environment sensing
+    * 3D scene geometry(machine vision,LIDAR,stereovision) eg point cloud
+    * force information
+    * touch information

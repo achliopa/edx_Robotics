@@ -1,0 +1,258 @@
+A very common algorithm for finding
+the shortest path on a graph is called Dijkstra's algorithm.
+And the algorithm is right here.
+Basically the way it works is that at any time
+you keep track of the shortest path from the start
+to a set of particular nodes, right?
+And as you go, you always keep track of these shortest paths
+until eventually you reach the goal.
+So let's see exactly how this works.
+First of all you say, OK all of the nodes are unvisited.
+I haven't visited any of the nodes.
+So we'll just assume that a node that's,
+you know, we don't have anything written on it is unvisited.
+And then the only node that you know something about is
+the start, right?
+And what do you know?
+You know the length of the shortest path from the start
+to itself, right?
+So the length of the shortest path from the start to itself
+is obviously zero, right?
+So this-- I'm going to put a 0 here and say the one
+path that I know is that if I go from the start to itself
+the shortest path to do that is zero.
+So then what I'm going to do is go
+in the main loop of the algorithm which
+says, take an unvisited node that has the shortest g of n.
+So g of n marks the shortest path from the start
+to that particular node that has the lowest g of n found so far.
+Well I only have a single g of n mark right now,
+which is the start itself, which has a g of n of 0, obviously.
+0 is the shortest possible.
+So the start itself is the unvisited node with the lowest
+g of n.
+So then I'm going to mark it as visited.
+So let's say I'm going to cross it off
+and say this node has been visited.
+So now I'm going to look at all of its neighbors, right?
+So let's say one neighbor is node 1.
+And I'm going to say that the shortest
+path to get from the start to node 1
+is going to be equal to the length of the path to the node
+that I'm currently visiting plus the length
+of the edge between them.
+So if g of n is 0 right here and the length of this edge is 11,
+then g of n is going to be 11 right here.
+So I'm going to mark an 11 for node 1.
+Similarly for node 2, since g of n is 0 here
+and the length of this edge is 10,
+then I'm going to mark at N2 that my g of n
+is going to be 10.
+OK, I've marked the start as visited.
+We're done.
+We continue through the loop.
+I'm going to choose the unvisited node
+with no lowest g of n.
+That's obviously N2, right?
+Because I just have a 10 and then 11.
+10 is the lowest one.
+So I'm going to take N2 and mark it as visited.
+OK, N2 has been visited.
+Then I'm going to look at all the neighbors of N2 and 3.
+What's the shortest path to get to N3?
+Well since the shortest path to get to N2 is 10
+and the length of the edge between them
+is 11, that means that hey, you know,
+there is a path that gets to N3 which is length 21.
+So I'm going to mark it here as 21.
+The same thing with N4.
+Since the shortest path to N2 is 10 and the edge between them
+is 32, that must mean I have a path
+to get to N4 whose length is going to be 42.
+So I'm going to mark this with 42.
+N2 two also has N1 as a neighbor, right?
+So the shortest path to get to N2 is 10, the edge between them
+is 18.
+So that means I have a path to get to N1,
+which would be length 28.
+But hey, N1 is already marked with an 11.
+So it means I already have a path
+to get to N1 that's length 11 so I
+don't need to mark this new path that I have found, which is 28.
+So I'm just going to leave N1 be.
+I am done with the neighbors of N2.
+So we loop, again, through the algorithm.
+Again, let's choose the node that has the lowest
+g of n marked so far.
+That's going to be N1.
+I'm going to go ahead and mark N1 as visited.
+OK, we're done with N1.
+And now I'm going to look at the neighbors of N1.
+N8, it means I'm going to have a path to N8 that's
+length 22, right?
+So this 11 plus the edge between them.
+Any other neighbors N1?
+Not really.
+So we're done.
+OK, let's keep going.
+Who's our next node with the lowest g of n?
+It's going to be N3.
+I'm going to mark it is as visited.
+OK, and now I'm going to look at the neighbors of N3.
+N8 is a neighbor.
+So 21 plus 18 gives me a path of length 39.
+I already have a 22 for N8 so I'm just going to ignore that.
+What other neighbors do I have?
+N7.
+I have nothing so far for N7.
+So 21 plus 15, it means I have a path that's length 36 for N7.
+So I'm going to write it right here, 36.
+Who else?
+N4.
+OK, so I have a path to N4 that's
+21 plus the edge between them, 22.
+So that's 43.
+Well no need because I already have a 42 for N4.
+So I'm not going to do anything.
+And I'm done.
+Let's keep going.
+Who is the next node that I'm going to open that's unvisited?
+I have a 22 at N8 so I'm going to visit N8.
+I'm going to cross it out.
+What neighbors does N8 have?
+It has N6 as a neighbor and the path
+is going to be 22 plus 31 for the edge between them.
+So that's going to be 53.
+So I'm going to put a 53 right here.
+And then who else?
+N7 is a neighbor.
+The length of the path would be 22 plus 20, so 42.
+I already have a 36 here so I will ignore the 42.
+N4 is a neighbor.
+And the length of the path would be 22 plus 37 for the edge.
+So that's 59.
+I already have a 42.
+To I don't care about the 59.
+So we are done with N8 and all of its neighbors.
+Let's keep going, let's keep going.
+What's the lowest number that I have here?
+Now for N7 I have a 36 so I'm going to cross out N7.
+It's visited now.
+OK, who are the neighbors of N7?
+One of them is N6.
+What's the path?
+Well, 36 plus 11 on the edge.
+That gives me 47.
+I had a 53 for N6 already.
+But the 47 is lower than 53.
+So then I'm going to get rid of the 53
+and replace it with the newly found 47 for node N6.
+I'm going to mark right here with a 47.
+I have a new g of n for node 6.
+Who else?
+What other neighbors does N7 have?
+N4 is a neighbor.
+The path will be 36 plus 20.
+So that's 56.
+I already have a 42 here so I can ignore the 56.
+We are done with N7.
+Who's next?
+N4 is going to be next.
+I'm going to cross it out.
+It's now visited.
+Let's look at the neighbors of N4.
+N5 is one of them.
+42 plus 11 and so I have a 53 path for N5.
+And I'm pretty much done.
+Who's next?
+I have a 47 here and the 53.
+47 is next so N6.
+I'm going to visit N6.
+What neighbors does N6 have?
+The goal is a neighbor so now I'm going to look at the goal
+and say I have a path that's length 47 plus 11.
+So that's path 58.
+OK, who is next?
+This guy is next, N5.
+So I'm going to cross it out.
+It's visited now.
+What neighbors does it have?
+The goal is a neighbor.
+I have a path that's 53 plus 10, 63.
+So I'm going to throw it out.
+I don't care about it.
+Who's next?
+The goal is next.
+I'm visiting the goal.
+I'm done.
+The length of the shortest path from the start to the goal I
+can now guarantee is 58.
+OK, so this is how Dijkstra's algorithm works.
+The key idea, basically, is to visit the closest nodes first.
+As you start going away from the goal,
+you always visit next the node who is closest to you.
+And when you visit a node, when you
+do this step in the algorithm and you mark a node as visited,
+the algorithm guarantees that at that point
+the length of the shortest path you have found from the start
+to that node is the shortest.
+There is no path that has a shorter length.
+I leave to you to prove that this is correct.
+It's an interesting proof to think about.
+But when you visited a node you are
+guaranteed that you, at that point,
+know the length of the shortest path from the start
+to that node.
+So in particular, that means that when you get to that goal,
+what you have is the shortest path,
+the length of the shortest path from the start to the goal
+along, of course, the edges of the graph.
+The running time of how long does this algorithm
+take to run.
+And this is-- algorithm complexity
+is a very important topic in robotics,
+in computer science in general.
+It's not something that we have time to get into a lot of depth
+in this class.
+Some of you may have thought about, may have taken
+courses on algorithm complexity in the past.
+But in general-- just very quickly without going into any
+detail--
+the running time of this algorithm
+can be in the worst case quadratic
+in the number of nodes.
+So if you have lots of nodes, then the running time
+of the algorithm will grow quite quadratically with the number
+of nodes that you have.
+One additional question is OK, now
+that you have the length of the shortest path
+from the start of the goal you know that the shortest path is
+length 58.
+But what is the actual path that is length 58?
+To also compute the path and not just its length,
+you have to do a little bit more bookkeeping.
+So for example, at this particular point
+anytime you update the g of n for a neighbor
+you also mark what's the node that you're currently
+coming from, right?
+So when I wrote the 58 right here for the goal
+I was visiting node 6.
+And because I wrote 58 here and I
+was visiting node 6 at the time, then I
+could also mark that the parent of the goal is node 6.
+Similarly when I wrote the 47 on node, 6 at the time
+I was visiting node 7.
+So I can also take a note that the parent of node 6 is node 7.
+When I wrote the 36 here I was visiting node 3.
+So then I write here that the parent of node 7 is node 3.
+So if you do that, if every time you do an update
+you also mark who the parent of a node
+is-- so what's the node you're visiting
+at that particular point in time.
+Then if you actually want to find the path all the way when
+you're done, you just have to follow this relationship
+from a node to its parent.
+And then eventually, it'll get you
+all the way to the start along the shortest possible path.
+And that's, again, something that you can't formally prove.
+And it's an interesting exercise to think about offline.

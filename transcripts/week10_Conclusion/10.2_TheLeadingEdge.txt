@@ -1,0 +1,400 @@
+What is next?
+So if this is the hall of fame, here
+are some things that people are working on right now.
+And these technologies are just now starting
+to make their way from research labs
+into deployment, so into industry,
+which is why I refer to them here as the leading edge.
+So think of them maybe this decade, this past decade,
+what are the research results that
+are now starting to translate from the research lab
+into industry.
+And some of the main things that are starting to happen
+is that robotics is starting to integrate a higher level
+type of environment sensing.
+What kind of environment sensing?
+Well, first of all, just a notion
+of the geometry of the world around the robot.
+So the robot senses the geometry of the world around.
+Where does the robot get that information?
+Vision is very tempting.
+People are so unbelievably good at understanding
+the geometry of a scene just by looking
+at a single image, right?
+You or me, we look at this, we know, oh, that is a flat floor,
+there are those vertical walls, there
+is a piece of furniture, these things that are sticking out
+from the floor.
+We are very good at interpreting one single image
+and understanding the geometry of the scene,
+and then, for example, you're not hitting anything.
+This is a difficult problem, so doing
+that kind of geometry analysis from images is difficult.
+It's being done and it's being worked on.
+There are other ways for robots to get
+this kind of geometrical information of the world
+around them.
+Laser sensors for example, stereo vision, many, many more,
+but the main thing is that robots
+are starting to get a sense of the geometry
+of their environment based on their own senses.
+More types of sensing that are being introduced.
+Force, robots sensing how much force
+they're applying to the world.
+Touch, feeling when they've touched
+something in the environment.
+So what does-- the same pipeline that we've
+looked at before, what does it look
+like once you start integrating all of this kind of sensing?
+Oh, here's an example of the geometry
+of the world seen as what's called a point cloud, right.
+So this is a robot, the PR2 robot,
+which has a laser range sensor.
+It's on its neck, essentially at this level.
+You can see it.
+And all the purple points, those are
+points where the laser tells the robot, here,
+there's something in the environment.
+The robot doesn't know what it is.
+It has no semantic information, but it
+knows that something's there.
+If you take this to the extreme, right,
+it's very important to have some semantic sense of what things
+are, because if your only knowledge
+is that something's there--
+Here you see that the robot is actually seeing its own arms,
+right, the laser sensor is seeing the arms of the robot,
+and if you have no additional information,
+the robot might treat its own arms as if they were obstacles.
+So it's important to start processing this raw data
+that you get from the sensors and getting
+what we call semantic information from the world,
+and we'll get to that a little bit later.
+So let's say that we take all of this information that we have
+and we integrate it into our manipulation pipeline.
+We have our robot, as before, That is a position, goal
+position, that the end effector needs to go to,
+except that now maybe this goal position
+is coming from a human operator, maybe
+it's coming from the robot's own vision system,
+or maybe from the robot's other senses.
+In any case, once we have this position goal for the end
+effector, we have inverse kinematics, which
+we know how to do, which gives us,
+hey, this is where the joints of the robot need to go.
+This is where sensing starts coming into play.
+We have the world that's being observed by some sort of sensor
+again, and this sensor is just telling us
+something about the geometry of the scene around us.
+Usually that comes in the form of a point cloud.
+A point cloud is--
+this is an example of a point cloud.
+In purple, all the points shown here,
+that's an example of a point cloud.
+What a point cloud means is that,
+again, you just know that things are there.
+You don't know what object they belong to
+or the role that they play, you just
+know, hey, there's an obstacle there.
+You have that point cloud if you just simply keep accumulating
+information from your sensors.
+The laser range sensor, for example,
+will operate at maybe 30 hertz, maybe 100 hertz.
+A vision sensor will operate at 30 hertz.
+You will get a lot of information.
+30 times a second, the sensor will tell you
+what's in the environment.
+A lot of that information is redundant
+because you've seen it already.
+So if you just list everything your sensor has ever told you,
+you run out of memory.
+So then what you need is this notion of an environment
+representation, some way to represent your environment so
+that you take the sensory information that you get,
+you add the information that you didn't know,
+you throw away the information that you already had,
+and you are building, the robot is
+building a model of what the surrounding environment looks
+like.
+There are many ways to create these types of models,
+and many, many research papers on that topic.
+For point clouds, a very common way for storing information
+is something called an octree, which
+is something that you can investigate,
+and which is what is very roughly shown in this picture.
+But ultimately, what do we need once the robot has
+this model, this environment representation, this model
+of the environment that's built based on raw sensor data,
+in our case point clouds.
+This model of the environment allows the robot
+to know when certain configurations are
+in collision with something in the world, OK?
+So what is that used for?
+We've already seen some algorithms that
+make use of this information that just tells the robot, hey,
+this pose is in collision.
+It should be avoided.
+So now instead of the human having
+to specify exactly how the robot needs to get to that Q goal
+without hitting anything, and the human making
+sure that the environment never changes
+so that the path of the robot is always collision-free,
+the robot can compute its own path
+through the environment taking advantage
+of this collision model, this environment representation.
+And the way it computes that path, one possibility--
+I mean, that's the motion planning problem,
+and we've looked at exact algorithms for that,
+such as RRTs, PRM, many other algorithms, right?
+This is showing a simple RRT example.
+What matters here is that starting from just the desired
+post-Q goal, the robot is computing an entire path
+to get from the current position to that goal.
+What happens to that path after it's computed?
+Again, this is something that we haven't had a chance
+to cover in the class.
+We've just said it gets sent to the robot for execution.
+There is an additional step that needs
+to happen where you go from a path to a trajectory.
+So you add timing information, joint velocity,
+joint acceleration information.
+You make sure, first of all, that the path
+is sufficiently smooth, right?
+Here is a path in a two-dimensional joint space,
+and it has very, very sharp corners.
+A robot executing this path would
+have to stop at each point, and then
+change direction, and then accelerate
+in the other direction.
+So a trajectory generator will compute a smooth version
+of this path that a robot can execute without stopping,
+and will compute information about joint velocities,
+joint accelerations, timing, and will make sure
+that the velocity and the acceleration at each joint
+required for that path doesn't exceed the limits of the robot.
+Each robot, right, will have limits
+in terms of how fast it can accelerate at each joint just
+because of mass constraints and how powerful the motors are.
+So, again, going from a path to a trajectory
+is something that needs to happen.
+Again, it's something at a low level
+that we haven't covered in this class, but it's always present.
+And then the result of that gets, again,
+fed into our controller.
+We've already covered this.
+So just, for example, a PID position controller,
+again, we are closing the loop here
+using motor encoders or joint encoders on the position.
+And this controller running very, very fast, again,
+maybe more than 1 kilohertz, has that kind of feedback,
+and it's ensuring that the joints follow the trajectory
+that we've requested.
+So what happens next?
+In the past, we've just said the motor positions
+the links, the links position the end effector, that's good.
+Well, what if we care not just about position,
+but we really care about the forces
+that the robot is applying to the environment?
+And what's really happening is that the motor is--
+the controller is commanding some level of current
+to the motor, the motor spins, and it produces torque.
+And the torque usually doesn't get sent directly to the joint.
+The motor isn't big enough for it to directly drive the joint.
+There's some form of transmission
+in the middle, maybe a gearbox.
+So the motor applies some torque to the transmission,
+the transmission then applies some torque to the joint,
+the joint moves the link, the link applies force
+to the world.
+You're already seeing that we have closed
+the loop in multiple ways now.
+We have this loop right here being closed very fast based
+on just position information, but now we
+have this big, big loop that's being closed based on sensing,
+vision sensing, range sensing.
+Up here we have our range sensor that's observing the world,
+so it's seeing what the robot is doing in the world.
+Of course this loop isn't being closed as fast, right?
+This is happening at 1 kilohertz.
+These kind of sensors will be slower.
+30 Hertz is typical.
+The motion planner, a good motion planner,
+will compute a motion plan for a complicated environment
+maybe in 200 milliseconds or something like that,
+maybe even faster.
+But this is an opportunity--
+if something happens, let's say somebody jumps
+in front of the robot.
+The vision sensor will see that, the motion planner will compute
+a new path around the obstacle, it'll
+be made into a trajectory, it'll be sampled and sent
+to the controller for exaction.
+So even though this loop, this big loop,
+isn't being closed as fast as this position loop right here,
+it's still enough to react in case
+an unexpected obstacle shows up in front of the robot, which
+is very important.
+And there are other ways that we can close the loop.
+A very important method that's used right now
+by a number of robot manufacturers
+that are out on the leading edge is
+to actually sense the torques that are being applied
+to the joint right here.
+Which is a difficult problem, because even
+if you know the current that's being sent to the motor,
+it's difficult to also have an exact model for the torque
+that the motor is outputting.
+And, even worse, you know the torque being
+fed into the transmission, it's very
+difficult to know the torque exactly
+that's coming out of the transmission because
+of friction and stiction in the gears
+and many other complex non-linear phenomena that
+are happening inside of transmission that
+are very difficult to model.
+So what some manufacturers are doing now-- and again,
+this is something that was academic research up until some
+years ago and now it's being actively deployed
+in the world--
+is if you have a spring element inside the transmission,
+and then you have one encoder on the motor
+and then one encoder on the joint with a spring in between,
+based on the difference between those two encoders
+you can know how much the spring has deflected.
+So that gives you a measure of the torque
+being applied at the joint.
+This is what's called series elastic actuation.
+And really the take-home message here
+is that with a couple of additional encoders
+what you get is a measure of the torque being
+applied by the joint.
+Why is that important?
+Because if the robot hits something unexpectedly,
+you'll see the torque at the joints spike.
+And if the torque exceeds the level
+that you expect, then you can go ahead and say, stop,
+I have a collision.
+Then you ask the motion planner to re-plan a new path
+that takes into account where you
+expect that the collision has occurred, right?
+So again, more ways to close this loop.
+In a way, this is what robotics is pushing towards, closing
+the loop and operating based on sensed feedback
+from the environment.
+Closing the loop based on vision, closing the loop
+here based on joint torques, we've always
+been able to close the loop based on joint positions,
+so now we're getting more and more ways.
+Touch, right?
+If your links, the robot links, are
+equipped with touch sensors.
+Hey, we are-- the human skin has amazing touch sensing
+capabilities.
+So if the robot links are covered with touch sensors,
+then the link itself can detect the touch.
+And if it's something unexpected,
+oh, I'm touching something, I'm going
+to put that information into my environment representation,
+so now the motion planner takes that into account
+when it plans a new path in the environment.
+In a way that's what we do as well.
+We touch something, oh, something's there, we back up,
+and then we go around.
+Exactly what is our internal representation of the world,
+nobody knows, but it's got to be good
+because we seem to be able to do pretty
+complicated tasks with it.
+So let's take a look in practice what this looks like.
+And this is an example of this pipeline implemented
+in an academic paper.
+Again, this is with the PR2 robot.
+Again, start with sensing.
+Here is the robot acquiring raw data from the laser.
+The laser is-- you see it tilting up and down
+on the neck of the robot.
+Now the data is being processed, it's being filtered.
+For example, now the robot's own body
+is being filtered out, which is very important.
+We cannot afford the robot to be scared of its own arms
+and treat them as obstacles.
+Once we have the data filtered, the environment model,
+based again on an octree, O-C-T-R-E-E,
+octree representation.
+Now we start doing more interesting sensing where we do
+some more semantic information.
+We try to detect based on vision what
+objects are in the scene, and actually specific object
+identities.
+There is a cup, there is a bowl.
+Why is that important?
+Because now once we have information
+about individual objects, we can reason about the best
+ways to grasp them.
+So we don't need the human operator
+to tell us exactly how to position the gripper in order
+to grasp an object, we can have automated grasp planners
+that tell us exactly where the gripper needs
+to go for an effective grasp.
+And that is the robot having computer grasp
+once we know where the gripper needs to go to execute a grasp.
+Then that becomes the seed to the classical motion planning
+problem, which is how do we get the arm
+into the grasping position without hitting anything
+in the environment.
+And here you can see all the colored dots are the collision
+model of the environment, that's what the robot knows that it's
+not supposed to hit, so then the robot
+can generate a path for its own body for the objects
+that it's holding that are avoiding all the obstacles
+in the environment.
+So here it is the robot planning collision-free paths
+based on these environment models generated
+using this tilting laser that you see on its chest.
+And it also knows where it's holding an object
+and it's avoiding collisions, also
+with the object that it's holding, and executing
+pick and place tasks.
+Then this particular robot can have-- the motion planners here
+are more advanced.
+For example, it can plan paths that
+have additional constraints, like keeping the object
+in a specific orientation.
+Not necessarily very relevant for that stapler,
+but you can imagine if you're holding a glass of water,
+you don't want the motion planner
+to come up with a plan that will twist the glass upside down.
+And in this case, the motion planners are able to do that.
+This robot closes the loop, again
+using multiple types of sensing.
+Here is the robot.
+It has tactile sensors, not on the arm, but on the fingertips.
+Both fingertips have tactile sensors.
+So then as this robot touches an object, what it's able to do
+is if the touch sensors tell it the object is
+in an unexpected location based on,
+it's not exactly what I thought it would be,
+then it can adapt by improving the grasp based
+on touch sensation.
+Closing the loop based on tactile feedback.
+More and more ways to close the loop.
+And then it all comes together into what
+we call this a complete pick and place action.
+So here's the robot detecting the environment,
+detecting the objects, planning a grasp,
+adjusting the grasp based on tactile feedback,
+picking up the object, planning movement
+that avoids any collision with the environment,
+finding an empty spot on the table to place it,
+putting it down, and then completing the task.
+And in itself, this is obviously a toy problem,
+but these are the kind of improvements
+that make robots a lot easier to deploy, in that you don't need
+the environment to be perfectly specified,
+you don't need the environment to be rigid
+and never changing, you don't need all the information
+to be preprogrammed in by a human operator.
+The robot, in a way, becomes more intelligent in the sense
+of being able to react to unexpected changes
+in the environment, which is, again,
+one possible definition of intelligence
+that we started from way back in the first lecture of the class.

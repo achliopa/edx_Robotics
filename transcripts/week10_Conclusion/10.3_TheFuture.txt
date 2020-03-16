@@ -1,0 +1,237 @@
+If those are examples of things that people are working on
+right now and are now starting to seep into deployed robots,
+and there are robots out there that you can actually buy,
+commercial products, that do have
+a lot of these types of sensing and feedback already available,
+so what's next?
+What are we going towards?
+And obviously, at this point, the best we can do
+is speculate.
+But here are a couple of key fields
+that we need for robots to make the next big leaps.
+A big, big one is perception, and in a way,
+that's perhaps the biggest aspect of robotics
+that we have not covered in this class.
+You can imagine easily at least one, probably multiple,
+classes dedicated entirely to robot perception if not
+just robot vision.
+You look at a simple image like this,
+and we are able to extract so much information out of it,
+not just the geometry of the scene but also
+semantic information.
+What everything is.
+Oh, that's a kitchen.
+You immediately know.
+That's semantic information.
+That's a kitchen.
+There's a sink, piles of dishes sitting on top of each other.
+You know what object support what other objects.
+You know that you cannot go and just extract something from
+the bottom of the pile because everything else will fall out.
+You know what's furniture and, as such,
+cannot be moved versus what's object so you can solve
+what's called the segmentation problem where you segment
+objects of interest from their background.
+There's so much that we are able to extract out
+of vision and perception in general,
+and we need robots to be able to do similar things.
+This is semantic perception.
+It's being studied a lot in isolation.
+Computer vision, as you well know, is a huge field.
+And computer vision-- you don't actually need a robot.
+You just have lots and lots of images,
+and you're trying to extract information from them.
+We as roboticists like to ask, is it
+really possible to separate semantic perception
+from the physical ability to interact with the world?
+Is it enough to just have a computer
+with no acting capabilities that can just look at enough images
+and really understand them at the same level a human would?
+Or do you need to actually be able to interact
+with the world?
+You need the hardware and the loop
+to really extract the most out of the images.
+That's an open question.
+And again, there is an entire continuum here.
+You can extract all kinds of information.
+First, what's the geometry of the scene?
+Then what's foreground versus background?
+Separate the furniture from the object sitting on it.
+That's segmentation.
+Then maybe additional information
+where you recognize individual objects.
+And you say, bowls, and plates, and cups,
+and the pans in the back, and the sink.
+So it's a problem that has many, many layers,
+and they won't be solved all at the same time.
+But it's a complicated longstanding problem,
+and we still have a ways to go.
+One thing that helps is if the domain
+that the robot is operating in is somewhat smaller.
+You don't need to understand everything in the world.
+The robot is restricted to a specific domain
+where only some things will occur,
+and then you only need the robot to understand those.
+This is why, for example, autonomous cars
+are remarkably advanced.
+In a way, being on the road is a smaller domain
+than understanding the entire world.
+On the road, you need to be able to recognize
+other cars, and pedestrians, and traffic signs.
+But it's not this hugely unbounded problem
+that the world at large is.
+And even then, even for self-driving cars,
+it's still the completely unexpected
+that's very difficult like construction zones
+where something is happening that you've never seen before,
+that there are some signs posted that the car needs
+to understand.
+It's what's called the long tail of the problem, corner cases.
+So a smaller domain helps, and it's always
+the things that you've never seen before
+and that you don't expect to be in your environment that
+are throwing you off.
+And this is where, in particular,
+in this field of semantic perception, machine perception,
+machine vision, that machine learning
+has provided us with incredibly powerful tools these days.
+And right now, this is a very, very active domain
+of using machine learning on robot sensor data
+to improve robot behavior in unexpected environments.
+So semantic perception is one big, big important area
+of focus that will enable the future of robotics.
+The next big one is reasoning under uncertainty.
+That is something that, again, maybe we don't immediately
+get because if I look at the scene,
+I know with pretty high certainty what's there.
+A robot, on the other hand, will have
+uncertainty about just about everything in the scene.
+Maybe a robot has a 3D sensor, and what
+it's seeing in its environment is this point cloud.
+OK, there's a table there.
+That's fine.
+What's the object sitting on the table?
+You know that your sensor has limitations.
+Many laser sensors, for example, will
+be blind to transparent objects or very shiny objects.
+So you're saying, OK, there's some part of this object
+that I'm not seeing.
+This is the part that I am seeing.
+What's there?
+Hard to tell, right?
+If it's a more restricted domain,
+you have a couple of hypotheses about what the object could be.
+There are some objects in your database that fit this data.
+A wine glass fits what you're seeing of the object.
+But then again, so does a tennis ball can
+and so does a detergent bottle.
+So they all fit what you're seeing of the object.
+Which of those three do you actually have in front of you,
+or maybe is it an entirely different one?
+And this is the kind of uncertainty
+that robots need to operate under,
+and the reason that makes the problem extremely difficult
+is that it blows up from a computation perspective.
+The computational effort blows up because of this uncertainty.
+Now all of a sudden, it's not enough to reason
+about one object identity.
+You have to reason about everything
+that the object could be given your sensor data.
+And that becomes very difficult computationally.
+And that affects everything from motion planning
+to another big part of robotics that we
+haven't covered in this introductory class which
+is task planning.
+Let's say that the robot task is clean up the kitchen.
+How do you go from that to joint angles?
+We know how to solve motion planning,
+but still there is a big gap there.
+And that gap is filled by task planning
+where you break down the big task into smaller tasks.
+And you say, no, you have to clean up the kitchen,
+one thing I need to do is load the dishes in the dishwasher.
+To load the dishes in the dishwasher,
+I need to identify the dishes that
+need to go there, pick them up one by one,
+find an empty spot in the dishwasher,
+put them in the dishwasher.
+Then I need to start the dishwasher.
+So this kind of task planning you keep going down.
+Eventually it reaches the level of motion planning.
+I need to take this specific cup and put it
+in this specific place in the dishwasher.
+That's a motion planning problem.
+But in general, all of this task planning, motion planning,
+it has to happen under the uncertainty that's
+inherent in robotics because of your limited understanding
+of sensor data.
+So reasoning and planning under uncertainty
+is a very important aspect in order
+to make robots truly intelligent in the sense of intelligence
+that we've talked so far.
+A third very important category that I like to point out
+is motor skills, complex motor skills.
+We've talked about robots having motor skills such his robot
+arms positioning their joints in the environment or robot
+cars driving around.
+But there are still a lot more complicated motor skills.
+Dexterous fine manipulation, me doing this--
+this is an example of a fine complex motor skill.
+Legged locomotion, things balancing,
+moving on uncertain terrain, these
+are examples of complex motor skills
+that are extremely difficult to master,
+again, because you don't have everything perfectly modeled
+in advance.
+If I'm trying to do this, I haven't
+spent hours and hours and hours building
+a very exact model of the object that I'm manipulating.
+I'm able to pick it up, and then based
+on the sensory data that I receive,
+which mostly is tactile information and proprioceptive
+information-- based on that, I'm able to react and execute
+the manipulation task that I want.
+How is that done?
+That's an example of motor skill that we don't yet
+know how to endow our robots with,
+and it's going to be very important for general robots
+operating in unstructured environments.
+And I'm sure there are more.
+I, by no means, want to say that this is the exhaustive list.
+But if you're looking for what are some big areas that
+are going to be critical for the future of robotics,
+think semantic perception, understanding
+your sensory data, reasoning and planning
+under uncertainty, and then finally,
+mastering complex motor skills.
+And there's probably more.
+So when you bring all of this together, where are we going?
+We've had our Hall of Fame, industrial robots.
+They're still going strong, kind of one
+of the pillars of the industrial society as we know it today.
+Now these days at the leading edge,
+robots are moving out of the factory
+and into sort of semi-structured environments.
+We have robot cars that are mastering the road,
+and then we have robots being deployed
+in this kind of semi-structured environments
+like health care, hospitals, and clinics,
+or warehouses, logistics, and manufacturing.
+One day we'd like robots to get to completely unstructured
+environments.
+The holy grail of robotics, in a way,
+is being able to operate in the home
+and being able to deal with just the unimaginable diversity
+of situations that you're going to find in a home.
+That will be, in a way, the true test of artificial intelligence
+in robotics, that robots are able to understand and deal
+with the huge range of scenarios that we
+are faced with every single day in this very
+complicated environment.
+The scariest place for a robot--
+the home.
+And we're hoping that eventually we
+will have the tools that will get robots there.
+Who's going to take robots to that next stage?
+Hopefully you will.
+Thank you for taking this class.

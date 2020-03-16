@@ -1,0 +1,140 @@
+We have reached the last lecture of the class,
+and today we are not going to introduce any new material.
+It's a chance to look back at the things we've seen so far
+and, again, take stock of where is
+the field, the state of the art in robotics, what's
+been done so far, what's happening right now, where
+is the future going to lead us.
+And we are going to look at all these armed with the knowledge
+that we've acquired throughout this class.
+So let's get started.
+And first, let's look a little bit again at the past.
+And I like to think of it not just as the past but,
+really, the Hall of Fame in a sense
+again because of the tremendous impact that this type
+of robotics has had on society.
+The fact that society as we know it would not
+exist without robotics and automation
+in assembly, in manufacturing, and industry,
+and in many, many parts of industry,
+places that we don't see in everyday life,
+but nonetheless they support a lot of the things
+that we do use in everyday life.
+So the world of industrial robot arms.
+I've chosen here a model of the PUMA robot arm, a well known
+robot from this first wave of traditional robot arms
+to illustrate this.
+So in this first stage of robotics
+having an impact on society through industry,
+how were these robots really used?
+And now we can look at the tools that we've
+acquired throughout this class.
+And what really happens is that, in general,
+for a robot like this, somebody will come and specify, and say,
+I'd like, for example, the end effector
+to be placed at a specific location in the environment
+where it'll pick something up, and then
+I'd like the end effector to go to a different location
+in the environment where it'll put the object down.
+So for example a human will specify
+this is the position of the end effector that I'd like,
+and then inverse kinematics will translate that
+to a set of joint positions.
+And then the robot goes ahead and executes that.
+Maybe it's a welding robot, so we don't just
+care about one position for the end effector.
+Maybe we'd like the end effector to describe a certain path
+in the environment.
+So then a human operator will say
+this is the path that I'd like the end effector to take,
+and then we'll have Cartesian control translate that
+into joint velocities.
+Or maybe it's a different kind of task,
+and the human operator is directly
+telling us the joint values that they'd like the robot to go to.
+In all of these cases, there is a human operator.
+The input, these three arrows, are
+coming from a human operator telling
+the robot where it needs to go.
+The output is joint positions, desired joint positions
+or desired joint velocities.
+And in the class, this is kind of what we've been looking at.
+How do you get those joint positions?
+How do you get those joint velocities?
+And we've been content to say that once you have them,
+they get sent to the robot, and the robot executes them.
+What actually happens behind the scenes
+is that these robots will be running controllers
+at each joint.
+These controllers in general will
+have an update loop that's very, very fast, probably
+more than 1 kilohertz or at least 1 kilohertz.
+But once you send a desired joint position
+goal to the controller-- this is a traditional feedback
+controller, probably you know a PID or something similar
+that will make sure that the joint position that you've
+requested actually gets executed.
+And this is where there is a closed loop
+because what happens is that the motor or the joint
+will have a position encoder.
+So at any time, the robot knows the very precise position
+of its joints.
+So the motor controller will close the loop.
+We'll send current commands to the motor,
+and the loop will be closed with motor position
+or joint position information from the encoder.
+And this is the loop that is closed very fast, again,
+and makes sure that the joint positions
+we command get executed.
+This is an entire aspect of robotics
+that's very important that we haven't had a chance to cover
+in this class.
+But the low level controller is there,
+making sure that what we command actually happens.
+Then the motor positions the joints.
+The joints, in turn, move the links,
+so the links get position at certain places
+in the environment.
+As a result, the last link is the end effector,
+and the end effector gets placed somewhere
+where it does what it needs to do on the world
+like pick up an object.
+Or maybe the end effector, again, is a welding tool,
+so then the end effector does its welding job along the path.
+What are a couple of things that I'd like you to notice here
+once again, and by now, you are intimately familiar with these
+probably.
+First of all, the world is very carefully controlled, right?
+That's the only way we can ensure the robot isn't really
+hitting anything along the way.
+This is mostly an open loop behavior.
+The only loop that's being closed is at the joint level,
+so very, very low level.
+This is the only place where the loop is being closed.
+And other than that, who's making sure
+that the robot isn't hitting anything, that something
+unexpected hasn't happened.
+Maybe the object is somewhere else than we expected it to be.
+Maybe an obstacle has shown up in the world.
+Well, who's making sure that doesn't happen?
+The human operator, carefully controlling the world,
+issuing commands to the robot, and there
+is no really automated way to close the loop
+throughout this process.
+So these robots are performing preprogrammed movements,
+but the way they're doing it and a lot of the value that they
+bring-- they are incredibly precise, they are tireless--
+there is little feedback from the environment.
+There's almost no sensing to speak of.
+Of course, joint position sensing is a form of sensing.
+So it's not like these robots are completely sensorless.
+There is sensing.
+But there isn't sensing in kind of a higher level
+sense, what we'd expect--
+vision, for example.
+We'll get to that in a second.
+So there is little feedback from the environment.
+And it would seem like, wait a second.
+These are very limited robots.
+And in a way, they are, but again,
+the impact that they've had on the world is undeniable.

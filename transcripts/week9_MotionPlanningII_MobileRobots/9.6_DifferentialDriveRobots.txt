@@ -1,0 +1,208 @@
+Let's talk now about some of the implications that
+arise when we try to apply these algorithms to real robots
+operating in the real world.
+And there is one particular thorny aspect
+that we need to look into.
+Think for a second about the algorithms we looked at so far,
+not just today, but also in last week's late lecture, so
+RRTs and PRMs, right?
+We've assumed that we just need to find this path made up
+of straight lines through the search space,
+maybe Cartesian space, maybe C-space,
+but we've assumed that the robot can always follow
+such a straight path, right?
+So for example, if, you know, we were doing the RRT
+and we're right here, we're sampling
+and we're growing the RRT in some direction, we're assuming,
+you know, the robot can move in that direction.
+That maybe, you know, the RRT grows in some other direction.
+The path looks like this.
+We're saying, now we are assuming that the robot can now
+move that way.
+In general, the algorithms that we did on graphs and on grids
+just now, again, you always assume
+that at any moment in time, the robot
+can move in any direction.
+That's not really the case with many practical robots, right?
+In practice, if you need a robot to be
+able to move in any direction, it
+needs to have wheels that can turn and move in any direction,
+right?
+So for example, maybe I have one way
+to realize that is to have your robot,
+and let's say your robot has four wheels,
+and if you need the robot to move sideways,
+then you need all four wheels to turn to point sideways,
+and then the robot can crab, right, can move sideways.
+But four wheels, each of which can turn independently,
+is expensive and difficult to make.
+In general, a robot that doesn't have any velocity constraints,
+that, at any moment in time, can choose
+to impart to itself a velocity in any direction,
+is referred to as a holonomic robot.
+It can be built. You can build omni wheels
+and put them on the robot, but it's expensive
+and it's actually very rarely done
+precisely because of the difficulty in the design,
+and the expense, and the cost.
+In practice, a common solution, especially
+in those environments, is what's called the differential drive.
+So what does that mean?
+I'm going to draw a robot, let's say, with a circular footprint.
+A differential drive robot is going to have two drive wheels.
+This is one drive wheel, this is another drive wheel.
+And then it'll also have a passive third wheel which
+isn't driven, which is just for support,
+but these are the only ones connected to the motors.
+The interesting thing is that these wheels,
+the powered wheels, are not steered.
+They are fixed.
+They always point in the same direction.
+So you can imagine that if these two
+wheels drive at the same speed, the robot moves forward.
+But if they drive at different speeds,
+then the robot will turn, right?
+So how much will it turn?
+Well, let's assume that the center of rotation,
+let's assume that the robot is turning around a point right
+here.
+Let's say that the distance between the two wheels
+is L and the distance to the center of rotation
+that the robot is turning around is R. OK.
+So then, if you have the velocity
+of the left wheel of the robot, so let's say
+V L, and the velocity of the right wheel of the robot,
+so let's say V R, and we assume that the robot is
+turning with some angular velocity, omega,
+then it's fairly easy to calculate
+how all of these terms are related together.
+In particular, we can see that the distance
+from the center of rotation to the right wheel
+is going to be R minus L over 2, so R
+is going to be the distance from here
+to the center of the robot, right?
+So R is, let's make that a little bit more
+clear, right, so R is going to be this.
+OK.
+And then this is going to be L, OK?
+So R minus L over 2, so that's the distance
+from this wheel to the center of rotation,
+so you multiply that by the angular velocity
+and you get the velocity of the right wheel.
+Similarly, the same angular velocity and you
+get the velocity of the left wheel, OK?
+So now we can also solve this for omega and for R
+and that gives us the relationship
+between the velocities of the wheels,
+and the angular velocity, and the location
+of the center of rotation.
+So if we solve this for R and omega, what we end up with
+is that R is L over 2, VR plus VL, divided by VL minus VR.
+Whereas omega is going to be VL minus VR divided by L, OK?
+So what are the cases that we see here?
+There are a couple of interesting cases.
+In particular, if VL equals VR, right?
+So VL equals VR, then R is infinity.
+Also, omega is zero.
+So what that means is that the robot is doing
+a pure translation, right?
+The robot is moving forward or backwards,
+which you can think of as a rotation
+around a center of rotation that's off to infinity, right?
+So then I have a pure translation back and forth.
+If, on the other hand, VL is equal to minus VR,
+then what happens is that R is zero.
+So then the center of rotation is right here
+in the middle of the robot.
+So if the two wheels move at opposite speeds,
+this robot just turns in place, which is very interesting.
+It doesn't translate at all.
+It just turns around its center.
+It turns in place.
+And then, anything else, then you
+have some combination of translation and rotation.
+Essentially a rotation around the center of rotation
+that's somewhere between the center of the robot
+and infinity.
+To summarize, what's interesting about differential drive.
+And by the way, the passive wheel,
+the one that's right here for support,
+is just a passive omnidirectional caster wheel.
+A typical one looks like this, right.
+So this caster wheel, it turns passively
+in any direction as needed, and it supports the robot,
+but it's not driven and it's not actively steered.
+So what's nice about this robot?
+It only needs two powered wheels and the powered wheels
+are both of them not steered, they're just fixed.
+It's sturdy.
+It's cheap.
+It's easy to build.
+And there is no actual steering mechanism to talk about.
+You steer the robot by choosing different velocities
+for these two wheels.
+So all of those are a very important
+practical considerations which is
+why differential drive, most in those robots
+you see these days, use differential drive.
+What are the cons?
+Well, the differential drive is not a holonomic robot.
+It cannot have velocity in any direction, at any time.
+In particular, it cannot translate sideways.
+It can translate forward and backwards,
+but it can not translate sideways,
+so it's a non-holonomic robot.
+What it can do, if it needs to move in to the side,
+it can turn in place and then go forward.
+Is that a good enough approximation?
+For some applications, it is, right?
+So if you think about just following a path, then yes,
+turning in place and moving is almost as good.
+The other consideration is that the passive caster wheel, when
+it has to change direction, can cause
+sudden jumps cause it needs to passively turn from one side
+to another.
+Very often you can think about this next time
+you pushing a supermarket cart, which will have passive caster
+wheels in the front.
+Think about what happens to those passive caster wheels
+as you change direction on your cart
+and how they have to reorient.
+And that's why these robots don't really
+work for high velocity.
+They're not good for driving on roads.
+That's why this is the solution of choice
+for mostly for indoors robots.
+So what about planning for a robot like this, right?
+It's not holonomic.
+It cannot translate sideways, but it can turn in place,
+right?
+So for example, if you know, the path
+that I have chosen for the robot looks like this,
+right, the robot, let's say, will drive forward,
+then it needs to go sideways.
+It cannot go sideways so here what it'll do is it will turn
+in place and then go in this direction.
+Do you care about the fact that it has to turn in place?
+Maybe you don't, right?
+Especially if the robot has a circular footprint,
+it can turn in place.
+It looks to you as if the robot can drive in any direction.
+So then it kind of impersonates a holonomic robot
+so many of the algorithms can still apply.
+If, on the other hand, you care about the fact
+that it has to turn in place, you know,
+maybe it doesn't have a circular footprint.
+So if the robot is much bigger in one dimension
+than it is in another, the fact that it
+has to turn in order to go sideways might matter.
+Maybe you have sensors that have to be
+aimed in a specific direction.
+Or maybe there is a robot arm on top of it that has to be aimed
+in a specific direction, so then you cannot really say that
+turning in place, you don't care about that.
+So then it's not a holonomic robot.
+So it all depends on the application.
+In some cases, turning in place is almost as good
+as drive in any direction, so then you
+can think of it as being a holonomic robot.

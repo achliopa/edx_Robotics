@@ -1,0 +1,149 @@
+What about grids?
+So far we've seen how a polygonal map can be converted
+into a graph, and then how you can do path planning on graphs
+using, for example Dijkstra's algorithm,
+what about a case where your map is represented as a grid?
+Well, there is a very simple way to convert a grid into a graph
+as well.
+You just say that each cell is a node,
+each empty cell is a node.
+Occupied cells, you don't take them into account.
+So each empty cell is a node.
+And each cell is connected to each of its neighbors.
+So, for example, if I look at this cell right here,
+I say, OK, this is a node.
+It's connected to these neighbors.
+And the cost of each of these edges
+is proportional to its length.
+So simply thinking about it in very straightforward terms,
+the cost of going to a neighbor right across is one.
+The cost of going diagonally is going
+to be 1.4, square root of 2.
+Or maybe even have a robot, you don't even connect diagonally.
+You just connect a cell just to its adjacent neighbors.
+But in any case, again we are converting the grid
+into a graph.
+It will have a lot of nodes, but that's fine.
+That's not necessarily a problem.
+And then once you're done, you end up
+with a pretty dense graph, for each of these cells
+represents a node.
+And each cell is connected via edges to each of its neighbors.
+So you can run Dijkstra's algorithm
+on a grid, exactly the same way you
+would do it on a graph, exactly the same way you've
+seen already.
+Let's quickly look at an example.
+You start off with the start, which is marked with a zeros.
+So the shortest path from the start to itself is zero,
+I know that.
+And that's all that I know to begin with.
+So next I'm going to visit, so I'm
+going to mark this as visited, I'm
+going to visit my cell with the lowest shortest path
+cost found so far.
+And then I'm going to mark all of its neighbors.
+So if the length of my shortest path to here is zero,
+then to here I have a possibility of one.
+Here I'm going to put 1.4, 1, and then 1.4 here, and a 1
+right here.
+And I'm done with this one it's visited.
+Where am I going to visit next?
+I'm going to visit the unvisited cell the lowest [? g of n ?]
+found so far, that's 1.
+But I have three cells, which I've marked 1.
+Which one of them do I choose?
+I can choose at random.
+It doesn't really matter.
+Let's say I choose this one, so now this one is visited.
+So I'm going to update its neighbors.
+So I'm going to have a cost of 2.4 here.
+And then 1 plus 1, I'll have a cost of 2 right here.
+Then another, again visit the one
+with the lowest number in it.
+I have 1 right here.
+So then I'm going to update its neighbors.
+What's the shortest path to get to here?
+Well, it seems I have a one here,
+and that is a cost of 1 to get between them,
+then I'll have 2 right here.
+And then I have a 2.4 here, and a 2.4 here.
+And then this one's visited and it's done.
+Who's next?
+This one's next.
+And all of its neighbors, there is nothing to improve.
+So this one is visited.
+Who's next?
+Now I can start visiting the 1.4's.
+Let's say I visit this one.
+This is 1.4.
+What's the cost for this neighbor?
+Well if it's 1.4 here plus 1.4 for the diagonal,
+then I'm going to have a 2.8 here.
+What's the cost for this neighbor?
+Well 1.4 to get to here, then another 1
+for this edge, that's 2.4.
+I already have a 2.4 in here, so I can safely ignore it.
+The same here.
+So eventually I realize I'm done with this 1.4.
+I have another 1.4 here.
+I'm going to visit it, but there's nothing to do,
+no way to improve any of the neighbors.
+So now this is visited.
+Now I start visiting the cells marked 2.
+I visit this cell, I look at its neighbors.
+If the cost is 2 get here, and then 1.4 along this edge,
+then I will have a 3.4 here.
+And then I'll have a 3 to get to here.
+And this one's visited.
+I visit this 2, which tells me that there is a 3 here.
+So 2 plus 1. then 2 plus 1.4, a 3.4 here and a 3.4 here.
+And now this is visited.
+And we're not going to do this all the way.
+You get the sense by now of how Dijkstra's algorithm works.
+You always visit next the node or the cell
+with the lowest or shortest path found so far,
+you update all of its neighbors.
+If for one of the neighbors you have
+a shorter path than what you have already found,
+then you update it.
+If you don't, then you just leave the neighbor be.
+And then eventually, once you've visited a node,
+you know that the shortest path you have found at that point
+is the shortest that there is.
+There is no way to improve it.
+So eventually, Dijkstra algorithm
+expands, always looking at the closest node next,
+until it hits the goal.
+Once you've visited the goal, you
+have the length of the shortest path
+there is, that's a guarantee, from the start to the goal.
+So in this particular case, you can kind of see on the grid
+how Dijkstra's kind of visits nodes.
+It kind of expands in a radius away
+from the start in all directions until eventually this front
+is going to hit the goal.
+And then once you've visited the goal, that's it.
+I have my shortest possible path from the start
+to the goal given these obstacles.
+So Dijkstra's algorithm is nice and is simple.
+It's intuitive, it's easy to understand, it works.
+But it does have this downside that it really by always
+visiting the closest node next, it explores in all directions.
+It has no notion of a goal.
+Which node is marked as a goal doesn't affect how
+the algorithm runs in any way.
+Eventually you hope, you know that you will reach the goal,
+and you will visit the goal if your graph is connected.
+But there is nothing that guides your exploration
+towards the goal.
+The search moves in all directions,
+and it proceeds exactly the same way whether the goal is here
+or if the goal is here or if the goal is here,
+that makes no change in how you visit your nodes or your cells.
+So that makes for an inefficient search for a path.
+Is there a better way?
+Is there a way in which we can actually
+take into account the goal and guide our search
+to go towards the goal?
+And it turns out that there is.

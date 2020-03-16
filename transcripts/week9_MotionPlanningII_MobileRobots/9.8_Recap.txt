@@ -1,0 +1,79 @@
+So let's recap our lecture on motion planning
+for mobile robots, and what sets these
+apart from mobile arms, highly articulated mobile arms,
+is that your search space tends to be much lower dimensional.
+Many mobile robots, you really just care about x and y.
+They're not meant to go up and down.
+They don't fly.
+They don't go upstairs or anything.
+They only live in a plane, so then your map
+is just a planar, 2D map.
+Maybe, you know, if the orientation of the robot
+matters as, well you can have a three dimensional search space
+because you are also including orientation.
+But in both cases this is a low dimensional representation,
+compared, at least, to highly articulated arms.
+It lends itself both to discretization
+into grids, or to having just polygonal representations
+of your obstacles.
+Furthermore, you often have a map available.
+Maybe there's a floor map of the building that the robot is in.
+Maybe the robot has built that itself using sensors.
+And the one thing, though, you have
+to be careful of is that, since all the algorithms
+we've looked at think about robots
+as infinitesimally small points, and as paths
+as infinitesimally thin lines, you
+have to inflate the obstacles to account for the fact
+that the robot isn't a point.
+The robot does have some dimension to it.
+However, once you've inflated the obstacles
+by the size of the robot, you can, again,
+think of motion planning as this problem
+of finding the path for a point from a start to a goal.
+And what we've seen is that, for many of these problems,
+motion planning becomes a search on a graph.
+A graph is a collection of nodes and then
+edges relating those nodes.
+Those edges will have costs, or lengths, or weights
+associated with them.
+And then motion planning becomes the problem
+of finding a path on a graph from a start node
+to a goal node.
+Often, you'd like to find the path with the shortest
+distance, or the lowest cost, and we've
+seen how both polygonal maps and grid maps can
+be converted into graphs.
+And we've looked at two algorithms for finding
+the shortest path on a graph, Dijkstra's algorithm and the A
+star algorithm, which, theoretically,
+is as expensive computationally, but, in practice,
+works much faster than Dijkstra because it
+uses a heuristic of how far I still
+have to go to get to my goal.
+And then we've also thought about real life robots,
+how we would physically build a robot like this,
+and the difficulty there that you have to account for is,
+can a robot really move in any direction at any given time?
+If a robot has no constraints on its velocity,
+so it can impart velocity to itself in any direction,
+it's referred to as a holonomic robot.
+Most real robots are not like that because of cost
+and robustness concerns.
+Most indoor robots will use differential drive,
+just two wheels that steer the robot
+by moving at different speeds.
+It's a non-holonomic robot.
+It cannot move sideways, but it can turn in place,
+so it can kind of approximate a holonomic robot.
+Outdoors robots-- cars, the class of robotic cars--
+those really can move in arbitrary directions,
+especially when using Ackermann steering.
+So we've talked about how path planning needs
+to account for that.
+And we've looked at some simple, intuitive ways to do it.
+But in general, you have to take into account
+the non-holonomic nature of your robot
+when doing motion planning for these type of real life robots,
+especially if it's an outdoors robots, a car-like robot,
+but many other classes as well.
