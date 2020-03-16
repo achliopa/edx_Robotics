@@ -1584,5 +1584,428 @@ echo "project3_ws workspace was sourced"
 * we start by looking at a single robot joint. we dont have the analytical functions but we have solved the FWD Kinematics as we know the Transorms for all the coordinate frames including the one we have under investigation in joint j
 * When we worked with URDF and computed FWD Kin publishing to the TF without having solved the analytical methods. we have bTj for joints up to bTee
 * what havens when j moves say turns around the local z-axis. what happens then to the end effector??
-* say if the joint rotates what a given velocity what is the velocity to the end effector. we dont want to compute the velocity of ee to the joint  coordinate frame but in its own coordinate frame. so if Vj whats the Vee ? 
+* say if the joint rotates what a given velocity what is the velocity to the end effector?
+* we dont want to compute the velocity of ee to the joint coordinate frame but in its own coordinate frame. 
+* so if Vj whats the Vee ? 
 * the trick is to consider the rest of the robot rigid
+* The simplified problem is:
+* Assume a rigid robot body except from the joint A with coordinate frame A
+* end effector B has its own coordinate frame B
+* The velocity of joint A expressed in coordinate frame A is: 
+<p align="center"><img src="/tex/86edbeea685b22c9cdf5d345b37c6e51.svg?invert_in_darkmode&sanitize=true" align=middle width=132.68632739999998pt height=118.35734295pt/></p>
+
+* ω is the angular speed of joints
+* we want to know what is the resulting velocity of B in coordinate frame B: <img src="/tex/a0e25d7304db117e8901a32a931b57ff.svg?invert_in_darkmode&sanitize=true" align=middle width=57.33220019999999pt height=27.6567522pt/>
+* We know the transform from A to B is:
+<p align="center"><img src="/tex/561581e699eedb798f9ba84c5c31fc92.svg?invert_in_darkmode&sanitize=true" align=middle width=149.79836685pt height=39.4623702pt/></p>
+
+* The velocity of B is a 6by6 matrix:
+<p align="center"><img src="/tex/a0a5606a639ce2fc89724501d9bef7a1.svg?invert_in_darkmode&sanitize=true" align=middle width=279.0867618pt height=39.4724781pt/></p>
+
+* what we understand is that the angular velociity of B will be the angular velocity of A rotated by <img src="/tex/667de7dfcf380344bfb6dba0a4442059.svg?invert_in_darkmode&sanitize=true" align=middle width=33.681900449999986pt height=27.6567522pt/> which is the transpose of <img src="/tex/6b5e0989fbafb974a165ff3d8f307778.svg?invert_in_darkmode&sanitize=true" align=middle width=33.681923549999986pt height=27.6567522pt/>
+* posiional (translation) part of velocities plays no part in angular velocity
+* the translation part of the velocity conversion has a rotation part of the translational velocity
+* also the translational velocity has to do with the rigid body which is as well rotated..
+* matrix S is a skeyw-symmetrix matrix: 
+<p align="center"><img src="/tex/92adfb087559742698fb1440019fb56c.svg?invert_in_darkmode&sanitize=true" align=middle width=238.2802983pt height=59.1786591pt/></p>
+
+* S matrix has the nice property of <img src="/tex/3db2bb7fbaba75628aa2eb60e2539597.svg?invert_in_darkmode&sanitize=true" align=middle width=109.18152134999997pt height=24.65753399999998pt/> so an easy way to express a cross product as matrix multiplication
+* so  the upper right element is the cross product of the model arm with the rotation of frame from joint to end effector which sets the translational velocity conversion with the pure rotation
+* the trransform matrix producing the rotation matrix and translation matrix we use for the velocity conversion we get from FWD Kinematic analysis
+* for conversion from joint j to end effector ee
+<p align="center"><img src="/tex/f22e01bb160b93083ee8c51e7de45ba4.svg?invert_in_darkmode&sanitize=true" align=middle width=215.92878614999998pt height=39.452455349999994pt/></p>
+<p align="center"><img src="/tex/0c7a8e44320c6cf005bffbb6dee6370f.svg?invert_in_darkmode&sanitize=true" align=middle width=85.64142344999999pt height=15.936036599999998pt/></p>
+
+* the velocity of joint j can be of anytype. but assuming its a revolute joint we say th ony possible velocity is a rotation around z so
+<p align="center"><img src="/tex/2b83e080574fd227c23eb47661b53ef7.svg?invert_in_darkmode&sanitize=true" align=middle width=193.63080165pt height=17.031940199999998pt/></p>
+
+* in this case only the last 6th column of Vj matters [:,5]in calculating ee velocity which will be 6by1 vector
+* robot have many joints. what if multiple joints move simultaneously. assuming all arrre revolute around z::
+<p align="center"><img src="/tex/c1c58c6e77623f4058db5acce8b31921.svg?invert_in_darkmode&sanitize=true" align=middle width=371.4478515pt height=16.438356pt/></p>
+<p align="center"><img src="/tex/482fb4af4410bc16194b810256ae9044.svg?invert_in_darkmode&sanitize=true" align=middle width=127.14845549999998pt height=47.35857885pt/></p> 
+
+* this can be presented in matrix multiplication form wher V[:,5] is a 1xn vector multiplined with dotq a nx1 vector 
+* we express the relation witht the jacobian notion where
+<p align="center"><img src="/tex/c5844e6fc239935f68ea7b453f2a2797.svg?invert_in_darkmode&sanitize=true" align=middle width=345.37923255pt height=78.9048876pt/></p>
+<p align="center"><img src="/tex/650af9dbe4766b12c7ad3faf107ae367.svg?invert_in_darkmode&sanitize=true" align=middle width=75.2988357pt height=14.42921205pt/></p>
+
+* this is the Numerical Jacobian. 
+* Knowing only the relative transforms from joint coordinate frames to end-effector coordinate frame we build the transmission matrices V
+* Vee is expressed in end effector coordinate frame
+* Δx we were given is  in relation to base coordinate frame
+* if we have the <img src="/tex/ba321f9d63bd563265e21e624b49821f.svg?invert_in_darkmode&sanitize=true" align=middle width=143.42674829999999pt height=47.81931659999997pt/>
+* then what we have as Velocity of the end effector exrpessed in its own coordinate frame related to the speed of x relted to the base frame <img src="/tex/0034def504d242026a8951e69002874e.svg?invert_in_darkmode&sanitize=true" align=middle width=74.77712219999998pt height=22.465723500000017pt/>is
+<p align="center"><img src="/tex/70c8246a68c452bc0ec02e4cbe4c58d1.svg?invert_in_darkmode&sanitize=true" align=middle width=164.61923775pt height=39.452455349999994pt/></p>
+
+* where the see that the speed on the base frame isthe end effecrtor frame velocity rotated
+* so the way to work is we are given Δx => xdot => Vee => calculate the Jacobian => get qdot
+
+### 7.3 Singularity Avoidance: Jacobian Pseudoinverse
+
+* we recap:
+<p align="center"><img src="/tex/4c8dbb63c29c2872a058fa77f4e77c90.svg?invert_in_darkmode&sanitize=true" align=middle width=76.7160339pt height=14.42921205pt/></p>
+<p align="center"><img src="/tex/cc02ee75e875f280b60b798144b2a072.svg?invert_in_darkmode&sanitize=true" align=middle width=72.72456179999999pt height=14.553275549999999pt/></p>
+
+* n is the number of robot joints and m is the number of variables we are controlling in end effector
+* we compute qdot
+<p align="center"><img src="/tex/c09cd52678f4b63d14f03f01ec3428c4.svg?invert_in_darkmode&sanitize=true" align=middle width=80.253393pt height=17.399144399999997pt/></p>
+
+* To have an inverse of a Jacobian matrix it must have equal dimensions m=n and Jacobian must be a full rank
+<p align="center"><img src="/tex/87c66a7bf1d518e0c967b85a3bbb7a97.svg?invert_in_darkmode&sanitize=true" align=middle width=103.88521109999999pt height=17.399144399999997pt/></p> 
+
+* the above shows that J-1 must be at least the Right side Inverse of J so the constraint is m<=n but Jacobian still has to be full rank
+* The problem is that as Jacobian approaches the singularity <img src="/tex/6bb7849c352a67a42adf9f3546695a39.svg?invert_in_darkmode&sanitize=true" align=middle width=49.93706849999999pt height=21.95701200000001pt/> so again we send infinite velocities to the robot
+* We will use linear algrbra and the Singular Value Decomposition of a Matrix
+* we write the jacobian as the product of 3 matrices <img src="/tex/f6cd8bfdab77f7f21ae09716aa555e91.svg?invert_in_darkmode&sanitize=true" align=middle width=55.16363984999999pt height=27.6567522pt/> where J is m x n
+* <img src="/tex/e2d9a2290b248860f8a59b420e03e59d.svg?invert_in_darkmode&sanitize=true" align=middle width=150.67895205pt height=27.6567522pt/> so U is square and orthogonal
+* <img src="/tex/74de91321f0ecddc7feb69b2b4d3fe94.svg?invert_in_darkmode&sanitize=true" align=middle width=73.90039139999999pt height=26.17730939999998pt/> Σ is diagonal matrix
+* <img src="/tex/83aff904452a24b41bd49209a0c4f1c7.svg?invert_in_darkmode&sanitize=true" align=middle width=144.27957224999997pt height=27.6567522pt/> so V is square and orthogonal
+* if m<=n:
+<p align="center"><img src="/tex/e7a6be565d8a758178e98d3c0735dc7e.svg?invert_in_darkmode&sanitize=true" align=middle width=219.4693677pt height=59.1786591pt/></p>
+
+* the sigma values on the diagonal ara on descending order so σ1 >= σ2 >= ... >= σm >= 0
+* also if n = RANK(J) all values past it will be 0 <img src="/tex/42fb091faa642fd24257731b1599afc8.svg?invert_in_darkmode&sanitize=true" align=middle width=91.58292494999999pt height=22.831056599999986pt/>
+* if the Jacobian is Rank defective so its rank is m-1 σm = 0. 
+* this is a way to tell by eye the rank of a matrix 
+* a robust way to tell numerically that a matrix is approaching the singularity, being close to lose rank iswhen: <img src="/tex/0ba17240bea9b2d71e4f9f9fc7cf6a7a.svg?invert_in_darkmode&sanitize=true" align=middle width=82.88516114999999pt height=23.388043799999995pt/>
+* the program might decide when seeing is close to lose rank aka approaching singularity to stop moving to avoid issuing infinite command for protection. this is not optimal as the robot is stuck.
+* the correct apporach is to allow to go back but not towards the singularity
+* we will see another better way..
+* we ll see the matrix we get when we invert Σ
+<p align="center"><img src="/tex/7dc9dc69e06add2ad0ac58083d201a2e.svg?invert_in_darkmode&sanitize=true" align=middle width=160.38770549999998pt height=80.37874679999999pt/></p>
+<p align="center"><img src="/tex/143ce1f516754f1bd4dc17f2fe33f793.svg?invert_in_darkmode&sanitize=true" align=middle width=117.21669630000001pt height=17.399144399999997pt/></p>
+<p align="center"><img src="/tex/7c50fb65cb78125e71347e095ae37992.svg?invert_in_darkmode&sanitize=true" align=middle width=127.4467293pt height=14.6502939pt/></p>
+
+* the last equation is fine when Jacobian holds rank. as it starts to lose rank the 1/σm gets bigger so the inverse Jacobian gets bigger. when σm is 0 we cannot even invert the Jacobian as we get infinity
+* the cheap trick is when we see that <img src="/tex/2386edbf7233cbe407630abdae00353f.svg?invert_in_darkmode&sanitize=true" align=middle width=57.31456005pt height=24.65753399999998pt/> then in the position of <img src="/tex/d5bbe85db313fad95e99d30a823054c1.svg?invert_in_darkmode&sanitize=true" align=middle width=18.5327307pt height=27.77565449999998pt/> we put 0 in the Σ-1. all the οhter diagonal vals we invert normally and continue computation. but values that go to infinity we replace them with 0
+* then we call the matrix
+<p align="center"><img src="/tex/1d61af7d8f514bc0877bf765a18bf976.svg?invert_in_darkmode&sanitize=true" align=middle width=21.9635526pt height=13.910572499999999pt/></p>
+<p align="center"><img src="/tex/f2e904eacb413f2fb525a92048b8b05c.svg?invert_in_darkmode&sanitize=true" align=middle width=113.97636524999999pt height=14.6502939pt/></p>
+
+* J+ is a very importan matrix. its called the Jacobian pseudo inverse. it has some very important properties for us
+* If J is a full rank Jacobian <img src="/tex/5b0ced10e36027c37081514c7c957b48.svg?invert_in_darkmode&sanitize=true" align=middle width=59.886844049999986pt height=26.17730939999998pt/>
+* If J is a low rank Jacobian <img src="/tex/94d9952e005596a4920bb941eefc98cb.svg?invert_in_darkmode&sanitize=true" align=middle width=59.886844049999986pt height=26.17730939999998pt/>
+* If we compute qdot with J+ <img src="/tex/e382936fc52d5059098575c330e3f16e.svg?invert_in_darkmode&sanitize=true" align=middle width=75.75733934999998pt height=26.17730939999998pt/> we get some excellent properties:
+    * if J is full rank it is an exact solution of $$\dot{q}=V_ee$
+    * if J is low rank the angular velocities computed wont allow any additional movement towards the singularity but will allow any movement that does not get us closer to the singularity. SWEETT!! we get the best of both worlds
+* In Practice any linear algebra lib has methods to compute the pseudo inverse `numpy.linalg.pinv(J,epsilon)`
+
+### 7.4 Putting It All Together: Cartesian Control
+
+* How we do Cartesian Control?
+**Given:**
+* the coordinate frames for all the joints: <img src="/tex/e42e1d4e3b618997f53b1fed51eeae4a.svg?invert_in_darkmode&sanitize=true" align=middle width=24.148830749999988pt height=24.65753399999998pt/>
+* the transform matrix from the base to the current position of the end effector <img src="/tex/0f5ffa7ee60ec93ab01f49f97987a192.svg?invert_in_darkmode&sanitize=true" align=middle width=74.85815864999998pt height=27.91243950000002pt/>
+* the transform matrix from the base to the desired position of the end effector <img src="/tex/324e8766b8bd45538586c8d04030dd42.svg?invert_in_darkmode&sanitize=true" align=middle width=72.21403859999998pt height=27.91243950000002pt/>
+**Assume:**
+* all joints are revolute
+**Output**
+* Joint angle velocity <img src="/tex/84af046067aaaa42645f613d1c5925bd.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=21.95701200000001pt/>
+**Steps**
+* from the 2 base to end-effector Transform matrices we compute a Δx: <img src="/tex/a27c7afa3bd139c03e949be2623df7c1.svg?invert_in_darkmode&sanitize=true" align=middle width=154.71156689999998pt height=27.91243950000002pt/>
+* from the Δx we get xdot multiplying with the gain, the gain is set by trial and error (proportional control) <img src="/tex/15483a62bcadc667bb9f7409dcb4c6fb.svg?invert_in_darkmode&sanitize=true" align=middle width=62.90514119999998pt height=22.465723500000017pt/>
+* using the transform matrix we transform xdot to desired velocity of end effector in its own coordinate frame  <img src="/tex/ec55afaa615bc0b7e571f45bea1b87a5.svg?invert_in_darkmode&sanitize=true" align=middle width=93.83897159999998pt height=27.91243950000002pt/>
+* for each joint j we compute matrix Vj relating velocity of joint at the joint coordinate frame to velocity of the ee expressed in its own coordinate frame. we keep only the last coolumn of this matrix (as we care for angular velocity in z) <img src="/tex/608d060ca3e7cdf000d08e34cca32ff5.svg?invert_in_darkmode&sanitize=true" align=middle width=342.1135839pt height=24.65753399999998pt/>
+* We assemble these columns in block column form and get the jacobian <img src="/tex/d02fdb140459233b8b75946d58fb4bef.svg?invert_in_darkmode&sanitize=true" align=middle width=295.7797326pt height=24.65753399999998pt/>
+* we  compute the pseudoinverse of J <img src="/tex/165206dbe1af27c37cd6db28900e3050.svg?invert_in_darkmode&sanitize=true" align=middle width=20.78772464999999pt height=26.17730939999998pt/> with ε
+* we compute <img src="/tex/4c1b70ed304f6fcbe7f6c94de7865767.svg?invert_in_darkmode&sanitize=true" align=middle width=73.5182217pt height=26.17730939999998pt/>
+* we send <img src="/tex/84af046067aaaa42645f613d1c5925bd.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=21.95701200000001pt/> to the robot
+* In practice we also put some safeguards along the computations. in robotics.. if something goes wrong the robot might cause an accident
+**Safeguards**
+* Scale <img src="/tex/c8a19da4c4ef5fa3fed69bb070243246.svg?invert_in_darkmode&sanitize=true" align=middle width=9.39498779999999pt height=21.95701200000001pt/> such that <img src="/tex/e5fec28d237928190957cbaaeaa67f7e.svg?invert_in_darkmode&sanitize=true" align=middle width=41.06167559999999pt height=24.65753399999998pt/>  less than a threshold, to prevent sending too much movement to the robot
+* Scale <img src="/tex/84af046067aaaa42645f613d1c5925bd.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=21.95701200000001pt/> such that <img src="/tex/5e7d7ed3b501049141dcaf64febe2e79.svg?invert_in_darkmode&sanitize=true" align=middle width=39.59477444999999pt height=24.65753399999998pt/>  less than a threshold, to prevent sending too much movement to the robot
+* Alternatively  scale <img src="/tex/84af046067aaaa42645f613d1c5925bd.svg?invert_in_darkmode&sanitize=true" align=middle width=7.928106449999989pt height=21.95701200000001pt/> such that <img src="/tex/f2ab2a27367e68f844720bd94c919d50.svg?invert_in_darkmode&sanitize=true" align=middle width=40.917318749999986pt height=22.831056599999986pt/>  less than a threshold, to prevent sending too much movement to the robot
+
+### 7.5 Redundant Robots: Null Space Control
+
+* Redundant robots are used mostly in research. Is one that has more than the smallest number of DOF needed to achieve any combination of position and orientation for end effector
+* In 3D with position and orientation this means >6 DOF. it will give me more ways to achieve the same orientation and position (infinite in some configs)
+* we write our main equation <img src="/tex/0ed1200da538521f93ee7c64dee2482b.svg?invert_in_darkmode&sanitize=true" align=middle width=64.8440529pt height=22.465723500000017pt/>
+* we want to know if thre are angular velocities different than 0 so that when multiplied with J they are 0 <img src="/tex/7fd2d3f8d76c2707d2db4c6dfa91c454.svg?invert_in_darkmode&sanitize=true" align=middle width=187.36670699999996pt height=22.831056599999986pt/>
+* what we are really asking is if there are joint velocities that produce no velocity to the end effector <img src="/tex/c3b613ed28a01236e980201dd1e4ee1b.svg?invert_in_darkmode&sanitize=true" align=middle width=57.11941949999999pt height=22.465723500000017pt/> means that dotqn is in the null space of the Jacobian
+* if m >= n the above happens only at singularities
+* what is the dimensionality of the null space of the Jacobian: at least 1
+* if m < n (if we have more joints than we need) the lin algebra rank-nullity theorem tells us that thats always the case. it means that at any moment we can move the joints in a way that does not produce movement to end effector
+* the way to compute the qdot in the null space of the Jacobian is by projecting the  input into the null space. 
+* to do it if we have any joint velocity q dot we left multiply it with 1-J+J then its guaranteed to always be in the null space of the Jacobian
+<p align="center"><img src="/tex/b7ba36fc0256c6657bea913b0067e2c8.svg?invert_in_darkmode&sanitize=true" align=middle width=285.95199105pt height=18.0201615pt/></p>
+
+* this is because <img src="/tex/72e4d269c8070140ec92633716b33cef.svg?invert_in_darkmode&sanitize=true" align=middle width=75.61632209999999pt height=26.17730939999998pt/> which holds always: whether J is full rank or not. 
+* if J is full column rank: <img src="/tex/5b0ced10e36027c37081514c7c957b48.svg?invert_in_darkmode&sanitize=true" align=middle width=59.886844049999986pt height=26.17730939999998pt/>. 
+* if J is full row rank: <img src="/tex/536ae59b14ab10b3cc00b80849f1db57.svg?invert_in_darkmode&sanitize=true" align=middle width=59.886844049999986pt height=26.17730939999998pt/>
+* if i  calculate the Jacobian pseudoinverse and the the solution for dotq <img src="/tex/a3ecbe792ca8bf50f4637a1df6a6e809.svg?invert_in_darkmode&sanitize=true" align=middle width=82.19384744999998pt height=26.17730939999998pt/>
+* before sending it to robot we can have another goal for the end effector. to move the joints without moving the end effector 
+* then what I will send to the robot will be <img src="/tex/f82fe3ea1905b5493ff4a2e4f9c5efc9.svg?invert_in_darkmode&sanitize=true" align=middle width=680.9945373pt height=26.17730939999998pt/>\dot{q}<img src="/tex/41e3f1e771d36cb3b976687e73f3038d.svg?invert_in_darkmode&sanitize=true" align=middle width=122.12099789999999pt height=22.831056599999986pt/>\dot{q_n}<img src="/tex/b90f33cb10b954e22a18a741b7e6da9e.svg?invert_in_darkmode&sanitize=true" align=middle width=3859.3526961000002pt height=5452.6027413pt/>q=[\frac{\pi}{3},\frac{\pi}{5}]<img src="/tex/4b415ebdb85703b577991c2fcb093a88.svg?invert_in_darkmode&sanitize=true" align=middle width=4299.32279865pt height=4819.5433869pt/>{(mass * (height * height + length * length) / 12)}"
+                 iyy="${(mass * (width * width + length * length) / 12)}"
+             izz="${(mass * (width * width + height * height) / 12)}"
+             ixy="0" iyz="0" ixz="0"/>
+  </macro>
+
+  <!-- length is along the y-axis! -->
+  <macro name="cylinder_inertia_def" params="radius length mass">
+    <inertia ixx="${(mass * (3 * radius * radius + length * length) / 12)}"
+                 iyy="${(mass * radius* radius / 2)}"
+             izz="${(mass * (3 * radius * radius + length * length) / 12)}"
+             ixy="0" iyz="0" ixz="0"/>
+  </macro>
+
+</robot>
+```
+
+## Week 9: Motion Planning II, Mobile Robots 
+
+### 9.1 Preliminaries and Map Representations
+
+* Most of the times a Mobile Robot operates in 2D space
+* In low dimensional spaces we have multipme ways to represent the map (grid-discretized, polygonal-vertices)
+* the map might come from floorplan or by measurements from sensors and built in realtime
+* Remember that for 6D maps (mostly for robot arms) discretizing them is not feasible. for 2D is ok
+* In Mobile robots maps the robot is not a point. it has dimensions. its not realistic to talk about point. so the algotithms that we have seen so far do not work per se
+* a cheap trick to use them is to manipulate the maps (map inflation) by inflating the obstacles by the size of the robot. then we can use the point based algorithms
+
+### 9.2 Motion Planning as Graph Search
+
+* we look at a 2D map where the obstacles have been inflated so that the robot position can be treated as a point
+* again we want to find the path between the start point and the goal point
+* a common approach is to convert a map representation as a graph aka a collection of nodes and edges
+* then we can use path planning algorithms that use graphs
+* an easy way to convert a map to a graph is to produce a visibility graph. we connect any vertex of any obstacle and start.goal with any abailable vertex with a straight line as long as the line is unobstracted
+* then we remove the obstacles from the picture. vertices are the graph nodes and edges are the lines
+* if we travel start to end following the graph we will have no bumps to the obstacles
+* we can assign costs to each edge depending on the cost of robot for moving through the edge. (e.g length or time)
+* we aim the cost of the path to be as low as possible
+
+### 9.3 Dijkstra's algorithm
+
+* For any node n, keeps track of the *length of the shortest path from start to n found so far*, labeled g(n)
+* Input: visibility graph, start S, goal G
+* Output: path from S to G
+* Algorithm:
+    * Label all nodes 'unvisited'
+    * Mark S as having g(S)=0
+    * While unvisited nods remain:
+        * choose unvisited node n with lowest g(n)
+        * mark n as visited
+        * for each neighbor r of n:
+<p align="center"><img src="/tex/e67d77cd25ca15b1600f25c836a07631.svg?invert_in_darkmode&sanitize=true" align=middle width=224.0576283pt height=16.438356pt/></p>
+
+* in this algo at anytime we keep track of the shortest path from start to a set of parrticular nodes
+* all nodes are unvisited at first
+* we know only start node and length to itself is 0: <img src="/tex/1752ec5c18fb5dee25a2eab9e0a5e912.svg?invert_in_darkmode&sanitize=true" align=middle width=62.38001384999998pt height=24.65753399999998pt/> we mark it as visited
+* we look at S neighbours. the weight of the node is the node N1 is the g of S + the weight of the edge s->N1 so g(N1)=11 . similarly g(N2)=10. we mark N2 as visited because it has lowest weight. we look to all its unvisited neighbours N1,N3,N4 => g(N3)=21, g(N4)=42 g(N1)=28. because what we have for N1 is lower. lowest marked node is N1 with 11 so we mark it as visited
+* we look at unvisited neighbors of N1 (N8,N3)
+* we repeat till we visit the goal. th epath length is 58
+* Dijksta's Algorithm
+* for any node n, keeps track of the *length of the shortest path from start to n found so far*, labeled <img src="/tex/f010a0fda7cdcc04209d9381ef5fca27.svg?invert_in_darkmode&sanitize=true" align=middle width=31.08266699999999pt height=24.65753399999998pt/>
+* Key Idea: visit closest nodes first
+* Guarantee: once a node n has been "visited", <img src="/tex/f010a0fda7cdcc04209d9381ef5fca27.svg?invert_in_darkmode&sanitize=true" align=middle width=31.08266699999999pt height=24.65753399999998pt/> is equal to the length of the shortest part that exists from S to n.
+* The algorithm is thus *guaranteed* to find the *shortest possible path* from S to G (along the graph)
+* Running time: can be *quadratic* in the number of nodes
+* When we write the q for a node we write from which node we are comming from. in this way we can extract the shortest path in the end easily
+
+### 9.4 Graph Search on Grids
+
+* we have seen how a polygonal map can be converted as a graph.
+* what if our map comes as a grid.
+* an easy way is to say that each (empty) cell (central point) is a node. also each cell is connected to its neighbors (like minesweeper). cost is higher for diagonals. ecqual for vertical or horizontal
+* our graph will have many nodes
+* we can apply Dikstas algorithm for grids. we get usually many cells with same weight along the way . not an issue we can choose randomly
+
+### 9.5 A* search
+
+* For any node n, also uses a *heuristic that estimates how far n is from the goal*, labeled here <img src="/tex/72b322da8035af6f39a0a9b5134877a2.svg?invert_in_darkmode&sanitize=true" align=middle width=32.12342429999999pt height=24.65753399999998pt/>
+* A heuristic is *admissible* only if it never over-estimates the real distance. A commonly used hevristic that meets this requirement is straight-line distance to goal
+* Input: visibility graph, start S, goal G
+* Output: path from S to G
+* Algorithm: 
+* mark all nodes "unvisited"
+* mark S as having <img src="/tex/d0f4ffa8f6381042610f47b8d9b94ecb.svg?invert_in_darkmode&sanitize=true" align=middle width=204.20824544999996pt height=24.65753399999998pt/>
+* while unvisited nodes remain:
+    * choose unvisited node n with lowest $f(n)$
+    * mark n as visited
+    * for each neighbor r of n:
+<p align="center"><img src="/tex/e67d77cd25ca15b1600f25c836a07631.svg?invert_in_darkmode&sanitize=true" align=middle width=224.0576283pt height=16.438356pt/></p>
+<p align="center"><img src="/tex/54c73ba921a34ed8def992267df9cc2f.svg?invert_in_darkmode&sanitize=true" align=middle width=131.70287295pt height=16.438356pt/></p>
+
+* th intuition of this algo is to use the distance of a node to the goal. we dont know but we guess using a heuristic. and it should be optimistic. like straight distance to goal..
+* so before even starting to iterate we have for all nodes (e.g grid cell centers) their h(n) filled with the distance from the goal in straight line. we ignore obstacles. of course we dont calculate for obstacles
+* dijkstras algo explores first the node closer to the shortest path from the start
+* A* explores first the node with higher chance to lead us to the goal faster
+* A* reduces randomness and saves time
+* we still use shortest path in our selection as f(n)=g(n)+h(n)
+* remenber that g(n) is calculated with Dijkstra's algo logic
+* we see A* going straight to goal then hitting the obstacle and backtracking and even improving the path
+* A* in worst case is quadratic but in most cases is faster
+
+### 9.6 Differential Drive Robots
+
+* Αpplication to Real Robots
+
+* so far, we have assumed that the robot can always *move in a straight line in any direction*
+* that is a complex (and expensive) mechanism to realiz in practice. e.g we need fully rotating wheels
+* a robot that has no constrains in velocity is referred as *holonomic*. it can generally move in any direction
+* A common solution especially for indoor robots is: Differential Drive Robots
+* 2 main drive wheels and a passive 3rd rotating that does no move
+* the drive whwwls do not steer. but can be rotated with variable speed of drive wheels
+* If the linear velocity of left wheel is VL and of the rigth wheel is VR,the distance between the wheels is l, the angular velocity of robot around a center of rotation with a radius distance from the projection of drive wheel position on the Drive wheel  inter distance is R, we have:
+<p align="center"><img src="/tex/836b05aac0d7c330a5113d2c322410c9.svg?invert_in_darkmode&sanitize=true" align=middle width=99.11799314999999pt height=33.81208709999999pt/></p>
+<p align="center"><img src="/tex/4c451908567f78a864a4d97318d1d986.svg?invert_in_darkmode&sanitize=true" align=middle width=98.17449839999999pt height=33.81208709999999pt/></p>
+<p align="center"><img src="/tex/40d5ebf16fcb77ebc56d281c5ba66acf.svg?invert_in_darkmode&sanitize=true" align=middle width=120.42827609999999pt height=36.2778141pt/></p>
+<p align="center"><img src="/tex/86025ed620c39a257b05205c40ad621c.svg?invert_in_darkmode&sanitize=true" align=middle width=94.6053306pt height=33.62942055pt/></p>
+
+* if VR=VL then R=inf and \omega=0 robot is doing pure translation (no rotation)
+* if VR=-VL the R=0 so robot turns in place
+* any other combination os speeds has a translation part and a rotation part
+* Differential Drive Pros:
+    * only two powered wheels. both non-steered
+    * no separate steering mechanism
+* Differential Drive Cons:
+    * cannot move "sideways" must turn and move (non holonomic)
+    * passive caster wheel can still cause jerks
+* Motion Planning for Differential Drive:
+    * Robot often designed with circular foorprint
+    * "Turn in place" almost as good as "drive in any direction" (it impersonates a holonomic robot so point algorithms apply)
+
+### 9.7 Non-Holonomic robots
+
+* We will now talk about oudoor robots. robots that do drive
+* Car like steering is called Ackerman Steering, a common solution for outdoor robots
+* all 4 wheels of the car move on cyrcles with the same center when steering
+* wheels allways are on the tangents of these circles
+* the center of the circles is  perpendicular to the back wheel axis
+* Pros:
+    * only two steered wheels
+    * single steeering input
+    * no sideways wheel slip
+* Cons: 
+    * in practice, turning radius cannot be arbitrary small
+    * in particular cannot turn in place
+    * non-holonomic, and cannot really approximate a holonomic robot
+* Path Planning for Non-Holonomic Robots
+    * orientation matters when planning
+    * movement must be selected from allowed primitives
+    * simple example: left,right,forward
+    * must keep track of orientation
+* when we do RRT for non-holonomic robots.
+    * when we choose a node we cannot go in an arbitrary direction.
+    * we chose one of the available discrete primitives (directions)
+* other posibilities:
+    * C-space extended to include orientation (x,y,θ)
+    * or even derivatives
+
+### 9.8 Recap
+
+* Motion Planning for Mobile Robots:
+* Search space is generally 2D or 3D (with orientation)
+* Lends itself to discretization into grids, or polygonal obstacle representations
+* obstacle images are often available
+    * must  be inflated to accomodate robot size and allow use of algorithms for point robots
+* motion planning formulated as *search on a graph*:
+    * works on either polygonal or grid maps
+    * algorithms: dijkstra, A* etc
+* in real life:
+    * indoors robots often use differential drive; with turn-in-place allows movement in any direction
+    * outdoors robots (cars) can not move in arbitrary direction, so path planning must account for that.
+
+## Week 10: Conclusion 
+
+### 10.1 The Hall of Fame
+
+* PUMA robot arm (1st wave of industrial robot)
+    * pick and place: set position -> Inv Kin-> joint positions
+    * welding: ee path => Cartesian Control => joint velocities
+    * manual: user moves the robot
+* The robot after getting the joint values
+    * a controller runs a loop (PID). closed loop control
+    * it sends current to motor
+    * it uses an encoder to get joint value feedback
+* Motor => moves Link => Link moves EE => an effect happed in physical world
+* preprogrammed, precise, tireless job execution
+* little feedback from environment
+
+### 10.2 The Leading Edge
+
+* New technologies post 2010 going in production
+* Starting to integrate environment sensing
+    * 3D scene geometry(machine vision,LIDAR,stereovision) eg point cloud
+    * force information
+    * touch information
+* PR@ Robot has laser sensor and scans environment. it know sthing is there but does not know what it is
+* semantic info is extracted with machine learning
+* the data flow is 
+<p align="center"><img src="/tex/072640841eeeef3872d4b3c737edd753.svg?invert_in_darkmode&sanitize=true" align=middle width=140.56237635pt height=15.936036599999998pt/></p>
+<p align="center"><img src="/tex/1003d643d0d26e3b00be5d1a19551d18.svg?invert_in_darkmode&sanitize=true" align=middle width=367.0048008pt height=14.611878599999999pt/></p>
+
+* Env Representation is built on the fly as new data come
+* a way to store point cloud data is [octree](http://fab.cba.mit.edu/classes/S62.12/docs/Meagher_octree.pdf)
+
+<p align="center"><img src="/tex/98b0910c24db4cf27c9d9ac1a77658a7.svg?invert_in_darkmode&sanitize=true" align=middle width=680.9028880499999pt height=17.031940199999998pt/></p>
+
+* motion planner produces the path
+* trajectory generator adds velocity, accelaration time to the path, making it smooth to execute without stoppung, making sure robot does not wxceed its limits
+* result goes to motion control a closed loop control of the motor sending current and getting encoder info (PID position controller)
+* motor produces torque and through a gearbox it goes to joint moving the link hich applies force to the world
+* sensing of change in env happens ~30Hz
+* a good motion planner produces output at ~5Hz
+* PID control has a ~1kHz freq
+* torque measurement is new technique: torque encoder in motor and encder in joint attached to a string in gearbox. based on the difference of these encoders we measure torque we know the torque
+* this is called series elastic actuation. we see a torque spike that goes to motion planner
+* in some robots links are equiped with touch sensors . info goes to env. representatio
+* Papers on subject:
+* [Perception, Planning and Execution for Mobile Manipulation in Unstructured Environments](https://pdfs.semanticscholar.org/c4e2/88f3bf1b53c85e4bbf93edd6ed2affec7105.pdf)
+    * The sensing Pipeline. Filtering 3D sensor data to remove noise and points corresponding to robot parts
+    * Environment Modeling: octree-based represenation used to generate occupancy grid model
+    * Segmentation and Recognition: 1) support surfaces and objects are segmented from 3D data 2) known objects (based on object detection) are represented using meshes 3) other objects are represented using point clusters
+    * Grasping. cluster planner plans grasps for objects represented as point clusters
+* Intelligent robot operating on its own
+
+### 10.3 The Future
+
+* Key fileds needed for robots to make the next big leaps forward
+* Semantic Perception
+    * can it be separated from hardware?
+    * continuum: from segmentation to recognition
+    * "smaller" domain helps (e.g roads)
+    * machine learning making great strides
+* Reasoning and Planning under uncertainty
+    * task planning to motion planning
+* Complex reactive motor skills
+    * manipulation, legged locomotion, etc... 
+* Papers:
+    * [Colaborative Grasp Planning with Multiple Object Representations](https://roam.me.columbia.edu/files/seasroamlab/publications/icra2011_collaborative.pdf) 
+* Thoughts:
+    * thing about outliners
+    * object recognition DB
+    * modeling of everything is required... intuition??
+* Past: Structured env
+* Present: semi-structured env
+* Future: fully unstructured env
+
+### Review and Practice Questions
+
+* This week concludes the lectures in this course. You can use this week to complete the final projects, recap class material, and prepare for the final quiz.
+* Final Quiz Info: the Final Quiz will contain 10 questions and you will have 1 hour allotted time for completion.
+* Here are some example questions covering material from the second half of the course that can guide your review effort. These are also example questions you can use to prepare for the Final Exam, which will contain questions similar to (or selected from) these.
+* (Reminder: practice questions for the material covered in the first half of the class are available in Week 6. The Final Quiz will cover all the material in the course).
+    * What are the differences between a matrix inverse and a pseudo-inverse?
+    * When is it impossible to compute the inverse of a robot Jacobian?
+    * How can you avoid coming close to singular robot configurations when doing Cartesian Control?
+    * When performing Cartesian Control in order to get the end-effector from a start pose to a goal pose, what Cartesian path between the start and the goal does the end-effector follow? (We assume that execution is successful and the robot never comes close to a singularity.)
+    * What is the Configuration Space (C-Space) of a robot?
+    * How many dimensions does the C-Space of the Kuka LWR robot (used in the class projects) have?
+    * What are different ways in which you might store an obstacle map for a robot?
+    * What are the basic building blocks (i.e. external calls) that you need to have available in order to implement a sampling-based motion planning algorithms?
+    * If you run the RRT algorithm multiple times on the same problem (same start, goal, and obstacles) will you get the same result? Why?
+    * What guarantees does a graph search algorithm such as Dijkstra's or A* offer for a motion planning problem?
+    * What guarantees does a sampling-based algorithm such as RRT or PRM offer for a motion planning problem?
+    * What is the main advantage of the A* algorithm compared to Dijkstra's algorithm?
+    * Is a typical shopping cart (two fixed wheels in the back, two omni-directional casters in the front) a holonomic vehicle? Why?
+    * A differential drive robot has positive (forward) velocity at the left wheel, and zero velocity at the right wheel. Assuming no wheel slip, what motion will the robot perform?
+
+### Final Exam Instructions
+
+* About the final exam: 
+    *  It will contain 11 questions and students will have 1 hour to complete it.
+    * It is open book and open notes. 
+    * Students can access the internet during the exam.
+    * Calculators are allowed.
