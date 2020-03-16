@@ -2518,3 +2518,82 @@ $$\omega=\frac{V_L+V_R}{l}$$
     * 3D scene geometry(machine vision,LIDAR,stereovision) eg point cloud
     * force information
     * touch information
+* PR@ Robot has laser sensor and scans environment. it know sthing is there but does not know what it is
+* semantic info is extracted with machine learning
+* the data flow is 
+$$p_{goal} \Rightarrow IK \Rightarrow q_{goal}$$
+$$senor \Rightarrow PointCloud \Rightarrow Envir.Repres \Rightarrow collision$$
+
+* Env Representation is built on the fly as new data come
+* a way to store point cloud data is [octree](http://fab.cba.mit.edu/classes/S62.12/docs/Meagher_octree.pdf)
+
+$$q_{goal} + collision \Rightarrow MotionPlanner \Rightarrow [q] \Rightarrow Trajectory Generator \Rightarrow [q,\dot{q},\ddot{a},t] \Rightarrow Sampler \Rightarrow $$
+
+* motion planner produces the path
+* trajectory generator adds velocity, accelaration time to the path, making it smooth to execute without stoppung, making sure robot does not wxceed its limits
+* result goes to motion control a closed loop control of the motor sending current and getting encoder info (PID position controller)
+* motor produces torque and through a gearbox it goes to joint moving the link hich applies force to the world
+* sensing of change in env happens ~30Hz
+* a good motion planner produces output at ~5Hz
+* PID control has a ~1kHz freq
+* torque measurement is new technique: torque encoder in motor and encder in joint attached to a string in gearbox. based on the difference of these encoders we measure torque we know the torque
+* this is called series elastic actuation. we see a torque spike that goes to motion planner
+* in some robots links are equiped with touch sensors . info goes to env. representatio
+* Papers on subject:
+* [Perception, Planning and Execution for Mobile Manipulation in Unstructured Environments](https://pdfs.semanticscholar.org/c4e2/88f3bf1b53c85e4bbf93edd6ed2affec7105.pdf)
+    * The sensing Pipeline. Filtering 3D sensor data to remove noise and points corresponding to robot parts
+    * Environment Modeling: octree-based represenation used to generate occupancy grid model
+    * Segmentation and Recognition: 1) support surfaces and objects are segmented from 3D data 2) known objects (based on object detection) are represented using meshes 3) other objects are represented using point clusters
+    * Grasping. cluster planner plans grasps for objects represented as point clusters
+* Intelligent robot operating on its own
+
+### 10.3 The Future
+
+* Key fileds needed for robots to make the next big leaps forward
+* Semantic Perception
+    * can it be separated from hardware?
+    * continuum: from segmentation to recognition
+    * "smaller" domain helps (e.g roads)
+    * machine learning making great strides
+* Reasoning and Planning under uncertainty
+    * task planning to motion planning
+* Complex reactive motor skills
+    * manipulation, legged locomotion, etc... 
+* Papers:
+    * [Colaborative Grasp Planning with Multiple Object Representations](https://roam.me.columbia.edu/files/seasroamlab/publications/icra2011_collaborative.pdf) 
+* Thoughts:
+    * thing about outliners
+    * object recognition DB
+    * modeling of everything is required... intuition??
+* Past: Structured env
+* Present: semi-structured env
+* Future: fully unstructured env
+
+### Review and Practice Questions
+
+* This week concludes the lectures in this course. You can use this week to complete the final projects, recap class material, and prepare for the final quiz.
+* Final Quiz Info: the Final Quiz will contain 10 questions and you will have 1 hour allotted time for completion.
+* Here are some example questions covering material from the second half of the course that can guide your review effort. These are also example questions you can use to prepare for the Final Exam, which will contain questions similar to (or selected from) these.
+* (Reminder: practice questions for the material covered in the first half of the class are available in Week 6. The Final Quiz will cover all the material in the course).
+    * What are the differences between a matrix inverse and a pseudo-inverse?
+    * When is it impossible to compute the inverse of a robot Jacobian?
+    * How can you avoid coming close to singular robot configurations when doing Cartesian Control?
+    * When performing Cartesian Control in order to get the end-effector from a start pose to a goal pose, what Cartesian path between the start and the goal does the end-effector follow? (We assume that execution is successful and the robot never comes close to a singularity.)
+    * What is the Configuration Space (C-Space) of a robot?
+    * How many dimensions does the C-Space of the Kuka LWR robot (used in the class projects) have?
+    * What are different ways in which you might store an obstacle map for a robot?
+    * What are the basic building blocks (i.e. external calls) that you need to have available in order to implement a sampling-based motion planning algorithms?
+    * If you run the RRT algorithm multiple times on the same problem (same start, goal, and obstacles) will you get the same result? Why?
+    * What guarantees does a graph search algorithm such as Dijkstra's or A* offer for a motion planning problem?
+    * What guarantees does a sampling-based algorithm such as RRT or PRM offer for a motion planning problem?
+    * What is the main advantage of the A* algorithm compared to Dijkstra's algorithm?
+    * Is a typical shopping cart (two fixed wheels in the back, two omni-directional casters in the front) a holonomic vehicle? Why?
+    * A differential drive robot has positive (forward) velocity at the left wheel, and zero velocity at the right wheel. Assuming no wheel slip, what motion will the robot perform?
+
+### Final Exam Instructions
+
+* About the final exam: 
+    *  It will contain 11 questions and students will have 1 hour to complete it.
+    * It is open book and open notes. 
+    * Students can access the internet during the exam.
+    * Calculators are allowed. 
