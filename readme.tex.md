@@ -2598,3 +2598,4 @@ $$q_{goal} + collision \Rightarrow MotionPlanner \Rightarrow [q] \Rightarrow Tra
     * Students can access the internet during the exam.
     * Calculators are allowed.
 * Godspeed you! future roboticist...
+
