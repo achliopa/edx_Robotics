@@ -1996,7 +1996,7 @@ $$\dot{q_n}=(i-J^{+}J)\dot{q} \Rightarrow J\dot{q_n}=(J-JJ^{+}J)\dot{q}$$
 * if J is full row rank: $J^{+}J=i$
 * if i  calculate the Jacobian pseudoinverse and the the solution for dotq $\dot{q_s}=J^{+}V_ee$
 * before sending it to robot we can have another goal for the end effector. to move the joints without moving the end effector 
-* then what I will send to the robot will be 
+* then what I will send to the robot will be $\dot{q_S}=J^{+}V_ee+\dot{q_n}$
 * in that case we dont mess up with out primary goal but get the second goal by choosing $\dot{q}$ so that i can get the $\dot{q_n}$ 
 * we can use it to avoid obstacles
 * In Cartesian control 
